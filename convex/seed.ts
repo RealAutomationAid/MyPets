@@ -264,3 +264,52 @@ export const migrateCategoryField = internalMutation({
     };
   },
 }); 
+
+// Seed hero images
+export const seedHeroImages = internalMutation({
+  handler: async (ctx) => {
+    // Check if we have enough seeded images (excluding uploaded ones)
+    const seededImages = await ctx.db
+      .query("heroImages")
+      .filter(q => q.or(
+        q.eq(q.field("src"), "/featured-cat-1.jpg"),
+        q.eq(q.field("src"), "/featured-cat-2.jpg"),
+        q.eq(q.field("src"), "/model-cat-1.jpg"),
+        q.eq(q.field("src"), "/model-cat-2.jpg"),
+        q.eq(q.field("src"), "/model-cat-3.jpg")
+      ))
+      .collect();
+    
+    if (seededImages.length >= 5) {
+      console.log("Hero images already seeded, skipping...");
+      return { success: true, message: "Hero images already exist" };
+    }
+
+    const heroImagesData = [
+      { src: "/featured-cat-1.jpg", alt: "OLIVIA", isActive: true, position: 1 },
+      { src: "/featured-cat-2.jpg", alt: "MIA", isActive: true, position: 2 },
+      { src: "/model-cat-1.jpg", alt: "BUBBLE", isActive: true, position: 3 },
+      { src: "/model-cat-2.jpg", alt: "ZIGGY", isActive: true, position: 4 },
+      { src: "/model-cat-3.jpg", alt: "MOMO", isActive: true, position: 5 },
+    ];
+
+    // Only insert missing images
+    for (const heroImage of heroImagesData) {
+      const exists = seededImages.find(img => img.src === heroImage.src);
+      if (!exists) {
+        await ctx.db.insert("heroImages", {
+          ...heroImage,
+          uploadedAt: Date.now(),
+        });
+      }
+    }
+
+    const newImagesCount = heroImagesData.filter(img => !seededImages.find(existing => existing.src === img.src)).length;
+    console.log(`Seeded ${newImagesCount} new hero images`);
+    return {
+      success: true,
+      message: `Seeded ${newImagesCount} new hero images successfully`,
+      count: newImagesCount
+    };
+  },
+});

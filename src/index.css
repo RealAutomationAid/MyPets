@@ -194,6 +194,122 @@
   }
 }
 
+/* V0 Hero Section Animations */
+@layer components {
+  .cat-image-1 {
+    top: 5%;
+    left: 5%;
+    animation: super-smooth-float 150s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .cat-image-2 {
+    top: 10%;
+    right: 2%;
+    animation: super-smooth-float 160s ease-in-out infinite;
+    animation-delay: 30s;
+  }
+
+  .cat-image-3 {
+    top: 75%;
+    left: 2%;
+    animation: super-smooth-float 170s ease-in-out infinite;
+    animation-delay: 60s;
+  }
+
+  .cat-image-4 {
+    top: 80%;
+    right: 8%;
+    animation: super-smooth-float 155s ease-in-out infinite;
+    animation-delay: 90s;
+  }
+
+  .cat-image-5 {
+    top: 20%;
+    left: 85%;
+    animation: super-smooth-float 165s ease-in-out infinite;
+    animation-delay: 120s;
+  }
+
+  .cat-image-6 {
+    top: 70%;
+    right: 75%;
+    animation: super-smooth-float 175s ease-in-out infinite;
+    animation-delay: 150s;
+  }
+}
+
+@keyframes ultra-gentle-float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateY(-5px) translateX(3px) rotate(0.5deg) scale(1.005);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(3px) translateX(-4px) rotate(-0.3deg) scale(1);
+    opacity: 0.85;
+  }
+  75% {
+    transform: translateY(-4px) translateX(6px) rotate(0.8deg) scale(1.008);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes super-smooth-float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.85;
+  }
+  20% {
+    transform: translateY(-2px) translateX(1px) rotate(0.1deg) scale(1.002);
+    opacity: 0.9;
+  }
+  40% {
+    transform: translateY(1px) translateX(-1.5px) rotate(-0.1deg) scale(1);
+    opacity: 0.88;
+  }
+  60% {
+    transform: translateY(-1.5px) translateX(2px) rotate(0.15deg) scale(1.003);
+    opacity: 0.92;
+  }
+  80% {
+    transform: translateY(0.5px) translateX(-0.5px) rotate(-0.05deg) scale(1.001);
+    opacity: 0.87;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes paw-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(100vh) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.animate-paw-fall {
+  animation: paw-fall linear infinite;
+}
+
 .animate-spin-slow {
   animation: spin-slow 3s linear infinite;
 }
@@ -246,6 +362,8 @@
   animation: subtleRotate 20s linear infinite;
 }
 
+
+
 .animate-delay-100 {
   animation-delay: 100ms;
 }
@@ -282,75 +400,75 @@
   transform: translateY(0);
 }
 
-/* Ragdoll Radanov Pride - Modern Minimalistic Design System
-Clean, sophisticated aesthetic inspired by modern cat portfolios
+/* BleuRoi Ragdoll Cattery - Ragdoll-Inspired Design System
+Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blues, lavenders
 */
 
 @layer base {
   :root {
-    /* Modern minimalistic palette */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    /* Ragdoll-inspired palette - soft creams and warm tones */
+    --background: 35 25% 97%;      /* #FAF8F5 - Soft cream background */
+    --foreground: 220 8% 25%;      /* #3C3F47 - Soft charcoal text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card: 0 0% 100%;             /* Pure white cards */
+    --card-foreground: 220 8% 25%; /* Soft charcoal text on cards */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 220 8% 25%;
 
-    /* Sophisticated dark primary */
-    --primary: 0 0% 20%;
+    /* Soft blue-gray primary inspired by ragdoll eyes */
+    --primary: 210 25% 55%;        /* #7296B8 - Ragdoll blue eyes */
     --primary-foreground: 0 0% 98%;
 
-    /* Clean neutral secondary */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 20%;
+    /* Cream secondary */
+    --secondary: 35 20% 92%;       /* #F0ECEA - Warm cream */
+    --secondary-foreground: 220 8% 25%;
 
-    /* Subtle muted tones */
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45%;
+    /* Muted lavender-gray tones */
+    --muted: 240 15% 90%;          /* #E8E6F0 - Soft lavender */
+    --muted-foreground: 220 8% 50%; /* #737884 - Medium gray */
 
-    /* Elegant accent - warm beige */
-    --accent: 30 15% 88%;
-    --accent-foreground: 0 0% 20%;
+    /* Elegant accent - soft lavender */
+    --accent: 260 20% 85%;         /* #D9D1E8 - Lavender accent */
+    --accent-foreground: 220 8% 25%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 20%;
+    --border: 220 15% 85%;        /* #D1CFDB - Soft gray border */
+    --input: 240 15% 92%;          /* #EBEAF2 - Light lavender input */
+    --ring: 210 25% 55%;           /* Match primary - ragdoll blue */
 
     --radius: 12px;
 
-    /* Modern design tokens */
-    --modern-dark: 0 0% 15%;
-    --modern-light: 0 0% 98%;
-    --modern-beige: 30 15% 88%;
-    --modern-warm: 25 20% 85%;
+    /* Ragdoll-inspired design tokens */
+    --modern-dark: 220 8% 25%;     /* Soft charcoal */
+    --modern-light: 35 25% 97%;    /* Cream background */
+    --modern-beige: 35 20% 88%;    /* Warm cream */
+    --modern-warm: 210 15% 80%;    /* Soft blue-gray */
 
-    /* Subtle gradients */
-    --gradient-subtle: linear-gradient(135deg, hsl(0 0% 98%), hsl(30 15% 96%));
-    --gradient-overlay: linear-gradient(135deg, hsl(0 0% 15% / 0.7), hsl(0 0% 15% / 0.9));
+    /* Ragdoll-inspired gradients */
+    --gradient-subtle: linear-gradient(135deg, hsl(35 25% 97%), hsl(240 20% 95%));
+    --gradient-overlay: linear-gradient(135deg, hsl(220 8% 25% / 0.7), hsl(210 15% 20% / 0.9));
 
-    /* Modern shadows */
-    --shadow-modern: 0 4px 24px -6px hsl(0 0% 15% / 0.08);
-    --shadow-hover: 0 8px 32px -8px hsl(0 0% 15% / 0.12);
-    --shadow-card: 0 2px 16px -4px hsl(0 0% 15% / 0.05);
+    /* Soft ragdoll-inspired shadows */
+    --shadow-modern: 0 4px 24px -6px hsl(220 8% 25% / 0.08);
+    --shadow-hover: 0 8px 32px -8px hsl(210 15% 30% / 0.12);
+    --shadow-card: 0 2px 16px -4px hsl(240 10% 20% / 0.05);
 
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Sidebar variables */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    /* Ragdoll-inspired sidebar variables */
+    --sidebar-background: 35 25% 97%;
+    --sidebar-foreground: 220 8% 25%;
+    --sidebar-primary: 210 25% 55%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 15% 90%;
+    --sidebar-accent-foreground: 220 8% 25%;
+    --sidebar-border: 220 15% 85%;
+    --sidebar-ring: 210 25% 55%;
   }
 
   .dark {
@@ -982,3 +1100,4 @@ Clean, sophisticated aesthetic inspired by modern cat portfolios
   0%, 10%, 25%, 80%, 100% { transform: scaleY(1); }
   8%, 23%, 78% { transform: scaleY(0.1); }
 }
+

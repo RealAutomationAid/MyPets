@@ -18,6 +18,7 @@ import type * as auth from "../auth.js";
 import type * as cats from "../cats.js";
 import type * as contact from "../contact.js";
 import type * as files from "../files.js";
+import type * as heroImages from "../heroImages.js";
 import type * as imageMigration from "../imageMigration.js";
 import type * as pedigree from "../pedigree.js";
 import type * as seed from "../seed.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   cats: typeof cats;
   contact: typeof contact;
   files: typeof files;
+  heroImages: typeof heroImages;
   imageMigration: typeof imageMigration;
   pedigree: typeof pedigree;
   seed: typeof seed;

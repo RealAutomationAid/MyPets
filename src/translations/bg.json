@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Чистокръвни Рагдол Котки",
-    "description": "Чистокръвни Ragdoll котки от развъдник Radanov Pride. Красота, характер и здраве в едно!"
+    "description": "Чистокръвни Ragdoll котки от развъдник BleuRoi Ragdoll Cattery. Красота, характер и здраве в едно!"
   },
   "navigation": {
     "home": "Начало",
@@ -53,7 +53,7 @@
   "pedigree": {
     "title": "Родословие",
     "familyTree": "Семейно дърво на",
-    "link": "Връзка: radanov-pride.com",
+    "link": "Връзка: bleuroi-ragdoll.com",
     "loading": "Зареждане на родословието...",
     "clickInfo": "Кликни за повече информация",
     "mother": "Майка",
@@ -88,7 +88,7 @@
   },
   "footer": {
     "address": "България, Разлог, България, 2760",
-    "copyright": "© 2024 Radanov Pride. Всички права запазени."
+    "copyright": "© 2024 BleuRoi Ragdoll Cattery. Всички права запазени."
   },
   "news": {
     "title": "Новини от",

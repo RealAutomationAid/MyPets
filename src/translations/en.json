@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Purebred Ragdoll Cats",
-    "description": "Purebred Ragdoll cats from Radanov Pride cattery. Beauty, character and health in one!"
+    "description": "Purebred Ragdoll cats from BleuRoi Ragdoll Cattery. Beauty, character and health in one!"
   },
   "navigation": {
     "home": "Home",
@@ -39,7 +39,7 @@
     "title": "Our TikTok Videos",
     "subtitle": "Follow us on TikTok for daily moments with our beautiful Ragdoll cats",
     "followButton": "Follow us on TikTok",
-    "followDescription": "@radanovprideragdoll - Daily moments with our Ragdoll cats"
+    "followDescription": "@bleuroi_ragdoll - Daily moments with our Ragdoll cats"
   },
   "contact": {
     "modalTitle": "Contact Us",
@@ -53,7 +53,7 @@
   "pedigree": {
     "title": "Pedigree",
     "familyTree": "Family tree of",
-    "link": "Link: radanov-pride.com",
+    "link": "Link: bleuroi-ragdoll.com",
     "loading": "Loading pedigree...",
     "clickInfo": "Click for more information",
     "mother": "Mother",
@@ -88,6 +88,6 @@
   },
   "footer": {
     "address": "Bulgaria, Razlog, Bulgaria, 2760",
-    "copyright": "© 2024 Radanov Pride. All rights reserved."
+    "copyright": "© 2024 BleuRoi Ragdoll Cattery. All rights reserved."
   }
 }

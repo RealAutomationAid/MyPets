@@ -7,10 +7,12 @@ import PedigreeCanvas from '@/components/admin/PedigreeCanvas';
 import TikTokVideoManager from '@/components/admin/TikTokVideoManager';
 import SocialMediaSettings from '@/components/admin/SocialMediaSettings';
 import NewsManager from '@/components/admin/NewsManager';
+import HeroImageManager from '@/components/admin/HeroImageManager';
+import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
 import { CatData } from '@/services/convexCatService';
 import ragdollLogo from '@/assets/ragdoll-logo.png';
 
-type AdminTab = 'pedigree' | 'news' | 'tiktok' | 'social';
+type AdminTab = 'pedigree' | 'news' | 'tiktok' | 'social' | 'hero' | 'qr';
 
 const Admin = () => {
   const { isAuthenticated, isLoading, logout } = useAdminAuth();
@@ -68,6 +70,10 @@ const Admin = () => {
         return <TikTokVideoManager />;
       case 'social':
         return <SocialMediaSettings />;
+      case 'hero':
+        return <HeroImageManager />;
+      case 'qr':
+        return <QRCodeGenerator />;
       default:
         return null;
     }
@@ -105,7 +111,9 @@ const Admin = () => {
             { id: 'pedigree' as AdminTab, label: 'Родословие' },
             { id: 'news' as AdminTab, label: 'Новини' },
             { id: 'tiktok' as AdminTab, label: 'TikTok видеа' },
-            { id: 'social' as AdminTab, label: 'Социални мрежи' }
+            { id: 'social' as AdminTab, label: 'Социални мрежи' },
+            { id: 'hero' as AdminTab, label: 'Hero Изображения' },
+            { id: 'qr' as AdminTab, label: 'QR Код' }
           ].map(tab => (
             <button
               key={tab.id}

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import ModernNavigation from "@/components/ModernNavigation";
-import ModernHeroSection from "@/components/ModernHeroSection";
+import HeroSection from "@/components/hero-section";
 import FeaturedModelsSection from "@/components/FeaturedModelsSection";
 import AnimatedCarouselGallery from "@/components/AnimatedCarouselGallery";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
 import SocialSidebar from "@/components/SocialSidebar";
-import ContactModal from "@/components/ContactModal";
+import SocialContactModal from "@/components/SocialContactModal";
 import CatCarePopup from "@/components/CatCarePopup";
 import BackgroundAnimations from "@/components/BackgroundAnimations";
 
@@ -30,7 +30,7 @@ const Index = () => {
       <div className="relative z-10">
         <ModernNavigation />
       <div id="home">
-        <ModernHeroSection />
+        <HeroSection onContactClick={() => setIsContactModalOpen(true)} />
       </div>
       <div id="models">
         <FeaturedModelsSection />
@@ -52,7 +52,8 @@ const Index = () => {
       <SocialSidebar />
       
       {/* Contact Modal */}
-      <ContactModal 
+      <SocialContactModal 
+        cat={null}
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 
       />

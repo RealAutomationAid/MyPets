@@ -9,6 +9,8 @@ import modelCat2 from '@/assets/model-cat-2.jpg';
 import modelCat3 from '@/assets/model-cat-3.jpg';
 import SocialContactModal from "./SocialContactModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 const ModernHeroSection = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -17,6 +19,21 @@ const ModernHeroSection = () => {
   const { elementRef: photosRef, isVisible: photosVisible } = useScrollAnimation(0.1);
   const { elementRef: parallaxRef, offset: parallaxOffset } = useParallax(0.3);
   const { t } = useLanguage();
+  
+  // Get active hero images from database
+  const heroImages = useQuery(api.heroImages.getActiveHeroImages) || [];
+  
+  // Fallback images for when no hero images are uploaded
+  const fallbackImages = [
+    { src: featuredCat1, alt: "OLIVIA", name: "OLIVIA", subtitle: "CHAT NOIR ELEGANCE" },
+    { src: featuredCat2, alt: "MIA", name: "MIA", subtitle: "NOIR" },
+    { src: modelCat1, alt: "BUBBLE", name: "BUBBLE", subtitle: "SILLY CAT" },
+    { src: modelCat2, alt: "ZIGGY", name: "ZIGGY", subtitle: "SILLY CAT" },
+    { src: modelCat3, alt: "MOMO", name: "MOMO", subtitle: "SILLY CAT" },
+  ];
+  
+  // Use uploaded hero images if available, otherwise use fallback
+  const displayImages = heroImages.length > 0 ? heroImages : fallbackImages;
 
   return (
     <section className="min-h-[85vh] flex items-center justify-center py-10 md:py-20 bg-background relative overflow-hidden">
@@ -92,67 +109,65 @@ const ModernHeroSection = () => {
               }}
             >
               {/* Decorative polaroids - hidden on mobile */}
-              <div className="hidden md:block absolute -top-10 -left-24 bg-card p-4 shadow-lg transform rotate-6 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10">
-                <img 
-                  src={modelCat1} 
-                  alt="SILLY1"
-                  className="w-40 h-40 object-cover"
-                />
-                <div className="mt-2 text-center">
-                  <h3 className="font-bold text-base text-foreground">BUBBLE</h3>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">SILLY CAT</p>
-                </div>
-              </div>
-              <div className="hidden lg:block absolute top-32 -right-32 bg-card p-4 shadow-lg transform -rotate-12 hover:rotate-0 transition-transform duration-300 animate-float-reverse z-10">
-                <img 
-                  src={modelCat2} 
-                  alt="SILLY2"
-                  className="w-44 h-44 object-cover"
-                />
-                <div className="mt-2 text-center">
-                  <h3 className="font-bold text-base text-foreground">ZIGGY</h3>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">SILLY CAT</p>
-                </div>
-              </div>
-              <div className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2 bg-card p-4 shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10">
-                <img 
-                  src={modelCat3} 
-                  alt="SILLY3"
-                  className="w-36 h-36 object-cover"
-                />
-                <div className="mt-2 text-center">
-                  <h3 className="font-bold text-base text-foreground">MOMO</h3>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">SILLY CAT</p>
-                </div>
-              </div>
+              {displayImages.slice(2, 5).map((image, index) => {
+                const positions = [
+                  { className: "hidden md:block absolute -top-10 -left-24 bg-card p-4 shadow-lg transform rotate-6 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10", size: "w-40 h-40" },
+                  { className: "hidden lg:block absolute top-32 -right-32 bg-card p-4 shadow-lg transform -rotate-12 hover:rotate-0 transition-transform duration-300 animate-float-reverse z-10", size: "w-44 h-44" },
+                  { className: "hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2 bg-card p-4 shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10", size: "w-36 h-36" }
+                ];
+                
+                if (index >= positions.length) return null;
+                
+                const position = positions[index];
+                const displayName = image.name || image.alt.split(' ')[0] || `CAT ${index + 3}`;
+                const displaySubtitle = image.subtitle || "RAGDOLL";
+                
+                return (
+                  <div key={index} className={position.className}>
+                    <img 
+                      src={image.src} 
+                      alt={image.alt}
+                      className={`${position.size} object-cover`}
+                    />
+                    <div className="mt-2 text-center">
+                      <h3 className="font-bold text-base text-foreground">{displayName}</h3>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide">{displaySubtitle}</p>
+                    </div>
+                  </div>
+                );
+              })}
               {/* Main polaroids - responsive sizing */}
-              <div className="relative bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-300 animate-float-gentle z-20">
-                <img 
-                  src={featuredCat1} 
-                  alt="OLIVIA"
-                  className="w-48 h-48 md:w-60 md:h-60 object-cover"
-                />
-                <div className="mt-3 md:mt-4 text-center">
-                  <h3 className="font-bold text-base md:text-lg text-foreground">OLIVIA</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wide">CHAT NOIR ELEGANCE</p>
-                </div>
-              </div>
-              <div className="absolute top-6 md:top-8 left-16 md:left-20 bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-500 animate-float-reverse z-20">
-                <img 
-                  src={featuredCat2} 
-                  alt="MIA"
-                  className="w-48 h-48 md:w-60 md:h-60 object-cover"
-                />
-                <div className="mt-3 md:mt-4 text-center">
-                  <h3 className="font-bold text-base md:text-lg text-foreground">MIA</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wide">NOIR</p>
-                </div>
-              </div>
+              {displayImages.slice(0, 2).map((image, index) => {
+                const positions = [
+                  { className: "relative bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-300 animate-float-gentle z-20" },
+                  { className: "absolute top-6 md:top-8 left-16 md:left-20 bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-500 animate-float-reverse z-20" }
+                ];
+                
+                if (index >= positions.length) return null;
+                
+                const position = positions[index];
+                const displayName = image.name || image.alt.split(' ')[0] || `CAT ${index + 1}`;
+                const displaySubtitle = image.subtitle || "RAGDOLL";
+                
+                return (
+                  <div key={index} className={position.className}>
+                    <img 
+                      src={image.src} 
+                      alt={image.alt}
+                      className="w-48 h-48 md:w-60 md:h-60 object-cover"
+                    />
+                    <div className="mt-3 md:mt-4 text-center">
+                      <h3 className="font-bold text-base md:text-lg text-foreground">{displayName}</h3>
+                      <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wide">{displaySubtitle}</p>
+                    </div>
+                  </div>
+                );
+              })}
               {/* Circular logo badge */}
               <div className="absolute -bottom-3 md:-bottom-4 -right-3 md:-right-4 bg-card rounded-full p-6 md:p-8 shadow-lg animate-float z-30">
                 <div className="w-24 h-24 md:w-32 md:h-32 border-2 border-foreground rounded-full flex items-center justify-center relative overflow-hidden">
                             {/* Floating Logo */}
-          <img src="/radanov-pride-logo.png" alt="Radanov Pride Logo" className="w-16 h-16 md:w-20 md:h-20 object-contain animate-float" />
+          <img src="/radanov-pride-logo.png" alt="BleuRoi Ragdoll Cattery Logo" className="w-16 h-16 md:w-20 md:h-20 object-contain animate-float" />
                 </div>
               </div>
             </div>

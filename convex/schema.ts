@@ -135,4 +135,16 @@ export default defineSchema({
   })
     .index("by_published", ["isPublished", "publishedAt"])
     .index("by_sort_order", ["sortOrder"]),
+
+  // Hero images for the floating circles in the hero section
+  heroImages: defineTable({
+    src: v.string(), // Image URL
+    alt: v.string(), // Alt text for accessibility
+    isActive: v.boolean(), // Whether the image is displayed in hero section
+    position: v.number(), // Order/position for display
+    uploadedAt: v.number(), // Unix timestamp
+  })
+    .index("by_active", ["isActive"])
+    .index("by_position", ["position"])
+    .index("by_active_position", ["isActive", "position"]),
 }); 

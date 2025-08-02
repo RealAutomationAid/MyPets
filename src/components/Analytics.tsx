@@ -170,7 +170,7 @@ const Analytics = () => {
       )}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={window.location.href} />
-      <meta property="og:site_name" content="My Pets Ragdoll - Radanov Pride" />
+      <meta property="og:site_name" content="BleuRoi Ragdoll Cattery" />
       
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />

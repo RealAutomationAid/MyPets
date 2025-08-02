@@ -1,7 +1,7 @@
 {
-  "name": "Ragdoll Radanov Pride",
-  "short_name": "Radanov Pride",
-  "description": "Елитен развъдник за породисти котки рагдол в България. Качествени родословни и изключителни котки.",
+  "name": "BleuRoi Ragdoll Cattery",
+  "short_name": "BleuRoi",
+  "description": "Елитен развъдник за породисти котки рагдол в България. Качествени родословни и изключителни котки от BleuRoi Ragdoll Cattery.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,7 +10,13 @@
   "icons": [
     {
       "src": "/radanov-pride-logo.png",
-      "sizes": "any",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/radanov-pride-logo.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }

@@ -23,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Architecture
 
-This is a React-based Ragdoll cat gallery showcase for "Radanov Pride" with a complete admin system, built with modern web technologies and Convex backend.
+This is a React-based Ragdoll cat gallery showcase for "BleuRoi Ragdoll Cattery" with a complete admin system, built with modern web technologies and Convex backend.
 
 ### Tech Stack
 - **Vite** - Build tool and development server

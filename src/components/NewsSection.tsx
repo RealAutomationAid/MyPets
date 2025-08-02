@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useLatestAnnouncements } from '@/services/convexAnnouncementService';
+import { useLatestAnnouncements, AnnouncementData } from '@/services/convexAnnouncementService';
+import AnnouncementModal from './AnnouncementModal';
 
 const NewsSection = () => {
   const latestNews = useLatestAnnouncements(3); // Get latest 3 announcements
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('bg-BG', {
@@ -12,6 +16,16 @@ const NewsSection = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleAnnouncementClick = (announcement: AnnouncementData) => {
+    setSelectedAnnouncement(announcement);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAnnouncement(null);
   };
 
   if (!latestNews || latestNews.length === 0) {
@@ -25,7 +39,7 @@ const NewsSection = () => {
         <div className="text-center mb-12">
           <h2 className="font-playfair text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Новини от
-            <span className="text-primary"> Radanov Pride</span>
+            <span className="text-primary"> BleuRoi Ragdoll Cattery</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Следете последните новини и събития от нашето семейство
@@ -35,7 +49,11 @@ const NewsSection = () => {
         {/* News Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {latestNews.map((announcement) => (
-            <Card key={announcement._id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+            <Card 
+              key={announcement._id} 
+              className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer hover:scale-[1.02]"
+              onClick={() => handleAnnouncementClick(announcement)}
+            >
               {announcement.featuredImage && (
                 <div className="aspect-video overflow-hidden">
                   <img
@@ -80,6 +98,13 @@ const NewsSection = () => {
             </Button>
           </div>
         )}
+
+        {/* Announcement Modal */}
+        <AnnouncementModal
+          announcement={selectedAnnouncement}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
       </div>
     </section>
   );
