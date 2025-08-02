@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useDisplayedCatsByCategory, CatData } from "@/services/convexCatService";
+import { getFallbackRagdollCatsWithIds } from "@/data/fallbackRagdollCats";
 import PedigreeModal from "./PedigreeModal";
 import SocialContactModal from "./SocialContactModal";
 import EnhancedImageGallery from "./ui/enhanced-image-gallery";
@@ -30,7 +31,11 @@ const FeaturedModelsSection = () => {
   const [enhancedGalleryImages, setEnhancedGalleryImages] = useState<string[]>([]);
   const [enhancedGalleryTitle, setEnhancedGalleryTitle] = useState("");
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
-  const featuredCats = useDisplayedCatsByCategory(activeFilter);
+  const databaseCats = useDisplayedCatsByCategory(activeFilter);
+  const fallbackCats = getFallbackRagdollCatsWithIds(activeFilter === 'all' ? 'all' : activeFilter);
+  
+  // Use database cats if available, otherwise show fallback Ragdoll cats
+  const featuredCats = (databaseCats && databaseCats.length > 0) ? databaseCats : fallbackCats;
   const { elementRef: sectionRef, isVisible: sectionVisible } = useScrollAnimation(0.1);
   const { elementRef: headerRef, isVisible: headerVisible } = useScrollAnimation(0.1);
   const { elementRef: gridRef, isVisible: gridVisible } = useScrollAnimation(0.1);
@@ -134,7 +139,7 @@ const FeaturedModelsSection = () => {
             
             {isEmpty && (
               <div className="text-center">
-                <p className="text-muted-foreground">{t('featuredModels.noAvailable')}</p>
+                <p className="text-muted-foreground">Зареждане на нашите прекрасни рагдол котки...</p>
               </div>
             )}
             

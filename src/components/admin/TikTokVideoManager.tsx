@@ -240,7 +240,7 @@ const TikTokVideoManager = () => {
                     id="hashtags"
                     value={formData.hashtags.join(', ')}
                     onChange={(e) => handleHashtagsChange(e.target.value)}
-                    placeholder="#котки, #mainecoon, #радановпрайд"
+                    placeholder="#котки, #ragdoll, #радановпрайд"
                   />
                 </div>
 

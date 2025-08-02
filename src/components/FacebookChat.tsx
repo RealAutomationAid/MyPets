@@ -29,8 +29,8 @@ const FacebookChat = ({ isOpen, onClose }: FacebookChatProps) => {
       chatDiv.setAttribute('attribution', 'biz_inbox');
       chatDiv.setAttribute('page_id', '61561853557367'); // Your Facebook Page ID
       chatDiv.setAttribute('theme_color', '#000000');
-      chatDiv.setAttribute('logged_in_greeting', 'Здравейте! Как можем да ви помогнем с нашите Maine Coon котки?');
-      chatDiv.setAttribute('logged_out_greeting', 'Здравейте! Как можем да ви помогнем с нашите Maine Coon котки?');
+      chatDiv.setAttribute('logged_in_greeting', 'Здравейте! Как можем да ви помогнем с нашите Ragdoll котки?');
+      chatDiv.setAttribute('logged_out_greeting', 'Здравейте! Как можем да ви помогнем с нашите Ragdoll котки?');
       document.body.appendChild(chatDiv);
 
       return () => {

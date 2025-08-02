@@ -3,20 +3,31 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Facebook, Instagram, Save } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Facebook, Instagram, Save, BarChart, Search, Eye, CheckCircle, AlertCircle } from 'lucide-react';
 import { 
   useSocialMediaSettings, 
-  useUpdateSocialMediaSettings 
+  useUpdateSocialMediaSettings,
+  useSettingsByType,
+  useUpsertSetting
 } from '@/services/convexSiteSettingsService';
 
 const SocialMediaSettings = () => {
   const socialSettings = useSocialMediaSettings();
   const updateSocialSettings = useUpdateSocialMediaSettings();
+  const analyticsSettings = useSettingsByType('analytics');
+  const upsertSetting = useUpsertSetting();
   
   const [formData, setFormData] = useState({
     facebook: '',
     instagram: '',
     tiktok: '',
+  });
+
+  const [analyticsData, setAnalyticsData] = useState({
+    googleSearchConsole: '',
+    metaPixelId: '',
+    googleAnalyticsId: '',
   });
   
   const [isSaving, setIsSaving] = useState(false);
@@ -33,7 +44,27 @@ const SocialMediaSettings = () => {
     }
   }, [socialSettings]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Load analytics settings
+  useEffect(() => {
+    if (analyticsSettings) {
+      const settings = analyticsSettings.reduce((acc, setting) => {
+        try {
+          acc[setting.key] = JSON.parse(setting.value);
+        } catch {
+          acc[setting.key] = setting.value;
+        }
+        return acc;
+      }, {} as Record<string, any>);
+
+      setAnalyticsData({
+        googleSearchConsole: settings.google_search_console || '',
+        metaPixelId: settings.meta_pixel_id || '',
+        googleAnalyticsId: settings.google_analytics_id || '',
+      });
+    }
+  }, [analyticsSettings]);
+
+  const handleSocialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     setSaveMessage('');
@@ -45,7 +76,7 @@ const SocialMediaSettings = () => {
         tiktok: formData.tiktok || undefined,
       });
       
-      setSaveMessage('Настройките са запазени успешно!');
+      setSaveMessage('Социални мрежи са запазени успешно!');
       setTimeout(() => setSaveMessage(''), 3000);
     } catch (error) {
       console.error('Error saving social media settings:', error);
@@ -56,11 +87,52 @@ const SocialMediaSettings = () => {
     }
   };
 
+  const handleAnalyticsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setSaveMessage('');
+    
+    try {
+      // Save each analytics setting individually
+      const promises = [
+        upsertSetting({
+          key: 'google_search_console',
+          value: JSON.stringify(analyticsData.googleSearchConsole),
+          type: 'analytics',
+          description: 'Google Search Console verification meta tag'
+        }),
+        upsertSetting({
+          key: 'meta_pixel_id',
+          value: JSON.stringify(analyticsData.metaPixelId),
+          type: 'analytics',
+          description: 'Meta (Facebook) Pixel ID'
+        }),
+        upsertSetting({
+          key: 'google_analytics_id',
+          value: JSON.stringify(analyticsData.googleAnalyticsId),
+          type: 'analytics',
+          description: 'Google Analytics 4 Measurement ID'
+        })
+      ];
+
+      await Promise.all(promises);
+      
+      setSaveMessage('Аналитични настройки са запазени успешно!');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving analytics settings:', error);
+      setSaveMessage('Грешка при запазването на аналитичните настройки');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-white">
-        <h2 className="font-playfair text-xl font-semibold">Социални мрежи</h2>
+        <h2 className="font-playfair text-xl font-semibold">Настройки & Аналитика</h2>
         <div className="flex items-center gap-3">
           {saveMessage && (
             <span className={`text-sm ${saveMessage.includes('Грешка') ? 'text-red-600' : 'text-green-600'}`}>
@@ -72,114 +144,210 @@ const SocialMediaSettings = () => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13.5 2c-5.621 0-10.211 4.443-10.5 10h3c.275-4.264 3.677-7.5 7.5-7.5 4.125 0 7.5 3.375 7.5 7.5 0 4.125-3.375 7.5-7.5 7.5-1.125 0-2.191-.25-3.141-.688l-1.406 2.438C10.125 21.688 11.742 22 13.5 22c5.621 0 10.5-4.379 10.5-10S19.121 2 13.5 2z"/>
-                </svg>
+        <Accordion type="single" collapsible defaultValue="social" className="space-y-4">
+          {/* Social Media Settings */}
+          <AccordionItem value="social">
+            <AccordionTrigger className="text-left min-h-[44px]">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Instagram className="h-4 w-4 text-blue-600" />
+                </div>
+                <span>Социални мрежи</span>
               </div>
-              Глобални настройки за социални мрежи
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Забележка:</strong> Тези настройки ще се използват в цялото уебсайт - в страничния панел, модалите за контакт и всички други места където се показват социални мрежи.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Facebook */}
-              <div className="space-y-2">
-                <Label htmlFor="facebook" className="flex items-center gap-2">
-                  <Facebook className="w-4 h-4 text-blue-600" />
-                  Facebook URL
-                </Label>
-                <Input
-                  id="facebook"
-                  type="url"
-                  value={formData.facebook}
-                  onChange={(e) => setFormData(prev => ({ ...prev, facebook: e.target.value }))}
-                  placeholder="https://www.facebook.com/profile.php?id=..."
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Пълен URL към Facebook страницата
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pt-4">
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Забележка:</strong> Тези настройки ще се използват в цялото уебсайт - в страничния панел, модалите за контакт и всички други места където се показват социални мрежи.
                 </p>
               </div>
 
-              {/* Instagram */}
-              <div className="space-y-2">
-                <Label htmlFor="instagram" className="flex items-center gap-2">
-                  <Instagram className="w-4 h-4 text-pink-600" />
-                  Instagram URL
-                </Label>
-                <Input
-                  id="instagram"
-                  type="url"
-                  value={formData.instagram}
-                  onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
-                  placeholder="https://instagram.com/radanovpride"
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Пълен URL към Instagram профила
-                </p>
-              </div>
+              <form onSubmit={handleSocialSubmit} className="space-y-6">
+                {/* Facebook */}
+                <div className="space-y-2">
+                  <Label htmlFor="facebook" className="flex items-center gap-2">
+                    <Facebook className="w-4 h-4 text-blue-600" />
+                    Facebook URL
+                  </Label>
+                  <Input
+                    id="facebook"
+                    type="url"
+                    value={formData.facebook}
+                    onChange={(e) => setFormData(prev => ({ ...prev, facebook: e.target.value }))}
+                    placeholder="https://www.facebook.com/profile.php?id=..."
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Пълен URL към Facebook страницата
+                  </p>
+                </div>
 
-              {/* TikTok */}
-              <div className="space-y-2">
-                <Label htmlFor="tiktok" className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                  </svg>
-                  TikTok URL
-                </Label>
-                <Input
-                  id="tiktok"
-                  type="url"
-                  value={formData.tiktok}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tiktok: e.target.value }))}
-                  placeholder="https://www.tiktok.com/@radanovpridemainecoon"
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Пълен URL към TikTok профила  
-                </p>
-              </div>
+                {/* Instagram */}
+                <div className="space-y-2">
+                  <Label htmlFor="instagram" className="flex items-center gap-2">
+                    <Instagram className="w-4 h-4 text-pink-600" />
+                    Instagram URL
+                  </Label>
+                  <Input
+                    id="instagram"
+                    type="url"
+                    value={formData.instagram}
+                    onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
+                    placeholder="https://instagram.com/radanovpride"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Пълен URL към Instagram профила
+                  </p>
+                </div>
 
-              {/* Submit Button */}
-              <div className="flex gap-2 pt-4">
+                {/* TikTok */}
+                <div className="space-y-2">
+                  <Label htmlFor="tiktok" className="flex items-center gap-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                    </svg>
+                    TikTok URL
+                  </Label>
+                  <Input
+                    id="tiktok"
+                    type="url"
+                    value={formData.tiktok}
+                    onChange={(e) => setFormData(prev => ({ ...prev, tiktok: e.target.value }))}
+                    placeholder="https://www.tiktok.com/@radanovprideragdoll"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Пълен URL към TikTok профила  
+                  </p>
+                </div>
+
+                {/* Submit Button */}
                 <Button 
                   type="submit" 
                   disabled={isSaving}
-                  className="bg-black text-white hover:bg-gray-800 flex items-center gap-2"
+                  className="w-full min-h-[44px] bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  {isSaving ? 'Запазване...' : 'Запази настройки'}
+                  {isSaving ? 'Запазване...' : 'Запази социални мрежи'}
                 </Button>
-              </div>
-            </form>
+              </form>
+            </AccordionContent>
+          </AccordionItem>
 
-            {/* Current Settings Preview */}
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-medium mb-3">Текущи настройки:</h3>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Facebook:</strong> {formData.facebook || 'Не е настроен'}
+          {/* Analytics Settings */}
+          <AccordionItem value="analytics">
+            <AccordionTrigger className="text-left min-h-[44px]">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <BarChart className="h-4 w-4 text-green-600" />
                 </div>
-                <div>
-                  <strong>Instagram:</strong> {formData.instagram || 'Не е настроен'}
+                <span>Аналитика & Проследяване</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pt-4">
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800">
+                  <strong>Забележка:</strong> Тези настройки се използват за проследяване на посетителите и SEO оптимизация. Попълнете само тези, които използвате.
+                </p>
+              </div>
+
+              <form onSubmit={handleAnalyticsSubmit} className="space-y-6">
+                {/* Google Search Console */}
+                <div className="space-y-2">
+                  <Label htmlFor="google-console" className="flex items-center gap-2">
+                    <Search className="w-4 h-4 text-blue-600" />
+                    Google Search Console
+                  </Label>
+                  <Input
+                    id="google-console"
+                    value={analyticsData.googleSearchConsole}
+                    onChange={(e) => setAnalyticsData(prev => ({ ...prev, googleSearchConsole: e.target.value }))}
+                    placeholder="google-site-verification=..."
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Кодът за верификация от Google Search Console (без &lt;meta&gt; тага)
+                  </p>
                 </div>
-                <div>
-                  <strong>TikTok:</strong> {formData.tiktok || 'Не е настроен'}
+
+                {/* Meta Pixel */}
+                <div className="space-y-2">
+                  <Label htmlFor="meta-pixel" className="flex items-center gap-2">
+                    <Facebook className="w-4 h-4 text-blue-600" />
+                    Meta Pixel ID
+                  </Label>
+                  <Input
+                    id="meta-pixel"
+                    value={analyticsData.metaPixelId}
+                    onChange={(e) => setAnalyticsData(prev => ({ ...prev, metaPixelId: e.target.value }))}
+                    placeholder="1234567890123456"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Facebook Pixel ID за проследяване на реклами
+                  </p>
+                </div>
+
+                {/* Google Analytics */}
+                <div className="space-y-2">
+                  <Label htmlFor="google-analytics" className="flex items-center gap-2">
+                    <BarChart className="w-4 h-4 text-orange-600" />
+                    Google Analytics 4
+                  </Label>
+                  <Input
+                    id="google-analytics"
+                    value={analyticsData.googleAnalyticsId}
+                    onChange={(e) => setAnalyticsData(prev => ({ ...prev, googleAnalyticsId: e.target.value }))}
+                    placeholder="G-XXXXXXXXXX"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Google Analytics 4 Measurement ID
+                  </p>
+                </div>
+
+                {/* Submit Button */}
+                <Button 
+                  type="submit" 
+                  disabled={isSaving}
+                  className="w-full min-h-[44px] bg-green-600 text-white hover:bg-green-700 flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {isSaving ? 'Запазване...' : 'Запази аналитика'}
+                </Button>
+              </form>
+
+              {/* Status indicators */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-medium mb-3">Статус на настройките:</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    {analyticsData.googleSearchConsole ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-gray-400" />
+                    }
+                    <span>Google Search Console: {analyticsData.googleSearchConsole ? 'Активен' : 'Не е настроен'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {analyticsData.metaPixelId ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-gray-400" />
+                    }
+                    <span>Meta Pixel: {analyticsData.metaPixelId ? 'Активен' : 'Не е настроен'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {analyticsData.googleAnalyticsId ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-gray-400" />
+                    }
+                    <span>Google Analytics: {analyticsData.googleAnalyticsId ? 'Активен' : 'Не е настроен'}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   );

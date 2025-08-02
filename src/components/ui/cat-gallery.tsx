@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
-import { LayoutGrid } from "@/components/ui/layout-grid";
+import { InteractiveGallery } from "@/components/ui/interactive-gallery";
 import { useDisplayedCatsByCategory } from "@/services/convexCatService";
 import { CatData } from "@/services/convexCatService";
+import { getFallbackRagdollCatsWithIds } from "@/data/fallbackRagdollCats";
 import CatStatusTag from "./cat-status-tag";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -21,8 +22,12 @@ export default function CatGallery() {
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
   const ref = useRef(null);
 
-  // Fetch cats based on selected category
-  const cats = useDisplayedCatsByCategory(activeFilter);
+  // Fetch cats based on selected category with fallback to Ragdoll examples
+  const databaseCats = useDisplayedCatsByCategory(activeFilter);
+  const fallbackCats = getFallbackRagdollCatsWithIds(activeFilter);
+  
+  // Use database cats if available, otherwise show fallback Ragdoll cats
+  const cats = (databaseCats && databaseCats.length > 0) ? databaseCats : fallbackCats;
 
   useEffect(() => {
     const currentRef = ref.current;
@@ -133,11 +138,11 @@ export default function CatGallery() {
         
         <div className="w-full">
           {cards.length > 0 ? (
-            <LayoutGrid cards={cards} />
+            <InteractiveGallery cards={cards} className="min-h-[600px]" />
           ) : (
             <div className="text-center py-20">
               <p className="text-muted-foreground text-lg">
-                Няма налични котки в тази категория.
+                Зареждане на нашите прекрасни рагдол котки...
               </p>
             </div>
           )}

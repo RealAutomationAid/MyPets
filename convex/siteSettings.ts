@@ -10,7 +10,7 @@ export const getAllSettings = query({
 
 // Get settings by type
 export const getSettingsByType = query({
-  args: { type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle")) },
+  args: { type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo")) },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("siteSettings")
@@ -57,7 +57,7 @@ export const upsertSetting = mutation({
   args: {
     key: v.string(),
     value: v.string(),
-    type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle")),
+    type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo")),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {

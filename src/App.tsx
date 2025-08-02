@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Analytics from "./components/Analytics";
 import { LocationBasedTheme } from "@/hooks/useTheme";
 import { Helmet } from 'react-helmet-async';
 import { LanguageProvider, useLanguage } from "@/hooks/useLanguage";
@@ -15,6 +16,7 @@ const AppContent = () => {
     <>
       <Toaster />
       <Sonner />
+      <Analytics />
       <Helmet>
         <title>{t('meta.title')}</title>
         <meta name="description" content={t('meta.description')} />

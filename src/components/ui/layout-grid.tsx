@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import RagdollImage from "./RagdollImage";
 
 type Card = {
   id: number | string;
@@ -48,10 +49,11 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
 
 const ImageComponent = ({ card }: { card: Card }) => {
   return (
-    <img
+    <RagdollImage
       src={card.thumbnail}
       className="object-cover object-center absolute inset-0 h-full w-full transition duration-200 hover:scale-105"
-      alt="Maine Coon cat"
+      alt="Ragdoll cat"
+      fallbackSrc="/placeholder.svg"
     />
   );
 };

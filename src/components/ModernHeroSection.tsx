@@ -44,12 +44,36 @@ const ModernHeroSection = () => {
             </div>
             
             <div className="flex justify-center lg:justify-start">
-              <Button 
-                className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors animate-fade-in-up animate-delay-400"
+              <button 
+                className="modern-hero-button group relative px-8 md:px-12 py-4 md:py-5 text-sm md:text-base font-semibold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 animate-fade-in-up animate-delay-400 border border-white/20 backdrop-blur-sm"
                 onClick={() => setIsContactModalOpen(true)}
               >
-                {t('hero.ctaButton')}
-              </Button>
+                {/* Animated background layers */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 opacity-0 group-hover:opacity-70 transition-all duration-700 animate-pulse"></div>
+                
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 ease-out"></div>
+                
+                {/* Glow ring */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full opacity-0 group-hover:opacity-50 blur-lg transition-all duration-500 group-hover:animate-pulse"></div>
+                
+                {/* Button content */}
+                <span className="relative z-10 flex items-center justify-center gap-2 text-white font-bold tracking-wide uppercase">
+                  {t('hero.ctaButton')}
+                  <svg 
+                    className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+                
+                {/* Ripple effect */}
+                <div className="absolute inset-0 rounded-full opacity-0 group-active:opacity-100 bg-white/20 scale-0 group-active:scale-100 transition-all duration-300"></div>
+              </button>
             </div>
           </div>
 

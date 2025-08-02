@@ -11,7 +11,7 @@ export interface FileUploadResult {
 
 export interface UploadFileOptions {
   associatedCatId?: Id<"cats">;
-  imageType: 'profile' | 'gallery' | 'general';
+  imageType: 'profile' | 'gallery' | 'general' | 'news';
   onProgress?: (progress: number) => void;
 }
 

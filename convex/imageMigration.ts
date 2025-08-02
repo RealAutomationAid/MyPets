@@ -32,7 +32,7 @@ export const uploadImageFromUrl = internalAction({
   args: {
     imageUrl: v.string(),
     filename: v.string(),
-    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general")),
+    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"), v.literal("news")),
     associatedCatId: v.optional(v.id("cats"))
   },
   handler: async (ctx, args): Promise<{

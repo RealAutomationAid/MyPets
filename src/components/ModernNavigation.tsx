@@ -4,6 +4,7 @@ import { useActiveSection, useScrollPosition } from "@/hooks/useScrollAnimation"
 import SocialContactModal from "./SocialContactModal";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/hooks/useLanguage";
+import ragdollLogo from "@/assets/ragdoll-logo.png";
 
 const ModernNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,8 +35,8 @@ const ModernNavigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <img 
-              src="/radanov-pride-logo.png" 
-              alt="Radanov Pride Logo" 
+              src={ragdollLogo} 
+              alt="My Pets Ragdoll Logo" 
               className="w-20 h-20 object-contain"
             />
           </div>

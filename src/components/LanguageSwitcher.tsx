@@ -4,7 +4,7 @@ const LanguageSwitcher = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center space-x-1 bg-card border border-border rounded-md p-1">
+    <div className="flex items-center space-x-1 bg-card border border-border rounded-lg p-1">
       <button
         onClick={() => setLanguage('bg')}
         className={`flex items-center px-2 py-1 rounded text-xs font-medium transition-all duration-200 ${

@@ -14,48 +14,94 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Package Management
 - `npm i` - Install dependencies (uses package-lock.json)
 
+### Convex Database Commands
+- `npx convex dev` - Start Convex development server
+- `npx convex deploy` - Deploy schema and functions to production
+- `npx convex dashboard` - Open Convex dashboard
+- `npx convex run seed:seedDatabase` - Populate database with sample data
+- `npx convex run seed:clearDatabase` - Clear all database data (dev only)
+
 ## Project Architecture
 
-This is a React-based cat model/photography gallery showcase built with modern web technologies:
+This is a React-based Ragdoll cat gallery showcase for "Radanov Pride" with a complete admin system, built with modern web technologies and Convex backend.
 
 ### Tech Stack
 - **Vite** - Build tool and development server
 - **React 18** - UI framework with TypeScript
+- **Convex** - Real-time database and backend functions
 - **shadcn/ui** - Component library built on Radix UI primitives
 - **Tailwind CSS** - Utility-first CSS framework
 - **React Router** - Client-side routing
 - **TanStack Query** - Data fetching and state management
 - **React Hook Form** - Form handling with Zod validation
 
-### Project Structure
-- `src/pages/Index.tsx` - Main homepage with all sections
-- `src/components/` - Reusable UI components
-  - `ModernNavigation.tsx` - Header navigation
-  - `ModernHeroSection.tsx` - Hero banner
-  - `FeaturedModelsSection.tsx` - Model showcase
-  - `ContactSection.tsx` - Contact form
-  - `Footer.tsx` - Site footer
-- `src/components/ui/` - shadcn/ui components (accordion, button, card, etc.)
-- `src/lib/utils.ts` - Utility functions (cn helper for class merging)
-- `src/hooks/` - Custom React hooks
-- `src/assets/` - Images and static assets
+### Core Application Structure
+- **Public Site** (`src/pages/Index.tsx`) - Main gallery showcase with hero, featured cats, TikTok videos, contact
+- **Admin Panel** (`src/pages/Admin.tsx`) - Protected admin interface for content management
+- **Database Layer** (`convex/`) - Convex schema and functions for cats, pedigree, auth, contact, settings
 
-### Application Flow
-The app uses a simple single-page layout with React Router handling navigation. The main Index page composes all sections vertically. All UI components use shadcn/ui design system with consistent styling via Tailwind CSS.
+### Key Components Architecture
 
-### Key Patterns
-- Components use TypeScript for type safety
-- Styling follows Tailwind utility classes
-- UI components are built with Radix UI primitives
-- Form handling uses React Hook Form with Zod validation
-- State management via TanStack Query for server state
+#### Frontend Components
+- `src/components/ModernNavigation.tsx` - Header with language switcher and admin access
+- `src/components/ModernHeroSection.tsx` - Hero banner with cat imagery
+- `src/components/FeaturedModelsSection.tsx` - Gallery of cats with filtering and modals
+- `src/components/PedigreeModal.tsx` - Interactive pedigree tree visualization
+- `src/components/TikTokSection.tsx` - Embedded TikTok videos
+- `src/components/ContactSection.tsx` - Contact form with Convex integration
+- `src/components/admin/` - Admin management components (cats, images, pedigree, TikTok, settings)
+
+#### Database Schema (Convex)
+- **cats** - Cat profiles with gallery, pedigree data, display settings, categories
+- **pedigreeConnections** - Parent-child relationships between cats
+- **pedigreeTrees** - Saved pedigree tree configurations
+- **adminSessions** - Authentication sessions with expiration
+- **contactSubmissions** - Contact form submissions with status tracking
+- **images** - Image metadata and associations
+- **siteSettings** - Global site configuration (social media, contact info)
+- **tiktokVideos** - TikTok video embeds linked to cats
+
+#### Services Layer
+- `src/services/convexCatService.ts` - Cat CRUD operations and queries
+- `src/services/convexFileService.ts` - File upload and management
+- `src/services/convexSiteSettingsService.ts` - Global settings management
+- `src/services/convexTikTokService.ts` - TikTok video management
+
+### Authentication & Admin System
+- Session-based authentication using Convex
+- Admin routes protected with `AdminAuthProvider`
+- Session management with automatic expiration
+- Login via `/admin` route with password authentication
+
+### Internationalization
+- Bulgarian default language with English support
+- Translation files in `src/translations/`
+- Language switcher in navigation
+- `useLanguage` hook for component translations
+
+### Key Development Patterns
+- Convex functions for all data operations (queries, mutations)
+- TypeScript for type safety across frontend and backend
+- Real-time data updates via Convex subscriptions
+- Component composition with shadcn/ui primitives
+- Custom hooks for business logic (auth, language, mobile detection)
+- Responsive design with Tailwind CSS utilities
+
+### File Upload & Image Management
+- Direct file uploads to Convex file storage
+- Image association with cats via metadata tables
+- Gallery management through admin interface
+- Optimized image loading with proper fallbacks
 
 ## Development Notes
 
-This project was originally created with Lovable (a web-based development platform) and follows their standard Vite + React + shadcn/ui template structure.
+This project was originally created with Lovable platform and has been enhanced with a complete Convex backend integration. The codebase follows React best practices with clear separation between presentation, business logic, and data layers.
 
 ## Guidelines
 
 ### Build and Localization
 - Do not run npm build commands, I can do that on my own
 - The website should be in Bulgarian by default
+- Always test admin functionality after changes
+- Use Convex dashboard to monitor database operations
+- Maintain session management for admin security

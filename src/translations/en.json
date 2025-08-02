@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Purebred Maine Coon Cats",
-    "description": "Purebred Maine Coon cats from Radanov Pride cattery. Beauty, character and health in one!"
+    "title": "Purebred Ragdoll Cats",
+    "description": "Purebred Ragdoll cats from Radanov Pride cattery. Beauty, character and health in one!"
   },
   "navigation": {
     "home": "Home",
@@ -10,10 +10,10 @@
     "contact": "Contact"
   },
   "hero": {
-    "mainTitle": "Maine Coon",
+    "mainTitle": "Ragdoll",
     "subtitle": "cats",
     "ctaButton": "Click to Contact",
-    "flipWords": ["Purebred", "Majestic", "Beautiful"]
+    "flipWords": ["Purebred", "Gentle", "Beautiful"]
   },
   "featuredModels": {
     "title": "Meet Our Stars",
@@ -37,9 +37,9 @@
   },
   "tiktok": {
     "title": "Our TikTok Videos",
-    "subtitle": "Follow us on TikTok for daily moments with our beautiful Maine Coon cats",
+    "subtitle": "Follow us on TikTok for daily moments with our beautiful Ragdoll cats",
     "followButton": "Follow us on TikTok",
-    "followDescription": "@radanovpridemainecoon - Daily moments with our Maine Coon cats"
+    "followDescription": "@radanovprideragdoll - Daily moments with our Ragdoll cats"
   },
   "contact": {
     "modalTitle": "Contact Us",

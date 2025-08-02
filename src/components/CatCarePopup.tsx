@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { GlowButton, RippleButton } from '@/components/ui/animated-button';
 import { X } from 'lucide-react';
 
 interface CatCarePopupProps {
@@ -64,22 +65,18 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
             }`}
           >
             <div className="flex justify-center items-center mb-4">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-foreground rounded-full flex items-center justify-center mx-1 sm:mx-2">
-                <svg className="w-3 h-3 sm:w-5 sm:h-5 text-background" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M4.5 10.5c1.104 0 2-1.12 2-2.5s-.896-2.5-2-2.5-2 1.12-2 2.5.896 2.5 2 2.5zm15 0c1.104 0 2-1.12 2-2.5s-.896-2.5-2-2.5-2 1.12-2 2.5.896 2.5 2 2.5zm-12.5 7c1.381 0 2.5-1.12 2.5-2.5s-1.119-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.119 2.5 2.5 2.5zm10 0c1.381 0 2.5-1.12 2.5-2.5s-1.119-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.119 2.5 2.5 2.5zm-5-1c2.485 0 7-1.567 7-4.5 0-1.657-2.239-3-5-3s-5 1.343-5 3c0 2.933 4.515 4.5 7 4.5z"/>
-                </svg>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-2 sm:mx-3 shadow-lg">
+                <span className="text-white text-lg sm:text-xl">🐾</span>
               </div>
               <h2 className="font-playfair text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-light text-foreground text-center px-2">
                 Важна информация
               </h2>
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-foreground rounded-full flex items-center justify-center mx-1 sm:mx-2">
-                <svg className="w-3 h-3 sm:w-5 sm:h-5 text-background" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M4.5 10.5c1.104 0 2-1.12 2-2.5s-.896-2.5-2-2.5-2 1.12-2 2.5.896 2.5 2 2.5zm15 0c1.104 0 2-1.12 2-2.5s-.896-2.5-2-2.5-2 1.12-2 2.5.896 2.5 2 2.5zm-12.5 7c1.381 0 2.5-1.12 2.5-2.5s-1.119-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.119 2.5 2.5 2.5zm10 0c1.381 0 2.5-1.12 2.5-2.5s-1.119-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.119 2.5 2.5 2.5zm-5-1c2.485 0 7-1.567 7-4.5 0-1.657-2.239-3-5-3s-5 1.343-5 3c0 2.933 4.515 4.5 7 4.5z"/>
-                </svg>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-2 sm:mx-3 shadow-lg">
+                <span className="text-white text-lg sm:text-xl">💙</span>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wide text-center">
-              За грижата към Мейн Куун котките
+              За грижата към Рагдол котките
             </p>
           </div>
 
@@ -89,12 +86,12 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
               contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`}
           >
-            <div className="bg-muted/50 dark:bg-muted/30 rounded-xl p-4 sm:p-6 shadow-lg border-l-4 border-primary">
+            <div className="bg-muted/50 dark:bg-muted/30 rounded-xl p-4 sm:p-6 shadow-lg border-l-4 border-gradient-to-b from-blue-500 to-purple-500" style={{borderLeftColor: '#8b5cf6'}}>
               <h3 className="font-semibold text-base sm:text-lg text-foreground mb-3">
-                🐱 Грижата към котка изисква отговорност
+                🐱 Рагдол котките - нежни гиганти с големи сърца
               </h3>
               <p className="text-foreground leading-relaxed mb-4">
-                Мейн Куун котките са прекрасни спътници, но изискват сериозна отговорност. 
+                Рагдол котките са прекрасни и нежни спътници, но изискват сериозна отговорност. 
                 Преди да вземете решение, моля обмислете следното:
               </p>
               
@@ -108,25 +105,31 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
                 <div className="flex items-start space-x-2 sm:space-x-3">
                   <div className="w-2 h-2 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    <strong>Време и внимание:</strong> Ежедневни грижи, четкане, игра и социализация
+                    <strong>Време и внимание:</strong> Ежедневно четкане (дълга козина), игра и много обич
                   </p>
                 </div>
                 <div className="flex items-start space-x-2 sm:space-x-3">
                   <div className="w-2 h-2 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    <strong>Дългосрочен ангажимент:</strong> Мейн Куун котките живеят 12-15 години
+                    <strong>Дългосрочен ангажимент:</strong> Рагдол котките живеят 13-18 години
                   </p>
                 </div>
                 <div className="flex items-start space-x-2 sm:space-x-3">
                   <div className="w-2 h-2 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    <strong>Простор и условия:</strong> Достатъчно място, безопасна среда
+                    <strong>Простор и условия:</strong> Спокойна среда - Рагдолите са нежни и чувствителни
+                  </p>
+                </div>
+                <div className="flex items-start space-x-2 sm:space-x-3">
+                  <div className="w-2 h-2 bg-foreground rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    <strong>Специални потребности:</strong> Не излизат навън - само вътрешни котки за безопасност
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-xl p-4 sm:p-6 border border-primary/20">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 rounded-xl p-4 sm:p-6 border border-blue-200 dark:border-blue-800 shadow-inner">
               <p className="text-center text-foreground font-medium mb-4 text-sm sm:text-base">
                 💝 Котката не е подарък или импулсивно решение
               </p>
@@ -143,19 +146,20 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
               contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             }`}
           >
-            <Button 
+            <GlowButton 
               onClick={handleClose}
-              className="flex-1 bg-foreground text-background hover:bg-foreground/90 transition-colors h-11 sm:h-10 text-sm sm:text-base touch-manipulation"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 h-11 sm:h-10 text-sm sm:text-base touch-manipulation shadow-lg"
+              glowColor="#8b5cf6"
             >
-              Разбирам отговорността
-            </Button>
-            <Button 
+              Разбирам отговорността ❤️
+            </GlowButton>
+            <RippleButton 
               variant="outline"
               onClick={handleClose}
-              className="flex-1 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors h-11 sm:h-10 text-sm sm:text-base touch-manipulation"
+              className="flex-1 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 h-11 sm:h-10 text-sm sm:text-base touch-manipulation"
             >
-              Искам повече информация
-            </Button>
+              Искам повече информация 💭
+            </RippleButton>
           </div>
         </div>
       </div>

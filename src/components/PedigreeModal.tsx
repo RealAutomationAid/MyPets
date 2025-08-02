@@ -69,7 +69,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
             </div>
 
             {/* Main Cat Card */}
-            <div className="bg-card rounded-lg shadow-lg p-6 w-80 text-center">
+            <div className="bg-card rounded-xl shadow-lg p-6 w-80 text-center">
               <div className="w-full h-48 bg-muted rounded-lg overflow-hidden mb-4">
                 <img
                   src={cat.image}
@@ -120,9 +120,9 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                 {/* Mother */}
                 <div className="flex flex-col items-center">
                   {mother ? (
-                    <div className="bg-card rounded-lg shadow-lg p-4 w-64 text-center cursor-pointer hover:shadow-xl transition-shadow"
+                    <div className="bg-card rounded-xl shadow-lg p-4 w-64 text-center cursor-pointer hover:shadow-xl transition-shadow"
                          onClick={() => openParentModal(mother)}>
-                      <div className="w-full h-32 bg-muted rounded-lg overflow-hidden mb-3">
+                      <div className="w-full h-32 bg-muted rounded-xl overflow-hidden mb-3">
                         <img
                           src={mother.image}
                           alt={mother.name}
@@ -145,7 +145,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-muted rounded-lg border-2 border-dashed border-border p-4 w-64 h-40 flex items-center justify-center text-muted-foreground">
+                    <div className="bg-muted rounded-xl border-2 border-dashed border-border p-4 w-64 h-40 flex items-center justify-center text-muted-foreground">
                       <div className="text-center">
                         <p className="font-medium mb-1">{t('pedigree.mother')}</p>
                         <p className="text-sm">{t('pedigree.noData')}</p>
@@ -160,9 +160,9 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                 {/* Father */}
                 <div className="flex flex-col items-center">
                   {father ? (
-                    <div className="bg-card rounded-lg shadow-lg p-4 w-64 text-center cursor-pointer hover:shadow-xl transition-shadow"
+                    <div className="bg-card rounded-xl shadow-lg p-4 w-64 text-center cursor-pointer hover:shadow-xl transition-shadow"
                          onClick={() => openParentModal(father)}>
-                      <div className="w-full h-32 bg-muted rounded-lg overflow-hidden mb-3">
+                      <div className="w-full h-32 bg-muted rounded-xl overflow-hidden mb-3">
                         <img
                           src={father.image}
                           alt={father.name}
@@ -185,7 +185,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-muted rounded-lg border-2 border-dashed border-border p-4 w-64 h-40 flex items-center justify-center text-muted-foreground">
+                    <div className="bg-muted rounded-xl border-2 border-dashed border-border p-4 w-64 h-40 flex items-center justify-center text-muted-foreground">
                       <div className="text-center">
                         <p className="font-medium mb-1">{t('pedigree.father')}</p>
                         <p className="text-sm">{t('pedigree.noData')}</p>
@@ -212,7 +212,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
             )}
 
             {/* Additional Info */}
-            <div className="bg-card rounded-lg shadow-lg p-6 w-full max-w-2xl">
+            <div className="bg-card rounded-xl shadow-lg p-6 w-full max-w-2xl">
               <h4 className="font-semibold text-lg text-foreground mb-4">
                 {t('pedigree.catInfo')}
               </h4>

@@ -78,7 +78,8 @@ export default defineSchema({
     imageType: v.union(
       v.literal("profile"), 
       v.literal("gallery"), 
-      v.literal("general")
+      v.literal("general"),
+      v.literal("news")
     ),
   })
     .index("by_cat", ["associatedCatId"])
@@ -92,7 +93,9 @@ export default defineSchema({
       v.literal("social_media"),
       v.literal("contact_info"), 
       v.literal("site_content"),
-      v.literal("feature_toggle")
+      v.literal("feature_toggle"),
+      v.literal("analytics"),
+      v.literal("seo")
     ),
     description: v.optional(v.string()), // Human-readable description
   })
@@ -118,5 +121,18 @@ export default defineSchema({
     .index("by_cat", ["catId"])
     .index("by_active", ["isActive"])
     .index("by_cat_active", ["catId", "isActive"])
+    .index("by_sort_order", ["sortOrder"]),
+
+  // Simple announcements/news for homepage
+  announcements: defineTable({
+    title: v.string(),
+    content: v.string(), // Simple text content
+    featuredImage: v.optional(v.string()), // Optional image URL
+    isPublished: v.boolean(),
+    publishedAt: v.number(), // Unix timestamp
+    sortOrder: v.number(), // Manual ordering
+    updatedAt: v.number(), // Unix timestamp
+  })
+    .index("by_published", ["isPublished", "publishedAt"])
     .index("by_sort_order", ["sortOrder"]),
 }); 

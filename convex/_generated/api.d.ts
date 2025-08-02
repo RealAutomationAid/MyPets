@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as announcements from "../announcements.js";
 import type * as auth from "../auth.js";
 import type * as cats from "../cats.js";
 import type * as contact from "../contact.js";
@@ -32,6 +33,7 @@ import type * as tiktokVideos from "../tiktokVideos.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  announcements: typeof announcements;
   auth: typeof auth;
   cats: typeof cats;
   contact: typeof contact;

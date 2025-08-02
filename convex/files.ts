@@ -17,7 +17,7 @@ export const storeFile = action({
     filename: v.string(),
     contentType: v.optional(v.string()),
     associatedCatId: v.optional(v.id("cats")),
-    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"))
+    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"), v.literal("news"))
   },
   handler: async (ctx, args): Promise<{ storageId: Id<"_storage">; imageId: Id<"images"> }> => {
     // Store the file in Convex storage
@@ -41,7 +41,7 @@ export const saveImageMetadata = internalMutation({
     storageId: v.id("_storage"),
     filename: v.string(),
     associatedCatId: v.optional(v.id("cats")),
-    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"))
+    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"), v.literal("news"))
   },
   handler: async (ctx, args) => {
     const url = await ctx.storage.getUrl(args.storageId);
@@ -76,7 +76,7 @@ export const saveUploadedFile = mutation({
     storageId: v.id("_storage"),
     filename: v.string(),
     associatedCatId: v.optional(v.id("cats")),
-    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"))
+    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"), v.literal("news"))
   },
   handler: async (ctx, args) => {
     const url = await ctx.storage.getUrl(args.storageId);
@@ -128,7 +128,7 @@ export const deleteFile = mutation({
 // Get images by type
 export const getImagesByType = query({
   args: { 
-    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"))
+    imageType: v.union(v.literal("profile"), v.literal("gallery"), v.literal("general"), v.literal("news"))
   },
   handler: async (ctx, args) => {
     return await ctx.db

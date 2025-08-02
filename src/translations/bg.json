@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Чистокръвни Мейн Куун Котки",
-    "description": "Чистокръвни Maine Coon котки от развъдник Radanov Pride. Красота, характер и здраве в едно!"
+    "title": "Чистокръвни Рагдол Котки",
+    "description": "Чистокръвни Ragdoll котки от развъдник Radanov Pride. Красота, характер и здраве в едно!"
   },
   "navigation": {
     "home": "Начало",
@@ -10,10 +10,10 @@
     "contact": "Контакт"
   },
   "hero": {
-    "mainTitle": "Мейн Куун",
+    "mainTitle": "Рагдол",
     "subtitle": "котки",
     "ctaButton": "Кликни за връзка",
-    "flipWords": ["Чистокръвни", "Гальовни", "Красиви"]
+    "flipWords": ["Чистокръвни", "Нежни", "Красиви"]
   },
   "featuredModels": {
     "title": "Познайте нашите звезди",
@@ -37,9 +37,9 @@
   },
   "tiktok": {
     "title": "Нашите TikTok Видеа",
-    "subtitle": "Последвайте ни в TikTok за ежедневни моменти с нашите красиви Maine Coon котки",
+    "subtitle": "Последвайте ни в TikTok за ежедневни моменти с нашите красиви Ragdoll котки",
     "followButton": "Последвайте ни в TikTok",
-    "followDescription": "@radanovpridemainecoon - Ежедневни моменти с нашите Maine Coon котки"
+    "followDescription": "@radanovprideragdoll - Ежедневни моменти с нашите Ragdoll котки"
   },
   "contact": {
     "modalTitle": "Свържете се с нас",
@@ -89,5 +89,53 @@
   "footer": {
     "address": "България, Разлог, България, 2760",
     "copyright": "© 2024 Radanov Pride. Всички права запазени."
+  },
+  "news": {
+    "title": "Новини от",
+    "subtitle": "Следете последните новини и събития от нашето семейство",
+    "readMore": "Прочети повече",
+    "viewAll": "Вижте всички новини",
+    "noNews": "Няма публикувани новини в момента"
+  },
+  "admin": {
+    "tabs": {
+      "pedigree": "Родословие",
+      "news": "Новини",
+      "seo": "SEO",
+      "tiktok": "TikTok",
+      "settings": "Настройки"
+    },
+    "news": {
+      "title": "Новини и Съобщения",
+      "create": "Нова новина",
+      "edit": "Редактиране на новина",
+      "published": "Публикувано",
+      "draft": "Чернова",
+      "publish": "Публикувай",
+      "unpublish": "Скрий",
+      "delete": "Изтрий",
+      "save": "Запази",
+      "cancel": "Отказ"
+    },
+    "seo": {
+      "title": "SEO Мениджър",
+      "selectPage": "Изберете страница за редактиране",
+      "score": "SEO Оценка",
+      "metaTitle": "Meta Заглавие",
+      "metaDescription": "Meta Описание",
+      "keywords": "Ключови думи",
+      "preview": "Преглед в Google",
+      "save": "Запази SEO настройки"
+    },
+    "analytics": {
+      "title": "Аналитика & Проследяване",
+      "googleConsole": "Google Search Console",
+      "metaPixel": "Meta Pixel ID",
+      "googleAnalytics": "Google Analytics 4",
+      "save": "Запази аналитика",
+      "status": "Статус на настройките",
+      "active": "Активен",
+      "inactive": "Не е настроен"
+    }
   }
 }

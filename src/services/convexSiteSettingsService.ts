@@ -7,7 +7,7 @@ export const useAllSiteSettings = () => {
   return useQuery(api.siteSettings.getAllSettings);
 };
 
-export const useSettingsByType = (type: 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle') => {
+export const useSettingsByType = (type: 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo') => {
   return useQuery(api.siteSettings.getSettingsByType, { type });
 };
 
@@ -37,7 +37,7 @@ export const useInitializeDefaultSettings = () => {
 };
 
 // Type exports
-export type SiteSettingType = 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle';
+export type SiteSettingType = 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo';
 
 export type SiteSetting = {
   _id: Id<"siteSettings">;

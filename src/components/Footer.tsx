@@ -1,11 +1,21 @@
 import { useLanguage } from "@/hooks/useLanguage";
+import ragdollLogo from "@/assets/ragdoll-logo.png";
 
 const Footer = () => {
   const { t } = useLanguage();
   return (
     <footer className="bg-black text-white py-8">
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-6">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <img 
+              src={ragdollLogo} 
+              alt="My Pets Ragdoll Logo" 
+              className="w-16 h-16 object-contain opacity-90"
+            />
+          </div>
+          
           {/* Contact Information */}
           <div className="space-y-2">
             <p className="text-white/90 text-sm">

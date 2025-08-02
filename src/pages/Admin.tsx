@@ -6,9 +6,11 @@ import CatManager from '@/components/admin/CatManager';
 import PedigreeCanvas from '@/components/admin/PedigreeCanvas';
 import TikTokVideoManager from '@/components/admin/TikTokVideoManager';
 import SocialMediaSettings from '@/components/admin/SocialMediaSettings';
+import NewsManager from '@/components/admin/NewsManager';
 import { CatData } from '@/services/convexCatService';
+import ragdollLogo from '@/assets/ragdoll-logo.png';
 
-type AdminTab = 'pedigree' | 'tiktok' | 'social';
+type AdminTab = 'pedigree' | 'news' | 'tiktok' | 'social';
 
 const Admin = () => {
   const { isAuthenticated, isLoading, logout } = useAdminAuth();
@@ -60,6 +62,8 @@ const Admin = () => {
             </div>
           </div>
         );
+      case 'news':
+        return <NewsManager />;
       case 'tiktok':
         return <TikTokVideoManager />;
       case 'social':
@@ -74,9 +78,16 @@ const Admin = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="flex items-center justify-between px-4 sm:px-6 py-4">
-          <h1 className="font-playfair text-xl sm:text-2xl font-semibold text-black">
-            Admin Dashboard
-          </h1>
+          <div className="flex items-center space-x-3">
+            <img 
+              src={ragdollLogo} 
+              alt="My Pets Ragdoll Logo" 
+              className="w-10 h-10 object-contain"
+            />
+            <h1 className="font-playfair text-xl sm:text-2xl font-semibold text-black">
+              Admin Dashboard
+            </h1>
+          </div>
           <Button
             onClick={logout}
             variant="outline"
@@ -92,13 +103,14 @@ const Admin = () => {
         <div className="flex px-4 sm:px-6 overflow-x-auto">
           {[
             { id: 'pedigree' as AdminTab, label: 'Родословие' },
+            { id: 'news' as AdminTab, label: 'Новини' },
             { id: 'tiktok' as AdminTab, label: 'TikTok видеа' },
             { id: 'social' as AdminTab, label: 'Социални мрежи' }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
+              className={`px-3 sm:px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
                 activeTab === tab.id
                   ? 'border-black text-black'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
