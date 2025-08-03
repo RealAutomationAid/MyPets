@@ -8,6 +8,7 @@ import modelCat1 from '@/assets/model-cat-1.jpg';
 import modelCat2 from '@/assets/model-cat-2.jpg';
 import modelCat3 from '@/assets/model-cat-3.jpg';
 import SocialContactModal from "./SocialContactModal";
+import HeroImageCarousel from "./HeroImageCarousel";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -36,13 +37,41 @@ const ModernHeroSection = () => {
   const displayImages = heroImages.length > 0 ? heroImages : fallbackImages;
 
   return (
-    <section className="min-h-[85vh] flex items-center justify-center py-10 md:py-20 bg-background relative overflow-hidden">
+    <section className="min-h-[85vh] flex items-center justify-center py-10 md:py-20 bg-gradient-ragdoll relative overflow-hidden">
       <div ref={heroRef} className="container mx-auto px-4 md:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-          {/* Text Content */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+          {/* Hero Image Carousel - First on mobile */}
+          <div 
+            ref={photosRef}
+            className={`relative flex justify-center items-center order-1 lg:order-2 transition-all duration-1000 ${
+              photosVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+          >
+            <div className="relative w-full max-w-md">
+              {/* Main Image Carousel */}
+              <HeroImageCarousel 
+                images={displayImages}
+                autoPlay={true}
+                autoPlayInterval={6000}
+              />
+              
+              {/* Logo positioned bottom-left with subtle styling */}
+              <div className="absolute -bottom-6 -left-6 bg-card/90 rounded-full p-4 shadow-lg backdrop-blur-sm border border-border/50 animate-float z-10">
+                <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+                  <img 
+                    src="/radanov-pride-logo.png" 
+                    alt="BleuRoi Ragdoll Cattery Logo" 
+                    className="w-12 h-12 md:w-16 md:h-16 object-contain" 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Text Content - Second on mobile */}
           <div 
             ref={textRef} 
-            className={`space-y-6 md:space-y-8 text-center lg:text-left transition-all duration-1000 ${
+            className={`space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1 transition-all duration-1000 ${
               textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
@@ -91,85 +120,6 @@ const ModernHeroSection = () => {
                 {/* Ripple effect */}
                 <div className="absolute inset-0 rounded-full opacity-0 group-active:opacity-100 bg-white/20 scale-0 group-active:scale-100 transition-all duration-300"></div>
               </button>
-            </div>
-          </div>
-
-          {/* Polaroid Photos */}
-          <div 
-            ref={photosRef}
-            className={`relative flex justify-center mt-8 lg:mt-0 transition-all duration-1000 ${
-              photosVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            <div 
-              ref={parallaxRef}
-              className="relative parallax-slow scale-75 md:scale-90 lg:scale-100"
-              style={{
-                transform: `translateY(${parallaxOffset * 0.2}px)`,
-              }}
-            >
-              {/* Decorative polaroids - hidden on mobile */}
-              {displayImages.slice(2, 5).map((image, index) => {
-                const positions = [
-                  { className: "hidden md:block absolute -top-10 -left-24 bg-card p-4 shadow-lg transform rotate-6 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10", size: "w-40 h-40" },
-                  { className: "hidden lg:block absolute top-32 -right-32 bg-card p-4 shadow-lg transform -rotate-12 hover:rotate-0 transition-transform duration-300 animate-float-reverse z-10", size: "w-44 h-44" },
-                  { className: "hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2 bg-card p-4 shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300 animate-float-gentle z-10", size: "w-36 h-36" }
-                ];
-                
-                if (index >= positions.length) return null;
-                
-                const position = positions[index];
-                const displayName = image.name || image.alt.split(' ')[0] || `CAT ${index + 3}`;
-                const displaySubtitle = image.subtitle || "RAGDOLL";
-                
-                return (
-                  <div key={index} className={position.className}>
-                    <img 
-                      src={image.src} 
-                      alt={image.alt}
-                      className={`${position.size} object-cover`}
-                    />
-                    <div className="mt-2 text-center">
-                      <h3 className="font-bold text-base text-foreground">{displayName}</h3>
-                      <p className="text-xs text-muted-foreground uppercase tracking-wide">{displaySubtitle}</p>
-                    </div>
-                  </div>
-                );
-              })}
-              {/* Main polaroids - responsive sizing */}
-              {displayImages.slice(0, 2).map((image, index) => {
-                const positions = [
-                  { className: "relative bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-300 animate-float-gentle z-20" },
-                  { className: "absolute top-6 md:top-8 left-16 md:left-20 bg-card p-3 md:p-4 shadow-lg transform hover:rotate-0 transition-transform duration-300 animate-scale-in animate-delay-500 animate-float-reverse z-20" }
-                ];
-                
-                if (index >= positions.length) return null;
-                
-                const position = positions[index];
-                const displayName = image.name || image.alt.split(' ')[0] || `CAT ${index + 1}`;
-                const displaySubtitle = image.subtitle || "RAGDOLL";
-                
-                return (
-                  <div key={index} className={position.className}>
-                    <img 
-                      src={image.src} 
-                      alt={image.alt}
-                      className="w-48 h-48 md:w-60 md:h-60 object-cover"
-                    />
-                    <div className="mt-3 md:mt-4 text-center">
-                      <h3 className="font-bold text-base md:text-lg text-foreground">{displayName}</h3>
-                      <p className="text-xs md:text-sm text-muted-foreground uppercase tracking-wide">{displaySubtitle}</p>
-                    </div>
-                  </div>
-                );
-              })}
-              {/* Circular logo badge */}
-              <div className="absolute -bottom-3 md:-bottom-4 -right-3 md:-right-4 bg-card rounded-full p-6 md:p-8 shadow-lg animate-float z-30">
-                <div className="w-24 h-24 md:w-32 md:h-32 border-2 border-foreground rounded-full flex items-center justify-center relative overflow-hidden">
-                            {/* Floating Logo */}
-          <img src="/radanov-pride-logo.png" alt="BleuRoi Ragdoll Cattery Logo" className="w-16 h-16 md:w-20 md:h-20 object-contain animate-float" />
-                </div>
-              </div>
             </div>
           </div>
         </div>

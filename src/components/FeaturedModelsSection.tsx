@@ -90,7 +90,7 @@ const FeaturedModelsSection = () => {
 
   return (
     <>
-      <section ref={sectionRef} className="py-20 bg-background mb-24">
+      <section ref={sectionRef} className="py-20 bg-gradient-subtle mb-24">
         <div className="container mx-auto px-6 lg:px-8">
 
           {/* Section Header */}

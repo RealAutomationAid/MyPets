@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import ModernNavigation from "@/components/ModernNavigation";
-import HeroSection from "@/components/hero-section";
+import CinematicVideoHero from "@/components/CinematicVideoHero";
 import FeaturedModelsSection from "@/components/FeaturedModelsSection";
 import AnimatedCarouselGallery from "@/components/AnimatedCarouselGallery";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
 import SocialSidebar from "@/components/SocialSidebar";
-import SocialContactModal from "@/components/SocialContactModal";
+
 import CatCarePopup from "@/components/CatCarePopup";
 import BackgroundAnimations from "@/components/BackgroundAnimations";
 
 const Index = () => {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   const [showCatCarePopup, setShowCatCarePopup] = useState(false);
 
   useEffect(() => {
@@ -27,11 +27,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background relative">
       <BackgroundAnimations />
-      <div className="relative z-10">
-        <ModernNavigation />
-      <div id="home">
-        <HeroSection onContactClick={() => setIsContactModalOpen(true)} />
-      </div>
+      
+      {/* Navigation overlaid on video */}
+      <ModernNavigation />
+      
+      <div className="relative">
+        <div id="home">
+          <CinematicVideoHero />
+        </div>
       <div id="models">
         <FeaturedModelsSection />
       </div>
@@ -51,12 +54,6 @@ const Index = () => {
       {/* Sticky Social Sidebar */}
       <SocialSidebar />
       
-      {/* Contact Modal */}
-      <SocialContactModal 
-        cat={null}
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
       
       {/* Cat Care Responsibility Popup */}
       {showCatCarePopup && (

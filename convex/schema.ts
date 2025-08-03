@@ -140,6 +140,8 @@ export default defineSchema({
   heroImages: defineTable({
     src: v.string(), // Image URL
     alt: v.string(), // Alt text for accessibility
+    name: v.optional(v.string()), // Display name for the image/cat
+    subtitle: v.optional(v.string()), // Subtitle or category for the image
     isActive: v.boolean(), // Whether the image is displayed in hero section
     position: v.number(), // Order/position for display
     uploadedAt: v.number(), // Unix timestamp

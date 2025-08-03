@@ -32,6 +32,8 @@ export const addHeroImage = mutation({
   args: {
     src: v.string(),
     alt: v.string(),
+    name: v.optional(v.string()),
+    subtitle: v.optional(v.string()),
     isActive: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
@@ -44,6 +46,8 @@ export const addHeroImage = mutation({
     const imageId = await ctx.db.insert("heroImages", {
       src: args.src,
       alt: args.alt,
+      name: args.name,
+      subtitle: args.subtitle,
       isActive: args.isActive ?? false,
       position: nextPosition,
       uploadedAt: Date.now(),
@@ -59,6 +63,8 @@ export const updateHeroImage = mutation({
     id: v.id("heroImages"),
     src: v.optional(v.string()),
     alt: v.optional(v.string()),
+    name: v.optional(v.string()),
+    subtitle: v.optional(v.string()),
     isActive: v.optional(v.boolean()),
     position: v.optional(v.number()),
   },

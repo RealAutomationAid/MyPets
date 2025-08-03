@@ -21,15 +21,16 @@ const ModernNavigation = () => {
     setIsOpen(false);
   }, []);
 
-  const navBg = scrollY > 50 ? 'bg-background/98' : 'bg-background/95';
+  const navBg = scrollY > 50 ? 'bg-background/98' : 'bg-black/30';
   const navShadow = scrollY > 50 ? 'shadow-lg' : '';
+  const textColor = scrollY > 50 ? 'text-foreground' : 'text-white';
   
   // Calculate scroll progress
   const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
   const scrollProgress = Math.min((scrollY / documentHeight) * 100, 100);
 
   return (
-    <nav className={`${navBg} ${navShadow} backdrop-blur-sm sticky top-0 z-50 transition-all duration-300 relative`}>
+    <nav className={`${navBg} ${navShadow} backdrop-blur-sm fixed top-0 w-full z-50 transition-all duration-300 relative`}>
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-24">
           {/* Logo */}
@@ -46,7 +47,9 @@ const ModernNavigation = () => {
             <button 
               onClick={() => scrollToSection('home')}
               className={`transition-colors text-sm font-medium ${
-                activeSection === 'home' ? 'text-foreground border-b-2 border-foreground' : 'text-muted-foreground hover:text-foreground'
+                activeSection === 'home' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
               }`}
             >
               {t('navigation.home')}
@@ -54,7 +57,9 @@ const ModernNavigation = () => {
             <button 
               onClick={() => scrollToSection('models')}
               className={`transition-colors text-sm font-medium ${
-                activeSection === 'models' ? 'text-foreground border-b-2 border-foreground' : 'text-muted-foreground hover:text-foreground'
+                activeSection === 'models' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
               }`}
             >
               {t('navigation.models')}
@@ -62,7 +67,9 @@ const ModernNavigation = () => {
             <button 
               onClick={() => scrollToSection('tiktok')}
               className={`transition-colors text-sm font-medium ${
-                activeSection === 'tiktok' ? 'text-foreground border-b-2 border-foreground' : 'text-muted-foreground hover:text-foreground'
+                activeSection === 'tiktok' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
               }`}
             >
               {t('navigation.tiktok')}
@@ -74,7 +81,10 @@ const ModernNavigation = () => {
             <Button 
               variant="outline" 
               size="sm" 
-              className="bg-card border-border text-foreground hover:bg-muted"
+              className={scrollY > 50 
+                ? "bg-card border-border text-foreground hover:bg-muted" 
+                : "bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
+              }
               onClick={() => setIsContactModalOpen(true)}
             >
               {t('navigation.contact')}
@@ -85,7 +95,7 @@ const ModernNavigation = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-muted-foreground focus:outline-none"
+              className={`${textColor} ${scrollY > 50 ? 'hover:text-muted-foreground' : 'hover:text-white/80'} focus:outline-none transition-colors`}
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isOpen ? (

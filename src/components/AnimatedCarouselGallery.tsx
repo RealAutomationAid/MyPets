@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { useDisplayedCatsByCategory } from "@/services/convexCatService";
 import { CatData } from "@/services/convexCatService";
@@ -22,7 +22,6 @@ export default function AnimatedCarouselGallery() {
   
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch cats based on selected category with fallback to Ragdoll examples
   const databaseCats = useDisplayedCatsByCategory(activeFilter);
@@ -30,59 +29,6 @@ export default function AnimatedCarouselGallery() {
   
   // Use database cats if available, otherwise show fallback Ragdoll cats
   const cats = (databaseCats && databaseCats.length > 0) ? databaseCats : fallbackCats;
-
-  // Duplicate cats for infinite scroll effect
-  const duplicatedCats = cats ? [...cats, ...cats, ...cats] : [];
-
-  // Auto-scroll effect
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer || !duplicatedCats.length) return;
-
-    let animationId: number;
-    let scrollPosition = 0;
-    const scrollSpeed = 0.5; // Adjust speed as needed
-
-    const scroll = () => {
-      scrollPosition += scrollSpeed;
-      
-      // Reset position when we've scrolled through one set of duplicated items
-      const maxScroll = (duplicatedCats.length / 3) * 320; // 320px is approximate card width
-      if (scrollPosition >= maxScroll) {
-        scrollPosition = 0;
-      }
-      
-      if (scrollContainer) {
-        scrollContainer.scrollLeft = scrollPosition;
-      }
-      
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    // Start auto-scroll after a short delay
-    const timeout = setTimeout(() => {
-      animationId = requestAnimationFrame(scroll);
-    }, 2000);
-
-    // Pause on hover
-    const handleMouseEnter = () => {
-      cancelAnimationFrame(animationId);
-    };
-
-    const handleMouseLeave = () => {
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    scrollContainer.addEventListener('mouseenter', handleMouseEnter);
-    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      clearTimeout(timeout);
-      cancelAnimationFrame(animationId);
-      scrollContainer.removeEventListener('mouseenter', handleMouseEnter);
-      scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [duplicatedCats.length]);
 
   if (!cats || cats.length === 0) {
     return (
@@ -99,7 +45,7 @@ export default function AnimatedCarouselGallery() {
   }
 
   return (
-    <div className="py-16 w-full overflow-hidden bg-gradient-to-b from-background to-muted/20">
+    <div className="py-16 w-full bg-gradient-ragdoll">
       <div className="container mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -123,20 +69,20 @@ export default function AnimatedCarouselGallery() {
 
         {/* Category Filter Tabs */}
         <motion.div 
-          className="flex justify-center mb-8"
+          className="flex justify-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="flex space-x-1 bg-muted/50 p-1 rounded-lg backdrop-blur-sm">
+          <div className="flex space-x-1 bg-white/60 backdrop-blur-sm p-1 rounded-lg border border-white/20 shadow-sm">
             {(Object.entries(categoryLabels) as [CategoryFilter, string][]).map(([category, label]) => (
               <button
                 key={category}
                 onClick={() => setActiveFilter(category)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-300 touch-manipulation ${
                   activeFilter === category
-                    ? 'bg-background text-foreground shadow-md scale-105'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-white/10'
+                    ? 'bg-primary text-primary-foreground shadow-md scale-105'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/50'
                 }`}
               >
                 {label}
@@ -145,137 +91,108 @@ export default function AnimatedCarouselGallery() {
           </div>
         </motion.div>
         
-        {/* Animated Carousel */}
+        {/* Responsive Grid Gallery */}
         <motion.div 
-          className="relative"
+          className="gallery-grid"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          {/* Gradient overlays for infinite scroll effect */}
-          <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
-          
-          {/* Scrolling container */}
-          <div 
-            ref={scrollRef}
-            className="flex gap-6 overflow-x-hidden scrollbar-hide"
-            style={{ 
-              scrollBehavior: 'auto',
-            }}
-          >
-            {duplicatedCats.map((cat, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8">
+            {cats.map((cat, index) => (
               <motion.div
-                key={`${cat._id}-${index}`}
-                className="flex-shrink-0 group relative w-72 h-80 rounded-2xl overflow-hidden cursor-pointer"
-                onHoverStart={() => setHoveredCard(`${cat._id}-${index}`)}
+                key={cat._id}
+                className="gallery-item group relative rounded-2xl overflow-hidden cursor-pointer bg-card shadow-card"
+                onHoverStart={() => setHoveredCard(cat._id)}
                 onHoverEnd={() => setHoveredCard(null)}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.1,
+                  ease: "easeOut"
+                }}
                 whileHover={{ 
-                  scale: 1.05,
-                  y: -10,
-                  rotateY: 5,
+                  y: -8,
                   transition: { duration: 0.3 }
                 }}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: (index % 10) * 0.1 }}
               >
-                {/* Background Image */}
-                <RagdollImage
-                  src={cat.image}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  alt={cat.name}
-                  fallbackSrc="/placeholder.svg"
-                />
-                
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                
-                {/* Glassmorphism overlay on hover */}
-                <motion.div 
-                  className="absolute inset-0 bg-white/10 backdrop-blur-sm border border-white/20"
-                  initial={{ opacity: 0 }}
-                  animate={{ 
-                    opacity: hoveredCard === `${cat._id}-${index}` ? 1 : 0 
-                  }}
-                  transition={{ duration: 0.3 }}
-                />
-                
-                {/* Status Tag */}
-                <div className="absolute top-4 left-4 z-20">
-                  <CatStatusTag status={cat.status} variant="compact" />
-                </div>
-                
-                {/* Action buttons on hover */}
-                <motion.div
-                  className="absolute top-4 right-4 flex gap-2 z-20"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ 
-                    opacity: hoveredCard === `${cat._id}-${index}` ? 1 : 0,
-                    y: hoveredCard === `${cat._id}-${index}` ? 0 : -20
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Heart className="w-4 h-4 text-white" />
-                  </button>
-                  <button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Share2 className="w-4 h-4 text-white" />
-                  </button>
-                </motion.div>
-                
-                {/* Cat info */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
-                  <motion.h3 
-                    className="text-xl font-bold mb-1"
-                    initial={{ opacity: 1 }}
+                {/* Image Container */}
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <RagdollImage
+                    src={cat.image}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    alt={cat.name}
+                    fallbackSrc="/placeholder.svg"
+                  />
+                  
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Status Tag */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <CatStatusTag status={cat.status} variant="compact" />
+                  </div>
+                  
+                  {/* Action buttons on hover */}
+                  <motion.div
+                    className="absolute top-3 right-3 flex gap-2 z-20"
+                    initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ 
-                      scale: hoveredCard === `${cat._id}-${index}` ? 1.1 : 1
+                      opacity: hoveredCard === cat._id ? 1 : 0,
+                      scale: hoveredCard === cat._id ? 1 : 0.8
                     }}
                     transition={{ duration: 0.3 }}
                   >
+                    <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors touch-manipulation">
+                      <Heart className="w-4 h-4 text-white" />
+                    </button>
+                    <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors touch-manipulation">
+                      <Share2 className="w-4 h-4 text-white" />
+                    </button>
+                  </motion.div>
+                  
+                  {/* View button on hover */}
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center z-20"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ 
+                      opacity: hoveredCard === cat._id ? 1 : 0,
+                      scale: hoveredCard === cat._id ? 1 : 0.8
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <button className="px-6 py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 text-white font-medium flex items-center gap-2 transition-all duration-300 hover:scale-105 touch-manipulation">
+                      <Eye className="w-4 h-4" />
+                      Виж повече
+                    </button>
+                  </motion.div>
+                </div>
+
+                {/* Cat Info */}
+                <div className="p-4">
+                  <h3 className="text-lg font-bold text-foreground mb-1 truncate">
                     {cat.name}
-                  </motion.h3>
-                  <p className="text-sm text-neutral-200 uppercase tracking-wide mb-2">
+                  </h3>
+                  <p className="text-sm text-muted-foreground uppercase tracking-wide mb-3 truncate">
                     {cat.subtitle}
                   </p>
                   
-                  {/* Extended info on hover */}
+                  {/* Additional info - visible on hover for desktop, always visible on mobile */}
                   <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ 
-                      opacity: hoveredCard === `${cat._id}-${index}` ? 1 : 0,
-                      height: hoveredCard === `${cat._id}-${index}` ? 'auto' : 0
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
+                    className="sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300"
+                    initial={false}
                   >
-                    <p className="text-xs text-neutral-300 mb-2 line-clamp-2">
-                      {cat.description}
-                    </p>
-                    <div className="flex gap-4 text-xs text-neutral-300">
+                    <div className="flex gap-4 text-xs text-muted-foreground mb-2">
                       <span>{cat.age}</span>
                       <span>{cat.color}</span>
                       <span>{cat.gender === 'male' ? 'Мъжки' : 'Женски'}</span>
                     </div>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {cat.description}
+                    </p>
                   </motion.div>
                 </div>
-                
-                {/* View button on hover */}
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center z-20"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: hoveredCard === `${cat._id}-${index}` ? 1 : 0,
-                    scale: hoveredCard === `${cat._id}-${index}` ? 1 : 0.5
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <button className="px-6 py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 text-white font-medium flex items-center gap-2 transition-all duration-300 hover:scale-105">
-                    <Eye className="w-4 h-4" />
-                    Виж повече
-                  </button>
-                </motion.div>
                 
                 {/* Shimmer effect */}
                 <div className="absolute inset-0 -skew-x-12 translate-x-[-150%] group-hover:translate-x-[150%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" />
@@ -285,7 +202,7 @@ export default function AnimatedCarouselGallery() {
           
           {/* Bottom decorative line */}
           <motion.div 
-            className="mt-8 flex items-center justify-center"
+            className="mt-12 flex items-center justify-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}

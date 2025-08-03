@@ -66,6 +66,13 @@
   50% { transform: translateY(-12px) rotate(-3deg); }
 }
 
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, -1px); }
+  50% { transform: translate(1px, 0px); }
+  75% { transform: translate(0px, 1px); }
+}
+
 @keyframes floatSlow {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
@@ -406,69 +413,71 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
 
 @layer base {
   :root {
-    /* Ragdoll-inspired palette - soft creams and warm tones */
-    --background: 35 25% 97%;      /* #FAF8F5 - Soft cream background */
-    --foreground: 220 8% 25%;      /* #3C3F47 - Soft charcoal text */
+    /* Ragdoll-inspired palette - soft grey gradients like ragdoll cat fur */
+    --background: 220 10% 96%;     /* #F5F6F8 - Soft grey-white background */
+    --foreground: 225 15% 20%;     /* #2A2F3A - Deep charcoal text */
 
-    --card: 0 0% 100%;             /* Pure white cards */
-    --card-foreground: 220 8% 25%; /* Soft charcoal text on cards */
+    --card: 0 0% 100%;             /* Pure white cards for contrast */
+    --card-foreground: 225 15% 20%; /* Deep charcoal text on cards */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 8% 25%;
+    --popover-foreground: 225 15% 20%;
 
-    /* Soft blue-gray primary inspired by ragdoll eyes */
-    --primary: 210 25% 55%;        /* #7296B8 - Ragdoll blue eyes */
-    --primary-foreground: 0 0% 98%;
+    /* Ragdoll blue-grey primary inspired by their distinctive eye color */
+    --primary: 215 25% 60%;        /* #8B9DC3 - Ragdoll blue-grey eyes */
+    --primary-foreground: 0 0% 100%;
 
-    /* Cream secondary */
-    --secondary: 35 20% 92%;       /* #F0ECEA - Warm cream */
-    --secondary-foreground: 220 8% 25%;
+    /* Soft grey secondary */
+    --secondary: 220 8% 88%;       /* #DADDE3 - Light blue-grey */
+    --secondary-foreground: 225 15% 20%;
 
-    /* Muted lavender-gray tones */
-    --muted: 240 15% 90%;          /* #E8E6F0 - Soft lavender */
-    --muted-foreground: 220 8% 50%; /* #737884 - Medium gray */
+    /* Muted grey tones inspired by ragdoll coat patterns */
+    --muted: 220 12% 85%;          /* #D1D5DC - Soft blue-grey */
+    --muted-foreground: 220 10% 45%; /* #6B7280 - Medium grey */
 
-    /* Elegant accent - soft lavender */
-    --accent: 260 20% 85%;         /* #D9D1E8 - Lavender accent */
-    --accent-foreground: 220 8% 25%;
+    /* Elegant accent - warm grey */
+    --accent: 220 15% 82%;         /* #C8D0E0 - Lavender-grey accent */
+    --accent-foreground: 225 15% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 85%;        /* #D1CFDB - Soft gray border */
-    --input: 240 15% 92%;          /* #EBEAF2 - Light lavender input */
-    --ring: 210 25% 55%;           /* Match primary - ragdoll blue */
+    --border: 220 15% 80%;         /* #C1CAD6 - Soft grey border */
+    --input: 220 20% 90%;          /* #E5E9F0 - Light grey input */
+    --ring: 215 25% 60%;           /* Match primary - ragdoll blue */
 
     --radius: 12px;
 
     /* Ragdoll-inspired design tokens */
-    --modern-dark: 220 8% 25%;     /* Soft charcoal */
-    --modern-light: 35 25% 97%;    /* Cream background */
-    --modern-beige: 35 20% 88%;    /* Warm cream */
-    --modern-warm: 210 15% 80%;    /* Soft blue-gray */
+    --modern-dark: 225 15% 20%;    /* Deep charcoal */
+    --modern-light: 220 10% 96%;   /* Light grey background */
+    --modern-beige: 220 8% 88%;    /* Soft grey */
+    --modern-warm: 215 20% 75%;    /* Warm blue-grey */
 
-    /* Ragdoll-inspired gradients */
-    --gradient-subtle: linear-gradient(135deg, hsl(35 25% 97%), hsl(240 20% 95%));
-    --gradient-overlay: linear-gradient(135deg, hsl(220 8% 25% / 0.7), hsl(210 15% 20% / 0.9));
+    /* Ragdoll-inspired gradients with grey tones */
+    --gradient-subtle: linear-gradient(135deg, hsl(220 10% 96%), hsl(220 15% 92%));
+    --gradient-overlay: linear-gradient(135deg, hsl(225 15% 20% / 0.7), hsl(220 10% 15% / 0.9));
+    --gradient-ragdoll: linear-gradient(135deg, hsl(220 12% 90%), hsl(215 15% 85%), hsl(210 18% 80%));
 
-    /* Soft ragdoll-inspired shadows */
-    --shadow-modern: 0 4px 24px -6px hsl(220 8% 25% / 0.08);
-    --shadow-hover: 0 8px 32px -8px hsl(210 15% 30% / 0.12);
-    --shadow-card: 0 2px 16px -4px hsl(240 10% 20% / 0.05);
+    /* Soft ragdoll-inspired shadows with grey undertones */
+    --shadow-modern: 0 4px 24px -6px hsl(220 15% 25% / 0.08);
+    --shadow-hover: 0 8px 32px -8px hsl(215 20% 30% / 0.12);
+    --shadow-card: 0 2px 16px -4px hsl(220 12% 20% / 0.05);
 
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     /* Ragdoll-inspired sidebar variables */
-    --sidebar-background: 35 25% 97%;
-    --sidebar-foreground: 220 8% 25%;
-    --sidebar-primary: 210 25% 55%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 15% 90%;
-    --sidebar-accent-foreground: 220 8% 25%;
-    --sidebar-border: 220 15% 85%;
-    --sidebar-ring: 210 25% 55%;
+    --sidebar-background: 220 10% 96%;
+    --sidebar-foreground: 225 15% 20%;
+    --sidebar-primary: 215 25% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 12% 85%;
+    --sidebar-accent-foreground: 225 15% 20%;
+    --sidebar-border: 220 15% 80%;
+    --sidebar-ring: 215 25% 60%;
   }
 
   .dark {
@@ -580,10 +589,60 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
   -webkit-line-clamp: 3;
 }
 
+/* Ragdoll gradient backgrounds */
+.bg-gradient-ragdoll {
+  background: var(--gradient-ragdoll);
+}
+
+.bg-gradient-subtle {
+  background: var(--gradient-subtle);
+}
+
+/* Gallery grid animations */
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-gallery-fade-in {
+  animation: galleryFadeIn 0.6s ease-out forwards;
+}
+
+/* Enhanced hover effects for gallery items */
+@keyframes galleryHover {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: var(--shadow-card);
+  }
+  100% {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+.gallery-item:hover {
+  animation: galleryHover 0.3s ease-out forwards;
+}
+
+/* Smooth grid layout transitions */
+.gallery-grid {
+  transition: var(--transition-smooth);
+}
+
+.gallery-grid > * {
+  transition: var(--transition-smooth);
+}
+
 /* Mobile touch improvements */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   /* Ensure minimum touch target size */
-  button, .touch-manipulation {
+  button, .touch-manipulation, [role="button"] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -597,6 +656,137 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
   input, textarea, select {
     font-size: 16px;
   }
+  
+  /* Mobile-specific gallery improvements */
+  .gallery-item {
+    touch-action: manipulation;
+  }
+  
+  .gallery-grid {
+    gap: 1rem;
+  }
+
+  /* Enhanced mobile navigation */
+  .mobile-nav-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Better mobile modal handling */
+  .mobile-modal {
+    padding: 1rem;
+  }
+
+  /* Improved mobile typography */
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  /* Better mobile spacing */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Enhanced responsive breakpoints */
+@media (max-width: 480px) {
+  /* Extra small mobile optimizations */
+  .gallery-grid {
+    gap: 0.75rem;
+  }
+  
+  /* Smaller touch targets for very small screens but still accessible */
+  .compact-touch {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  .gallery-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Enhanced animations for modern browsers */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-spring {
+    transition: var(--transition-spring);
+  }
+  
+  .animate-smooth-scale {
+    transition: transform 0.2s ease-out;
+  }
+  
+  .animate-smooth-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .animate-fade-in-spring {
+    animation: fadeInSpring 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+}
+
+@keyframes fadeInSpring {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .gallery-item:hover {
+    transform: none;
+  }
+}
+
+/* Better focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom scrollbar for modern browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 /* Hanging Cat Animation - Complete Implementation */
