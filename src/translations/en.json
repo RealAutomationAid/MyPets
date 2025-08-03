@@ -35,6 +35,14 @@
       "retired": "Retired"
     }
   },
+  "businessGallery": {
+    "subtitle": "Our Achievements",
+    "title": "Awards & Recognition",
+    "description": "Celebrating our journey of excellence in Ragdoll breeding, showcasing awards, certificates, and memorable moments.",
+    "categories": {
+      "all": "All"
+    }
+  },
   "tiktok": {
     "title": "Our TikTok Videos",
     "subtitle": "Follow us on TikTok for daily moments with our beautiful Ragdoll cats",

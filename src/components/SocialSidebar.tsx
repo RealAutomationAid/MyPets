@@ -21,7 +21,7 @@ const SocialSidebar = () => {
 
   // Get URLs from settings or use fallback defaults
   const facebookUrl = socialSettings?.facebook_url || 'https://www.facebook.com/profile.php?id=61561853557367';
-  const tiktokUrl = socialSettings?.tiktok_url || 'https://www.tiktok.com/@radanovpridemainecoon?is_from_webapp=1&sender_device=pc';
+  const tiktokUrl = socialSettings?.tiktok_url || 'https://www.tiktok.com/@bleuroi_ragdoll?is_from_webapp=1&sender_device=pc';
   const instagramUrl = socialSettings?.instagram_url;
 
   const SocialLinks = ({ mobile = false }) => (

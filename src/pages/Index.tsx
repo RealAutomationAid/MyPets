@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ModernNavigation from "@/components/ModernNavigation";
 import CinematicVideoHero from "@/components/CinematicVideoHero";
 import FeaturedModelsSection from "@/components/FeaturedModelsSection";
-import AnimatedCarouselGallery from "@/components/AnimatedCarouselGallery";
+import BusinessGallery from "@/components/BusinessGallery";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
@@ -39,7 +39,7 @@ const Index = () => {
         <FeaturedModelsSection />
       </div>
       <div id="gallery">
-        <AnimatedCarouselGallery />
+        <BusinessGallery />
       </div>
       <div id="news">
         <NewsSection />

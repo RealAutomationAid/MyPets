@@ -95,7 +95,7 @@ const CinematicVideoHero = () => {
               <img 
                 src={ragdollLogo} 
                 alt="BleuRoi Ragdoll Cattery Logo" 
-                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-2xl"
+                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-2xl rounded-full"
               />
             </div>
           </div>

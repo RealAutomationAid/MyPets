@@ -3,15 +3,25 @@ import { Play, Heart, MessageCircle, Share, Bookmark, MoreHorizontal, ExternalLi
 import { useTikTokVideosForMainSection } from '@/services/convexTikTokService';
 import { useLanguage } from '@/hooks/useLanguage';
 
+// Professional ragdoll cat images for TikTok thumbnails
+const RAGDOLL_TIKTOK_THUMBNAILS = [
+  'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=600&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=400&h=600&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=600&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1574231164645-d6f0e8553590?w=400&h=600&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1596854505728-4c8b33a0d0d8?w=400&h=600&fit=crop&auto=format&q=80',
+  'https://images.unsplash.com/photo-1581888227599-779811939961?w=400&h=600&fit=crop&auto=format&q=80'
+];
+
 // Fallback static TikTok videos when no database content is available
 const FALLBACK_VIDEOS = [
   {
     _id: 'fallback-1',
     title: 'Красиви Ragdoll котки',
     description: 'Нашите прекрасни котки в техния дом',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#ragdoll', '#котки', '#радановпрайд'],
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[0],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
+    hashtags: ['#ragdoll', '#котки', '#bleuroi'],
     viewCount: 12500,
     likeCount: 850,
     commentCount: 45,
@@ -22,8 +32,8 @@ const FALLBACK_VIDEOS = [
     _id: 'fallback-2',
     title: 'Игриви момичета котенца',
     description: 'Котенцата си играят заедно',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[1],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
     hashtags: ['#котенца', '#игра', '#сладки'],
     viewCount: 8900,
     likeCount: 620,
@@ -35,8 +45,8 @@ const FALLBACK_VIDEOS = [
     _id: 'fallback-3',
     title: 'Ragdoll семейство',
     description: 'Майка с котенца - сърчицетопящи моменти',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[2],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
     hashtags: ['#семейство', '#майка', '#котенца'],
     viewCount: 15600,
     likeCount: 1200,
@@ -48,8 +58,8 @@ const FALLBACK_VIDEOS = [
     _id: 'fallback-4',
     title: 'Красота и елегантност',
     description: 'Възрастни котки показват своята красота',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[3],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
     hashtags: ['#красота', '#елегантност', '#ragdoll'],
     viewCount: 9300,
     likeCount: 470,
@@ -61,8 +71,8 @@ const FALLBACK_VIDEOS = [
     _id: 'fallback-5',
     title: 'Дневна рутина на котките',
     description: 'Как прекарват деня нашите котки',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[4],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
     hashtags: ['#рутина', '#ден', '#живот'],
     viewCount: 6800,
     likeCount: 340,
@@ -74,8 +84,8 @@ const FALLBACK_VIDEOS = [
     _id: 'fallback-6',
     title: 'Най-добрите моменти',
     description: 'Компилация от най-сладките моменти',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
+    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[5],
+    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
     hashtags: ['#моменти', '#компилация', '#сладко'],
     viewCount: 11200,
     likeCount: 890,
@@ -169,9 +179,9 @@ const TikTokSection = () => {
                     {/* User Info */}
                     <div className="flex items-center mb-2">
                       <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mr-2">
-                        <span className="text-white text-xs font-bold">R</span>
+                        <span className="text-white text-xs font-bold">B</span>
                       </div>
-                      <span className="text-white text-sm font-semibold">@radanovpridemainecoon</span>
+                      <span className="text-white text-sm font-semibold">@bleuroi_ragdoll</span>
                     </div>
 
                     {/* Title */}
@@ -238,7 +248,7 @@ const TikTokSection = () => {
         {/* CTA Section */}
         <div className="text-center">
           <a
-            href="https://www.tiktok.com/@radanovpridemainecoon?is_from_webapp=1&sender_device=pc"
+            href="https://www.tiktok.com/@bleuroi_ragdoll?is_from_webapp=1&sender_device=pc"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold text-lg rounded-full hover:from-pink-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"

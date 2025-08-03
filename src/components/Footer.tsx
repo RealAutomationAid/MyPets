@@ -39,7 +39,7 @@ const Footer = () => {
               </svg>
             </a>
             <a 
-              href="https://www.tiktok.com/@radanovpridemainecoon?is_from_webapp=1&sender_device=pc" 
+              href="https://www.tiktok.com/@bleuroi_ragdoll?is_from_webapp=1&sender_device=pc" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors"

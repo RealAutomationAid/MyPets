@@ -37,7 +37,7 @@ const ModernHeroSection = () => {
   const displayImages = heroImages.length > 0 ? heroImages : fallbackImages;
 
   return (
-    <section className="min-h-[85vh] flex items-center justify-center py-10 md:py-20 bg-gradient-ragdoll relative overflow-hidden">
+    <section className="min-h-[85vh] flex items-center justify-center py-10 md:py-20 bg-background relative overflow-hidden">
       <div ref={heroRef} className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Hero Image Carousel - First on mobile */}
@@ -61,7 +61,7 @@ const ModernHeroSection = () => {
                   <img 
                     src="/radanov-pride-logo.png" 
                     alt="BleuRoi Ragdoll Cattery Logo" 
-                    className="w-12 h-12 md:w-16 md:h-16 object-contain" 
+                    className="w-12 h-12 md:w-16 md:h-16 object-contain rounded-full" 
                   />
                 </div>
               </div>

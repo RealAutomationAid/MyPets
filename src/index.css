@@ -555,7 +555,103 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
   body {
     @apply bg-background text-foreground;
     font-family: 'Perun', system-ui, sans-serif;
-    cursor: url('/src/assets/cursor.cur'), auto;
+    cursor: default;
+  }
+
+  /* Modern Cursor System */
+  .modern-cursor-default {
+    cursor: default;
+  }
+
+  .modern-cursor-pointer {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .modern-cursor-pointer:hover {
+    transform: scale(1.05);
+  }
+
+  /* Cat-themed cursors for interactive elements */
+  button, 
+  .button, 
+  [role="button"],
+  .gallery-item,
+  .cat-card,
+  .interactive {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  button:hover,
+  .button:hover,
+  [role="button"]:hover,
+  .gallery-item:hover,
+  .cat-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Text selection cursors */
+  input, 
+  textarea, 
+  [contenteditable] {
+    cursor: text;
+  }
+
+  /* Link hover effects with paw cursor */
+  a {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: all 0.2s ease;
+  }
+
+  a:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Special cursor for drag operations */
+  .draggable {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, grab;
+  }
+
+  .dragging {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, grabbing;
+  }
+
+  /* Hover effects for interactive cat elements */
+  .cat-image {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+  }
+
+  .cat-image:hover {
+    transform: scale(1.02) rotate(0.5deg);
+    filter: brightness(1.05);
+  }
+
+  /* Modern Professional Cursor System */
+  .cursor-paw {
+    cursor: url('/src/assets/paw-cursor.png') 12 12, pointer;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .cursor-pointer:hover {
+    transform: scale(1.05);
+  }
+
+  /* Apply paw cursor to interactive elements */
+  button, .btn, [role="button"], a, .cursor-paw,
+  .gallery-item, .cat-card, .interactive {
+    cursor: url('/src/assets/paw-cursor.png') 12 12, pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  button:hover, .btn:hover, [role="button"]:hover, 
+  a:hover, .gallery-item:hover, .cat-card:hover {
+    transform: translateY(-1px);
   }
 }
 
@@ -736,6 +832,86 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
   .animate-fade-in-spring {
     animation: fadeInSpring 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
+
+  /* Professional Cat-themed Interactive Elements */
+  .cat-interactive {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.1),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .cat-interactive:hover::before {
+    left: 100%;
+  }
+
+  /* Paw print trail effect for special elements */
+  .paw-trail {
+    position: relative;
+  }
+
+  .paw-trail::after {
+    content: '🐾';
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+  }
+
+  .paw-trail:hover::after {
+    right: -20px;
+    opacity: 0.6;
+  }
+
+  /* Smooth image loading animation */
+  .image-fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .image-fade-in.loaded {
+    opacity: 1;
+  }
+
+  /* Enhanced button interactions */
+  .btn-enhanced {
+    position: relative;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    color: hsl(var(--primary-foreground));
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  }
+
+  .btn-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
+  }
+
+  .btn-enhanced:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  }
 }
 
 @keyframes fadeInSpring {
@@ -769,24 +945,105 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
   border-radius: 4px;
 }
 
-/* Custom scrollbar for modern browsers */
+/* Modern Animated Scrollbar System */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  border-radius: 4px;
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 6px;
+  margin: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 4px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.4),
+    hsl(var(--primary) / 0.6)
+  );
+  border-radius: 6px;
+  border: 1px solid hsl(var(--background));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.6),
+    hsl(var(--primary) / 0.8)
+  );
+  transform: scaleY(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.7),
+    hsl(var(--primary) / 0.9)
+  );
+  transform: scaleY(1.05);
+}
+
+/* Scrollbar corner styling */
+::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+/* Enhanced scrollbar for dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.5),
+    hsl(var(--primary) / 0.7)
+  );
+  border: 1px solid hsl(var(--background));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.7),
+    hsl(var(--primary) / 0.9)
+  );
+}
+
+/* Smooth scrolling enhancement */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.5) hsl(var(--muted) / 0.3);
+}
+
+/* Scrollable container improvements */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.4) transparent;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.4);
+  border-radius: 3px;
 }
 
 /* Hanging Cat Animation - Complete Implementation */
@@ -1289,5 +1546,172 @@ Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blu
 @keyframes cat-blink {
   0%, 10%, 25%, 80%, 100% { transform: scaleY(1); }
   8%, 23%, 78% { transform: scaleY(0.1); }
+}
+
+/* Enhanced Modern UI Features */
+
+/* Scrollbar Pulse Animation */
+@keyframes scrollbar-glow {
+  0%, 100% {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  animation: scrollbar-glow 4s ease-in-out infinite;
+}
+
+/* Interactive Element Enhancements */
+.interactive-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+}
+
+.interactive-hover:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Paw Trail Effect for Special Elements */
+@keyframes paw-trail {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+.paw-trail {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: url('/src/assets/paw.svg') no-repeat center;
+  background-size: contain;
+  pointer-events: none;
+  animation: paw-trail 0.8s ease-out forwards;
+}
+
+/* Modern Button Enhancements */
+.modern-button {
+  position: relative;
+  overflow: hidden;
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+}
+
+.modern-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all 0.5s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.modern-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Gallery Image Hover Effects */
+.gallery-image-modern {
+  position: relative;
+  overflow: hidden;
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-image-modern::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.gallery-image-modern:hover::after {
+  transform: translateX(100%);
+}
+
+.gallery-image-modern:hover {
+  transform: scale(1.05) rotateY(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Enhanced Focus States for Accessibility */
+*:focus-visible {
+  outline: 3px solid hsl(var(--primary) / 0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px hsl(var(--background)), 0 0 20px hsl(var(--primary) / 0.3);
+  transition: all 0.2s ease;
+}
+
+/* Micro-interactions for Better UX */
+.micro-bounce {
+  transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.micro-bounce:active {
+  transform: scale(0.95);
+}
+
+/* Modern Loading State */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
