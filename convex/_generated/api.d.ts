@@ -15,10 +15,12 @@ import type {
 } from "convex/server";
 import type * as announcements from "../announcements.js";
 import type * as auth from "../auth.js";
+import type * as awards from "../awards.js";
 import type * as cats from "../cats.js";
 import type * as contact from "../contact.js";
 import type * as files from "../files.js";
 import type * as heroImages from "../heroImages.js";
+import type * as heroVideos from "../heroVideos.js";
 import type * as imageMigration from "../imageMigration.js";
 import type * as pedigree from "../pedigree.js";
 import type * as seed from "../seed.js";
@@ -36,10 +38,12 @@ import type * as tiktokVideos from "../tiktokVideos.js";
 declare const fullApi: ApiFromModules<{
   announcements: typeof announcements;
   auth: typeof auth;
+  awards: typeof awards;
   cats: typeof cats;
   contact: typeof contact;
   files: typeof files;
   heroImages: typeof heroImages;
+  heroVideos: typeof heroVideos;
   imageMigration: typeof imageMigration;
   pedigree: typeof pedigree;
   seed: typeof seed;

@@ -291,6 +291,44 @@ export const getDisplayedCatsByCategory = query({
   },
 });
 
+// Get displayed cats by gender and age for the new three-section layout
+export const getDisplayedCatsByGenderAndAge = query({
+  args: {
+    section: v.union(v.literal("male"), v.literal("female"), v.literal("kitten"))
+  },
+  handler: async (ctx, args) => {
+    const allDisplayedCats = await ctx.db
+      .query("cats")
+      .withIndex("by_displayed", (q) => q.eq("isDisplayed", true))
+      .collect();
+    
+    const currentDate = new Date();
+    
+    return allDisplayedCats.filter(cat => {
+      // Calculate age first
+      let ageInYears = 0;
+      if (cat.birthDate) {
+        const birthDate = new Date(cat.birthDate);
+        ageInYears = (currentDate.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+      }
+      
+      switch (args.section) {
+        case "kitten":
+          // Kittens: all cats below 1 year (both genders)
+          return ageInYears < 1 || (!cat.birthDate && cat.category === "kitten");
+        case "male":
+          // Males: male cats 1 year and older
+          return cat.gender === "male" && (ageInYears >= 1 || (!cat.birthDate && cat.category !== "kitten"));
+        case "female":
+          // Females: female cats 1 year and older
+          return cat.gender === "female" && (ageInYears >= 1 || (!cat.birthDate && cat.category !== "kitten"));
+        default:
+          return false;
+      }
+    });
+  },
+});
+
 // Bulk update category for existing cats
 export const bulkUpdateCategory = mutation({
   args: {

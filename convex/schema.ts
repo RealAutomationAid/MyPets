@@ -79,7 +79,9 @@ export default defineSchema({
       v.literal("profile"), 
       v.literal("gallery"), 
       v.literal("general"),
-      v.literal("news")
+      v.literal("news"),
+      v.literal("award_certificate"),
+      v.literal("award_gallery")
     ),
   })
     .index("by_cat", ["associatedCatId"])
@@ -132,8 +134,42 @@ export default defineSchema({
     publishedAt: v.number(), // Unix timestamp
     sortOrder: v.number(), // Manual ordering
     updatedAt: v.number(), // Unix timestamp
+    slug: v.optional(v.string()), // URL slug for SEO-friendly URLs
+    metaDescription: v.optional(v.string()), // SEO meta description
+    metaKeywords: v.optional(v.string()), // SEO keywords
   })
     .index("by_published", ["isPublished", "publishedAt"])
+    .index("by_sort_order", ["sortOrder"])
+    .index("by_slug", ["slug"]),
+
+  // Awards and recognitions for the cattery
+  awards: defineTable({
+    title: v.string(),
+    description: v.string(),
+    awardDate: v.number(), // Unix timestamp
+    awardingOrganization: v.string(),
+    category: v.union(
+      v.literal("best_in_show"), 
+      v.literal("championship"), 
+      v.literal("cattery_recognition"),
+      v.literal("breeding_award"),
+      v.literal("other")
+    ),
+    // Main award image/certificate
+    certificateImage: v.string(),
+    // Additional images for the award (ceremony photos, etc.)
+    galleryImages: v.array(v.string()),
+    // Associated cat if award is cat-specific
+    associatedCatId: v.optional(v.id("cats")),
+    isPublished: v.boolean(),
+    sortOrder: v.number(),
+    // Additional metadata
+    achievements: v.optional(v.string()), // JSON stringified achievements data
+    updatedAt: v.number(),
+  })
+    .index("by_published", ["isPublished", "awardDate"])
+    .index("by_category", ["category"])
+    .index("by_cat", ["associatedCatId"])
     .index("by_sort_order", ["sortOrder"]),
 
   // Hero images for the floating circles in the hero section
@@ -149,4 +185,24 @@ export default defineSchema({
     .index("by_active", ["isActive"])
     .index("by_position", ["position"])
     .index("by_active_position", ["isActive", "position"]),
+
+  // Hero videos for the main background video in hero section
+  heroVideos: defineTable({
+    src: v.string(), // Video URL from Convex storage
+    thumbnailSrc: v.optional(v.string()), // Thumbnail image URL
+    alt: v.string(), // Alt text for accessibility
+    title: v.optional(v.string()), // Display title
+    description: v.optional(v.string()), // Video description
+    isActive: v.boolean(), // Only one active at a time
+    duration: v.optional(v.number()), // Video duration in seconds
+    fileSize: v.optional(v.number()), // File size in bytes
+    format: v.optional(v.string()), // Video format (mp4, webm)
+    uploadedAt: v.number(), // Unix timestamp
+    // Video-specific playback settings
+    shouldAutoplay: v.optional(v.boolean()), // Default: true
+    shouldLoop: v.optional(v.boolean()), // Default: true
+    shouldMute: v.optional(v.boolean()), // Default: true (for autoplay compliance)
+  })
+    .index("by_active", ["isActive"])
+    .index("by_uploaded", ["uploadedAt"]),
 }); 

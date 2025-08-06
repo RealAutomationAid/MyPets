@@ -11,8 +11,10 @@ export const useActiveTikTokVideos = () => {
   return useQuery(api.tiktokVideos.getActiveVideos);
 };
 
-export const useTikTokVideosByCat = (catId: Id<"cats"> | undefined) => {
-  return useQuery(api.tiktokVideos.getVideosByCat, catId ? { catId } : "skip");
+export const useTikTokVideosByCat = (catId: Id<"cats"> | string | undefined) => {
+  // Skip the query if catId is a fallback ID (string) or undefined
+  const isValidConvexId = catId && typeof catId === 'string' && !catId.startsWith('fallback-');
+  return useQuery(api.tiktokVideos.getVideosByCat, isValidConvexId ? { catId: catId as Id<"cats"> } : "skip");
 };
 
 export const useGlobalTikTokVideos = () => {

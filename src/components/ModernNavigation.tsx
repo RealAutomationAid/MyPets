@@ -9,7 +9,7 @@ import ragdollLogo from "@/assets/ragdoll-logo.png";
 const ModernNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const activeSection = useActiveSection(['home', 'models', 'tiktok', 'contact']);
+  const activeSection = useActiveSection(['home', 'models', 'males', 'females', 'kittens', 'tiktok', 'contact']);
   const { scrollY } = useScrollPosition();
   const { t } = useLanguage();
 
@@ -63,6 +63,36 @@ const ModernNavigation = () => {
               }`}
             >
               {t('navigation.models')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('males')}
+              className={`transition-colors text-sm font-medium ${
+                activeSection === 'males' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
+              }`}
+            >
+              {t('navigation.males')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('females')}
+              className={`transition-colors text-sm font-medium ${
+                activeSection === 'females' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
+              }`}
+            >
+              {t('navigation.females')}
+            </button>
+            <button 
+              onClick={() => scrollToSection('kittens')}
+              className={`transition-colors text-sm font-medium ${
+                activeSection === 'kittens' 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
+              }`}
+            >
+              {t('navigation.kittens')}
             </button>
             <button 
               onClick={() => scrollToSection('tiktok')}
@@ -127,6 +157,30 @@ const ModernNavigation = () => {
                 }`}
               >
                 {t('navigation.models')}
+              </button>
+              <button 
+                onClick={() => scrollToSection('males')}
+                className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
+                  activeSection === 'males' ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t('navigation.males')}
+              </button>
+              <button 
+                onClick={() => scrollToSection('females')}
+                className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
+                  activeSection === 'females' ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t('navigation.females')}
+              </button>
+              <button 
+                onClick={() => scrollToSection('kittens')}
+                className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
+                  activeSection === 'kittens' ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t('navigation.kittens')}
               </button>
               <button 
                 onClick={() => scrollToSection('tiktok')}

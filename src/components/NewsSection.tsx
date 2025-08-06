@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLatestAnnouncements, AnnouncementData } from '@/services/convexAnnouncementService';
-import AnnouncementModal from './AnnouncementModal';
 
 const NewsSection = () => {
   const latestNews = useLatestAnnouncements(3); // Get latest 3 announcements
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('bg-BG', {
@@ -18,14 +15,14 @@ const NewsSection = () => {
     });
   };
 
-  const handleAnnouncementClick = (announcement: AnnouncementData) => {
-    setSelectedAnnouncement(announcement);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedAnnouncement(null);
+  const generateSlug = (title: string, id: string) => {
+    const slug = title
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    return slug || id;
   };
 
   if (!latestNews || latestNews.length === 0) {
@@ -49,11 +46,11 @@ const NewsSection = () => {
         {/* News Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {latestNews.map((announcement) => (
-            <Card 
+            <Link 
               key={announcement._id} 
-              className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer hover:scale-[1.02]"
-              onClick={() => handleAnnouncementClick(announcement)}
+              to={`/news/${announcement.slug || generateSlug(announcement.title, announcement._id)}`}
             >
+              <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer hover:scale-[1.02]">
               {announcement.featuredImage && (
                 <div className="aspect-video overflow-hidden">
                   <img
@@ -82,29 +79,25 @@ const NewsSection = () => {
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
 
         {/* Show More Button */}
         {latestNews.length >= 3 && (
           <div className="text-center mt-12">
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="bg-background border-border text-foreground hover:bg-muted min-h-[44px] px-8"
-            >
-              Вижте всички новини
-            </Button>
+            <Link to="/news">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-background border-border text-foreground hover:bg-muted min-h-[44px] px-8"
+              >
+                Вижте всички новини
+              </Button>
+            </Link>
           </div>
         )}
-
-        {/* Announcement Modal */}
-        <AnnouncementModal
-          announcement={selectedAnnouncement}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-        />
       </div>
     </section>
   );

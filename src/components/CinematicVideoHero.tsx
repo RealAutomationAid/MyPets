@@ -1,24 +1,63 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-import ragdollLogo from "@/assets/ragdoll-logo.png";
 import ragdollVideo from "@/assets/ragdoll_loop.mp4";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 const CinematicVideoHero = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useLanguage();
+  
+  // Fetch active hero video from database
+  const activeHeroVideo = useQuery(api.heroVideos.getActiveHeroVideo);
+  
+  // Get the video source - use database video if available, otherwise fallback to static
+  const videoSource = (activeHeroVideo?.src && !activeHeroVideo.src.startsWith("convex://storage/")) 
+    ? activeHeroVideo.src 
+    : ragdollVideo;
+  
+  const videoSettings = activeHeroVideo || {
+    shouldAutoplay: true,
+    shouldLoop: true,
+    shouldMute: true
+  };
+
+  // Debug logging
+  console.log('Active hero video:', activeHeroVideo);
+  console.log('Video source being used:', videoSource);
 
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      video.addEventListener('loadeddata', () => {
+      const handleLoadedData = () => {
+        setIsVideoLoaded(true);
+        setVideoError(false);
+        setTimeout(() => setShowContent(true), 500);
+      };
+
+      const handleError = () => {
+        console.error('Video failed to load, falling back to static video');
+        setVideoError(true);
         setIsVideoLoaded(true);
         setTimeout(() => setShowContent(true), 500);
-      });
+      };
+
+      video.addEventListener('loadeddata', handleLoadedData);
+      video.addEventListener('error', handleError);
+
+      // Force video to reload when source changes
+      video.load();
+
+      return () => {
+        video.removeEventListener('loadeddata', handleLoadedData);
+        video.removeEventListener('error', handleError);
+      };
     }
-  }, []);
+  }, [videoSource]); // Re-run when video source changes
 
   const scrollToNext = () => {
     const nextSection = document.getElementById('models');
@@ -32,14 +71,18 @@ const CinematicVideoHero = () => {
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
+          key={videoSource} // Force React to recreate video element when source changes
           ref={videoRef}
-          autoPlay
-          loop
-          muted
+          autoPlay={videoSettings.shouldAutoplay}
+          loop={videoSettings.shouldLoop}
+          muted={videoSettings.shouldMute}
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
           onLoadedData={() => setIsVideoLoaded(true)}
+          onError={() => setVideoError(true)}
         >
+          <source src={videoError ? ragdollVideo : videoSource} type="video/mp4" />
+          {/* Fallback source */}
           <source src={ragdollVideo} type="video/mp4" />
         </video>
         
@@ -78,32 +121,9 @@ const CinematicVideoHero = () => {
 
       {/* Content Overlay */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-white">
-        {/* Logo */}
-        <div 
-          className={`transition-all duration-1500 ease-out transform ${
-            showContent 
-              ? 'opacity-100 translate-y-0 scale-100' 
-              : 'opacity-0 -translate-y-10 scale-95'
-          }`}
-        >
-          <div className="relative mb-8">
-            {/* Glow effect behind logo */}
-            <div className="absolute inset-0 blur-xl bg-white/30 rounded-full scale-150 animate-pulse" />
-            
-            {/* Logo container */}
-            <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 md:p-8 border border-white/20 shadow-2xl">
-              <img 
-                src={ragdollLogo} 
-                alt="BleuRoi Ragdoll Cattery Logo" 
-                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-2xl rounded-full"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Title Text */}
         <div 
-          className={`text-center max-w-4xl px-4 transition-all duration-1500 ease-out delay-300 transform ${
+          className={`text-center max-w-4xl px-4 transition-all duration-1500 ease-out transform ${
             showContent 
               ? 'opacity-100 translate-y-0' 
               : 'opacity-0 translate-y-10'

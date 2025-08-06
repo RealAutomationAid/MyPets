@@ -44,6 +44,28 @@ export const getAnnouncementById = query({
   },
 });
 
+// Get announcement by slug (for SEO-friendly URLs)
+export const getAnnouncementBySlug = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("announcements")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .filter((q) => q.eq(q.field("isPublished"), true))
+      .first();
+  },
+});
+
+// Generate unique slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .trim(); // Remove leading/trailing whitespace
+};
+
 // Create new announcement
 export const createAnnouncement = mutation({
   args: {
@@ -52,11 +74,30 @@ export const createAnnouncement = mutation({
     featuredImage: v.optional(v.string()),
     isPublished: v.boolean(),
     sortOrder: v.number(),
+    metaDescription: v.optional(v.string()),
+    metaKeywords: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
+    
+    // Generate unique slug
+    let baseSlug = generateSlug(args.title);
+    let slug = baseSlug;
+    let counter = 1;
+    
+    // Ensure slug is unique
+    while (await ctx.db
+      .query("announcements")
+      .withIndex("by_slug", (q) => q.eq("slug", slug))
+      .first()
+    ) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+    
     return await ctx.db.insert("announcements", {
       ...args,
+      slug,
       publishedAt: args.isPublished ? now : 0,
       updatedAt: now,
     });
@@ -72,6 +113,8 @@ export const updateAnnouncement = mutation({
     featuredImage: v.optional(v.string()),
     isPublished: v.boolean(),
     sortOrder: v.number(),
+    metaDescription: v.optional(v.string()),
+    metaKeywords: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updateData } = args;
@@ -82,8 +125,34 @@ export const updateAnnouncement = mutation({
     }
 
     const now = Date.now();
+    let updatePayload: typeof updateData & { slug?: string } = { ...updateData };
+    
+    // Update slug if title changed
+    if (updateData.title !== existing.title) {
+      let baseSlug = generateSlug(updateData.title);
+      let slug = baseSlug;
+      let counter = 1;
+      
+      // Ensure slug is unique (excluding current record)
+      while (true) {
+        const existingWithSlug = await ctx.db
+          .query("announcements")
+          .withIndex("by_slug", (q) => q.eq("slug", slug))
+          .first();
+          
+        if (!existingWithSlug || existingWithSlug._id === id) {
+          break;
+        }
+        
+        slug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+      
+      updatePayload.slug = slug;
+    }
+    
     return await ctx.db.patch(id, {
-      ...updateData,
+      ...updatePayload,
       publishedAt: updateData.isPublished ? (existing.publishedAt || now) : 0,
       updatedAt: now,
     });

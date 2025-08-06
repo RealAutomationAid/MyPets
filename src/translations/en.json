@@ -6,6 +6,9 @@
   "navigation": {
     "home": "Home",
     "models": "Models",
+    "males": "Males",
+    "females": "Females",
+    "kittens": "Kittens",
     "tiktok": "TikTok",
     "contact": "Contact"
   },
@@ -21,9 +24,16 @@
       "all": "All",
       "adult": "Adults",
       "kitten": "Kittens",
-      "retired": "Retired"
+      "retired": "Retired",
+      "male": "Males",
+      "female": "Females"
     },
-    "galleryLabel": "Gallery"
+    "galleryLabel": "Gallery",
+    "sectionTitles": {
+      "male": "Males",
+      "female": "Females",
+      "kitten": "Kittens (below 1 year)"
+    }
   },
   "gallery": {
     "subtitle": "Premium Collection",
@@ -85,9 +95,16 @@
       "all": "All",
       "adult": "Adults",
       "kitten": "Kittens",
-      "retired": "Retired"
+      "retired": "Retired",
+      "male": "Males",
+      "female": "Females"
     },
     "galleryLabel": "Gallery",
+    "sectionTitles": {
+      "male": "Males",
+      "female": "Females",
+      "kitten": "Kittens (below 1 year)"
+    },
     "loading": "Loading cats...",
     "noAvailable": "No cats available at the moment",
     "selectModel": "Select This Model",

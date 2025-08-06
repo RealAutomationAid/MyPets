@@ -44,6 +44,10 @@ export const useDisplayedCatsByCategory = (category: 'kitten' | 'adult' | 'all')
   return useQuery(api.cats.getDisplayedCatsByCategory, { category });
 };
 
+export const useDisplayedCatsByGenderAndAge = (section: 'male' | 'female' | 'kitten') => {
+  return useQuery(api.cats.getDisplayedCatsByGenderAndAge, { section });
+};
+
 // Mutation hooks
 export const useCreateCat = () => {
   return useMutation(api.cats.createCat);

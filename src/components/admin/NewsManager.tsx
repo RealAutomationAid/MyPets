@@ -24,6 +24,9 @@ type Announcement = {
   publishedAt: number;
   sortOrder: number;
   updatedAt: number;
+  slug?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
 };
 
 const NewsManager = () => {
@@ -42,6 +45,8 @@ const NewsManager = () => {
     featuredImageStorageId: '',
     isPublished: false,
     sortOrder: 0,
+    metaDescription: '',
+    metaKeywords: '',
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -56,6 +61,8 @@ const NewsManager = () => {
         featuredImageStorageId: '',
         isPublished: false,
         sortOrder: 0,
+        metaDescription: '',
+        metaKeywords: '',
       });
     }
   }, [isDialogOpen]);
@@ -70,6 +77,8 @@ const NewsManager = () => {
         featuredImageStorageId: '',
         isPublished: editingAnnouncement.isPublished,
         sortOrder: editingAnnouncement.sortOrder,
+        metaDescription: editingAnnouncement.metaDescription || '',
+        metaKeywords: editingAnnouncement.metaKeywords || '',
       });
       setIsDialogOpen(true);
     }
@@ -88,6 +97,8 @@ const NewsManager = () => {
           featuredImage: formData.featuredImage,
           isPublished: formData.isPublished,
           sortOrder: formData.sortOrder,
+          metaDescription: formData.metaDescription,
+          metaKeywords: formData.metaKeywords,
         });
       } else {
         const nextSortOrder = announcements ? announcements.length + 1 : 1;
@@ -97,6 +108,8 @@ const NewsManager = () => {
           featuredImage: formData.featuredImage,
           isPublished: formData.isPublished,
           sortOrder: nextSortOrder,
+          metaDescription: formData.metaDescription,
+          metaKeywords: formData.metaKeywords,
         });
       }
       setIsDialogOpen(false);
@@ -176,6 +189,42 @@ const NewsManager = () => {
                   className="min-h-[150px] resize-none"
                   required
                 />
+              </div>
+
+              {/* SEO Fields */}
+              <div className="border-t border-border pt-4 space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <Label className="text-sm font-medium text-muted-foreground">SEO настройки</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="metaDescription">SEO описание</Label>
+                  <Textarea
+                    id="metaDescription"
+                    value={formData.metaDescription}
+                    onChange={(e) => setFormData(prev => ({ ...prev, metaDescription: e.target.value }))}
+                    placeholder="Кратко описание на новината за търсачките (160 знака)"
+                    rows={2}
+                    maxLength={160}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {formData.metaDescription.length}/160 знака
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="metaKeywords">SEO ключови думи</Label>
+                  <Input
+                    id="metaKeywords"
+                    value={formData.metaKeywords}
+                    onChange={(e) => setFormData(prev => ({ ...prev, metaKeywords: e.target.value }))}
+                    placeholder="ключова дума 1, ключова дума 2, ключова дума 3"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Разделете ключовите думи със запетая
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-2">

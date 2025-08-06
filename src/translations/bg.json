@@ -6,6 +6,9 @@
   "navigation": {
     "home": "Начало",
     "models": "Модели",
+    "males": "Мъжки",
+    "females": "Женски",
+    "kittens": "Котенца",
     "tiktok": "TikTok",
     "contact": "Контакт"
   },
@@ -20,10 +23,17 @@
     "categories": {
       "all": "Всички",
       "adult": "Възрастни",
-      "kitten": "Котенца",
-      "retired": "В пенсия"
+      "kitten": "Котенце",
+      "retired": "В пенсия",
+      "male": "Мъжки",
+      "female": "Женски"
     },
-    "galleryLabel": "Галерия"
+    "galleryLabel": "Галерия",
+    "sectionTitles": {
+      "male": "Мъжки",
+      "female": "Женски",
+      "kitten": "Котенце (под 1 година)"
+    }
   },
   "gallery": {
     "subtitle": "Премиум колекция",
@@ -84,10 +94,17 @@
     "categories": {
       "all": "Всички",
       "adult": "Възрастни",
-      "kitten": "Котенца",
-      "retired": "В пенсия"
+      "kitten": "Котенце",
+      "retired": "В пенсия",
+      "male": "Мъжки",
+      "female": "Женски"
     },
     "galleryLabel": "Галерия",
+    "sectionTitles": {
+      "male": "Мъжки",
+      "female": "Женски",
+      "kitten": "Котенце (под 1 година)"
+    },
     "loading": "Зареждане на котките...",
     "noAvailable": "Няма налични котки в момента",
     "selectModel": "Избери този модел",
