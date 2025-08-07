@@ -59,7 +59,7 @@ const GallerySection = () => {
   const hasMoreItems = totalItems > displayedItems.length;
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-primary/5 to-muted/30 relative overflow-hidden">
+    <section className="py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-primary/5 to-muted/30 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"></div>

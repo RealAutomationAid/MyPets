@@ -22,14 +22,19 @@ const Footer = () => {
   {t('footer.address')}
             </p>
             <p className="text-white/90 text-sm">
-              088 851 9001
+              <a 
+                href="tel:+359894474966" 
+                className="hover:text-white transition-colors hover:underline"
+              >
+                +359894 474 966
+              </a>
             </p>
           </div>
 
           {/* Social Links */}
           <div className="flex justify-center space-x-6">
             <a 
-              href="https://www.facebook.com/profile.php?id=61561853557367" 
+              href="https://www.facebook.com/Bleuroi.Ragdol.Cattery" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors"
@@ -39,7 +44,7 @@ const Footer = () => {
               </svg>
             </a>
             <a 
-              href="https://www.tiktok.com/@bleuroi_ragdoll?is_from_webapp=1&sender_device=pc" 
+              href="https://www.tiktok.com/@blueroi.ragdol.cattery" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors"

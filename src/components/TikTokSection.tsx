@@ -13,100 +13,16 @@ const RAGDOLL_TIKTOK_THUMBNAILS = [
   'https://images.unsplash.com/photo-1581888227599-779811939961?w=400&h=600&fit=crop&auto=format&q=80'
 ];
 
-// Fallback static TikTok videos when no database content is available
-const FALLBACK_VIDEOS = [
-  {
-    _id: 'fallback-1',
-    title: 'Красиви Ragdoll котки',
-    description: 'Нашите прекрасни котки в техния дом',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[0],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#ragdoll', '#котки', '#bleuroi'],
-    viewCount: 12500,
-    likeCount: 850,
-    commentCount: 45,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-2',
-    title: 'Игриви момичета котенца',
-    description: 'Котенцата си играят заедно',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[1],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#котенца', '#игра', '#сладки'],
-    viewCount: 8900,
-    likeCount: 620,
-    commentCount: 32,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-3',
-    title: 'Ragdoll семейство',
-    description: 'Майка с котенца - сърчицетопящи моменти',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[2],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#семейство', '#майка', '#котенца'],
-    viewCount: 15600,
-    likeCount: 1200,
-    commentCount: 78,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-4',
-    title: 'Красота и елегантност',
-    description: 'Възрастни котки показват своята красота',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[3],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#красота', '#елегантност', '#ragdoll'],
-    viewCount: 9300,
-    likeCount: 470,
-    commentCount: 28,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-5',
-    title: 'Дневна рутина на котките',
-    description: 'Как прекарват деня нашите котки',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[4],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#рутина', '#ден', '#живот'],
-    viewCount: 6800,
-    likeCount: 340,
-    commentCount: 19,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-6',
-    title: 'Най-добрите моменти',
-    description: 'Компилация от най-сладките моменти',
-    thumbnail: RAGDOLL_TIKTOK_THUMBNAILS[5],
-    videoUrl: 'https://www.tiktok.com/@bleuroi_ragdoll',
-    hashtags: ['#моменти', '#компилация', '#сладко'],
-    viewCount: 11200,
-    likeCount: 890,
-    commentCount: 56,
-    isActive: true,
-    catId: undefined,
-  },
-];
+// Fallback static TikTok videos when no database content is available - REMOVED per user request
+const FALLBACK_VIDEOS: any[] = [];
 
 const TikTokSection = () => {
   const { t } = useLanguage();
   const videos = useTikTokVideosForMainSection(6);
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
   
-  // Three-tier fallback system: cat-specific videos → global admin videos → hardcoded fallback videos
-  const displayVideos = (() => {
-    if (videos && videos.length > 0) {
-      return videos; // Use database videos (cat-specific + global)
-    }
-    return FALLBACK_VIDEOS; // Use fallback videos when no database content
-  })();
+  // Use only database videos - no fallback videos
+  const displayVideos = videos || [];
 
   const handleLike = (videoId: string) => {
     setLikedVideos(prev => {
@@ -130,6 +46,11 @@ const TikTokSection = () => {
     }
     return count.toString();
   };
+
+  // Don't render section if no videos available
+  if (displayVideos.length === 0) {
+    return null;
+  }
 
   return (
     <section className="bg-black py-16 px-4">

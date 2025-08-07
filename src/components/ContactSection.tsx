@@ -38,7 +38,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-modern-dark font-medium">Email</h4>
-                    <p className="text-muted-foreground text-sm">info@radanovpride.bg</p>
+                    <p className="text-muted-foreground text-sm">info@ragdollbleuroi.eu</p>
                   </div>
                 </div>
               </CardContent>
@@ -54,7 +54,14 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="text-modern-dark font-medium">Телефон</h4>
-                    <p className="text-muted-foreground text-sm">+359 888 123 456</p>
+                    <p className="text-muted-foreground text-sm">
+                      <a 
+                        href="tel:+359894474966" 
+                        className="hover:text-modern-dark transition-colors hover:underline"
+                      >
+                        +359894 474 966
+                      </a>
+                    </p>
                   </div>
                 </div>
               </CardContent>

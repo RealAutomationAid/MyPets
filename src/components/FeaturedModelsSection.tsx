@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useDisplayedCatsByGenderAndAge, CatData } from "@/services/convexCatService";
+import { useDisplayedCatsByGenderAndAge, CatData, useCatById } from "@/services/convexCatService";
 import { getFallbackRagdollCatsWithIds } from "@/data/fallbackRagdollCats";
 import PedigreeModal from "./PedigreeModal";
 import SocialContactModal from "./SocialContactModal";
@@ -11,6 +12,10 @@ import CatTikTokVideos from "./CatTikTokVideos";
 import { useTikTokVideosByCat } from "@/services/convexTikTokService";
 import CatStatusTag from "./ui/cat-status-tag";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCatURL } from "@/hooks/useCatURL";
+import { Id } from "../../convex/_generated/dataModel";
+import { Share2 } from "lucide-react";
+import { toast } from "sonner";
 
 type SectionType = 'male' | 'female' | 'kitten';
 
@@ -114,6 +119,9 @@ const CatSection = ({ title, cats, onCatClick, onPedigreeClick, t, gridVisible, 
 
 const FeaturedModelsSection = () => {
   const { t } = useLanguage();
+  const { generateCatURL, copyToClipboard } = useCatURL();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   
   const sectionTitles = {
     male: t('featuredModels.sectionTitles.male'),
@@ -129,6 +137,13 @@ const FeaturedModelsSection = () => {
   const [isEnhancedGalleryOpen, setIsEnhancedGalleryOpen] = useState(false);
   const [enhancedGalleryImages, setEnhancedGalleryImages] = useState<string[]>([]);
   const [enhancedGalleryTitle, setEnhancedGalleryTitle] = useState("");
+  
+  // Get URL parameters for deep linking
+  const catId = searchParams.get('cat');
+  const modal = searchParams.get('modal');
+  
+  // Query for the cat from URL parameter
+  const urlCat = useCatById(catId as Id<"cats"> | undefined);
   // Get cats for each section
   const maleCats = useDisplayedCatsByGenderAndAge('male');
   const femaleCats = useDisplayedCatsByGenderAndAge('female');
@@ -146,34 +161,80 @@ const FeaturedModelsSection = () => {
   // DEBUG: Force gridVisible to true to test if scroll animation is the issue
   const gridVisibleForced = true;
 
+  // Handle URL-based modal opening
+  useEffect(() => {
+    if (catId && modal) {
+      if (urlCat) {
+        // Cat exists, open the appropriate modal
+        if (modal === 'pedigree') {
+          setPedigreeCat(urlCat);
+          setIsPedigreeOpen(true);
+        } else if (modal === 'gallery') {
+          setSelectedCat(urlCat);
+          setIsGalleryOpen(true);
+        } else if (modal === 'contact') {
+          setSocialCat(urlCat);
+          setIsSocialModalOpen(true);
+        }
+      } else if (urlCat === null) {
+        // Cat doesn't exist, clear the URL parameters and show error
+        console.warn(`Cat with ID ${catId} not found`);
+        clearURLParams();
+        // Optionally show a toast notification
+        // toast.error('Котето не е намерено');
+      }
+    }
+  }, [urlCat, catId, modal]);
+
+  // Helper function to update URL parameters
+  const updateURLParams = (catId: string, modalType?: 'pedigree' | 'gallery' | 'contact') => {
+    const params = new URLSearchParams();
+    params.set('cat', catId);
+    if (modalType) {
+      params.set('modal', modalType);
+    }
+    setSearchParams(params);
+  };
+
+  // Helper function to clear URL parameters
+  const clearURLParams = () => {
+    setSearchParams({});
+  };
+
   const openGallery = (cat: CatData) => {
     setSelectedCat(cat);
     setIsGalleryOpen(true);
+    updateURLParams(cat._id, 'gallery');
   };
 
   const closeGallery = () => {
     setIsGalleryOpen(false);
     setSelectedCat(null);
+    clearURLParams();
   };
 
   const openPedigree = (cat: CatData) => {
     setPedigreeCat(cat);
     setIsPedigreeOpen(true);
+    updateURLParams(cat._id, 'pedigree');
   };
 
   const closePedigree = () => {
     setIsPedigreeOpen(false);
     setPedigreeCat(null);
+    clearURLParams();
   };
 
   const openSocialModal = (cat: CatData) => {
     setSocialCat(cat);
     setIsSocialModalOpen(true);
+    updateURLParams(cat._id, 'contact');
   };
 
   const closeSocialModal = () => {
     setIsSocialModalOpen(false);
     setSocialCat(null);
+    clearURLParams();
   };
 
   const openEnhancedGallery = (images: string[], title: string) => {
@@ -280,7 +341,7 @@ const FeaturedModelsSection = () => {
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-border">
               <div>
-                <h3 className="font-playfair text-2xl font-semibold text-modern-dark">
+                <h3 className="font-playfair text-2xl font-semibold text-foreground">
                   {selectedCat.name}
                 </h3>
                 <p className="text-muted-foreground uppercase tracking-wide text-sm">
@@ -397,6 +458,21 @@ const FeaturedModelsSection = () => {
                         Заявете сега
                       </Button>
                     )}
+                    <Button 
+                      variant="outline" 
+                      className="w-full flex items-center gap-2"
+                      onClick={async () => {
+                        const success = await copyToClipboard(selectedCat._id, 'gallery');
+                        if (success) {
+                          toast.success('Връзката е копирана!');
+                        } else {
+                          toast.error('Неуспешно копиране на връзката');
+                        }
+                      }}
+                    >
+                      <Share2 className="h-4 w-4" />
+                      Споделете
+                    </Button>
                     <Button 
                       variant="outline" 
                       className="w-full bg-amber-500 border-amber-500 text-white hover:bg-amber-600 hover:border-amber-600"

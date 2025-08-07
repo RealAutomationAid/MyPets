@@ -131,7 +131,8 @@ export default defineSchema({
   announcements: defineTable({
     title: v.string(),
     content: v.string(), // Simple text content
-    featuredImage: v.optional(v.string()), // Optional image URL
+    featuredImage: v.optional(v.string()), // Optional featured image URL
+    gallery: v.optional(v.array(v.string())), // Optional gallery images array
     isPublished: v.boolean(),
     publishedAt: v.number(), // Unix timestamp
     sortOrder: v.number(), // Manual ordering

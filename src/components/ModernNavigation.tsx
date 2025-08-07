@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useActiveSection, useScrollPosition } from "@/hooks/useScrollAnimation";
 import SocialContactModal from "./SocialContactModal";
@@ -11,19 +11,34 @@ const ModernNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const activeSection = useActiveSection(['home', 'models', 'males', 'females', 'kittens', 'tiktok', 'contact']);
   const { scrollY } = useScrollPosition();
   const { t } = useLanguage();
   
   const isNewsPage = location.pathname.startsWith('/news');
+  const isAboutPage = location.pathname.startsWith('/about');
+  const isHomePage = location.pathname === '/';
 
   const scrollToSection = useCallback((sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (isHomePage) {
+      // If we're on the home page, scroll directly
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If we're on another page, navigate to home first then scroll
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
     }
     setIsOpen(false);
-  }, []);
+  }, [isHomePage, navigate]);
 
   const navBg = scrollY > 50 ? 'bg-background/98' : 'bg-black/30';
   const navShadow = scrollY > 50 ? 'shadow-lg' : '';
@@ -107,6 +122,16 @@ const ModernNavigation = () => {
               }`}
             >
               {t('navigation.news')}
+            </Link>
+            <Link 
+              to="/about"
+              className={`transition-colors text-sm font-medium ${
+                isAboutPage 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
+              }`}
+            >
+              За нас
             </Link>
             <button 
               onClick={() => scrollToSection('tiktok')}
@@ -205,6 +230,15 @@ const ModernNavigation = () => {
               >
                 {t('navigation.news')}
               </Link>
+              <Link 
+                to="/about"
+                onClick={() => setIsOpen(false)}
+                className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
+                  isAboutPage ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                За нас
+              </Link>
               <button 
                 onClick={() => scrollToSection('tiktok')}
                 className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
@@ -223,7 +257,7 @@ const ModernNavigation = () => {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="w-full bg-white border-gray-300 text-foreground hover:bg-gray-50"
+                  className="w-full bg-primary border-primary text-primary-foreground hover:bg-primary/90 hover:border-primary/90"
                   onClick={() => {
                     setIsContactModalOpen(true);
                     setIsOpen(false);

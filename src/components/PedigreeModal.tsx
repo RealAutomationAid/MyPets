@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CatData, useParents } from '@/services/convexCatService';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useCatURL } from '@/hooks/useCatURL';
+import { Copy, ExternalLink } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface PedigreeModalProps {
   cat: CatData;
@@ -11,6 +14,7 @@ interface PedigreeModalProps {
 
 const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
   const { t } = useLanguage();
+  const { generateCatURL, copyToClipboard } = useCatURL();
   const [parentModalOpen, setParentModalOpen] = useState(false);
   const [selectedParent, setSelectedParent] = useState<CatData | null>(null);
   
@@ -60,12 +64,49 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
           <div className="flex flex-col items-center space-y-8">
             {/* Header Info */}
             <div className="text-center mb-4">
-              <h3 className="font-playfair text-xl text-foreground mb-2">
+              <h3 className="font-playfair text-xl text-white mb-2">
                 {cat.name}
               </h3>
-              <p className="text-muted-foreground text-sm">
-    {t('pedigree.link')}/{cat._id}
-              </p>
+              <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-lg px-4 py-2 border border-blue-200 dark:border-blue-800">
+                <p className="text-sm font-medium">
+                  <span className="text-muted-foreground">Връзка: </span>
+                  <a 
+                    href={generateCatURL(cat._id, 'pedigree')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors font-medium underline underline-offset-2"
+                  >
+                    ragdollbleuroi.eu/родословие/{cat.name}
+                  </a>
+                </p>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={async () => {
+                      const success = await copyToClipboard(cat._id, 'pedigree');
+                      if (success) {
+                        toast.success('Връзката е копирана!');
+                      } else {
+                        toast.error('Неуспешно копиране на връзката');
+                      }
+                    }}
+                  >
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => {
+                      window.open(generateCatURL(cat._id, 'pedigree'), '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
             </div>
 
             {/* Main Cat Card */}
@@ -77,7 +118,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <h3 className="font-semibold text-lg text-foreground mb-2">
+              <h3 className="font-semibold text-lg text-white mb-2">
                 {cat.name}
               </h3>
               <p className="text-muted-foreground text-sm mb-1">
@@ -129,7 +170,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <h4 className="font-semibold text-foreground mb-1">
+                      <h4 className="font-semibold text-white mb-1">
                         {mother.name}
                       </h4>
                       <p className="text-muted-foreground text-sm mb-2">
@@ -169,7 +210,7 @@ const PedigreeModal = ({ cat, isOpen, onClose }: PedigreeModalProps) => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <h4 className="font-semibold text-foreground mb-1">
+                      <h4 className="font-semibold text-white mb-1">
                         {father.name}
                       </h4>
                       <p className="text-muted-foreground text-sm mb-2">

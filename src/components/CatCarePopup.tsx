@@ -138,6 +138,169 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
                 да намерите перфектния спътник за вашето семейство.
               </p>
             </div>
+
+            {/* Detailed Ragdoll Information Section */}
+            <div 
+              id="more-ragdoll-info"
+              className="hidden space-y-6 border-t border-border pt-6 mt-6"
+            >
+              <div className="text-center mb-6">
+                <h3 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground mb-2">
+                  🐱 Всичко за Рагдол котките
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Подробна информация за породата и грижите
+                </p>
+              </div>
+
+              {/* Breed Characteristics */}
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-xl p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
+                <h4 className="font-semibold text-base sm:text-lg text-foreground mb-3 flex items-center">
+                  ✨ Характеристики на породата
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Темперамент:</strong> Изключително нежни, спокойни и послушни. Известни като "кукли парцалки" защото се отпускат напълно когато ги вдигат
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Размер:</strong> Едри котки - мъжки 6-9 кг, женски 4-6 кг. Достигат пълен размер на 3-4 години
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Козина:</strong> Полудълга, копринена и мека. Не се заплита лесно, но изисква редовно четкане
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Очи:</strong> Големи, овални, ярко сини - отличителна черта на породата
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Health & Care */}
+              <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950/30 dark:to-teal-950/30 rounded-xl p-4 sm:p-6 border border-green-200 dark:border-green-800">
+                <h4 className="font-semibold text-base sm:text-lg text-foreground mb-3 flex items-center">
+                  🏥 Здраве и грижи
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Продължительност на живота:</strong> 13-18 години при правилни грижи
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Здравословни проблеми:</strong> Склонност към сърдечни заболявания (HCM), бъбречни проблеми (PKD)
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Четкане:</strong> 3-4 пъти седмично, ежедневно по време на линеене (пролет/есен)
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Ветеринарни прегледи:</strong> Редовни прегледи, ваксинации, профилактика срещу паразити
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Living Conditions */}
+              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 rounded-xl p-4 sm:p-6 border border-orange-200 dark:border-orange-800">
+                <h4 className="font-semibold text-base sm:text-lg text-foreground mb-3 flex items-center">
+                  🏠 Условия на живот
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Само вътрешни котки:</strong> Рагдолите не трябва да излизат навън - твърде доверчиви и безгрижни за опасностите
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Спокойна среда:</strong> Обичат тишина и рутина, стресът може да повлияе на здравето им
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Социализация:</strong> Много социални, обичат да са близо до семейството си
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Игра и упражнения:</strong> Умерено активни, обичат интерактивни играчки и катерушки
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Costs */}
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30 rounded-xl p-4 sm:p-6 border border-red-200 dark:border-red-800">
+                <h4 className="font-semibold text-base sm:text-lg text-foreground mb-3 flex items-center">
+                  💰 Финансови разходи
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Начална цена:</strong> 1200-3000 лв. за чистокръвно котенце от качествен развъдник
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Месечни разходи:</strong> 80-150 лв. (храна, пясък, принадлежности)
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Ветеринарни разходи:</strong> 300-800 лв. годишно (прегледи, ваксини, профилактика)
+                    </p>
+                  </div>
+                  <div className="flex items-start space-x-2 sm:space-x-3">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      <strong>Оборудване:</strong> 200-500 лв. еднократно (котешка тоалетна, катерушка, играчки)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Close button for the expanded section */}
+              <div className="text-center pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const moreInfoDiv = document.getElementById('more-ragdoll-info');
+                    if (moreInfoDiv) {
+                      moreInfoDiv.classList.add('hidden');
+                    }
+                  }}
+                  className="bg-background border-border text-foreground hover:bg-muted"
+                >
+                  Скрий подробната информация
+                </Button>
+              </div>
+            </div>
           </div>
 
           {/* Action Buttons */}
@@ -155,7 +318,17 @@ const CatCarePopup = ({ onClose }: CatCarePopupProps) => {
             </GlowButton>
             <RippleButton 
               variant="outline"
-              onClick={handleClose}
+              onClick={() => {
+                // Show additional information
+                const moreInfoDiv = document.getElementById('more-ragdoll-info');
+                if (moreInfoDiv) {
+                  moreInfoDiv.scrollIntoView({ behavior: 'smooth' });
+                  moreInfoDiv.classList.remove('hidden');
+                } else {
+                  setContentVisible(false);
+                  setTimeout(() => setContentVisible(true), 100);
+                }
+              }}
               className="flex-1 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 h-11 sm:h-10 text-sm sm:text-base touch-manipulation"
             >
               Искам повече информация 💭
