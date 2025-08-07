@@ -4,102 +4,28 @@ import { motion } from "motion/react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Award, FileText, Camera, Trophy, Badge, Star, ExternalLink, Heart, Share2 } from "lucide-react";
+import { Award, FileText, Camera, Trophy, Badge, Star, ExternalLink, Heart, Share2, Target } from "lucide-react";
+import { Id } from "../../convex/_generated/dataModel";
 
 type BusinessGalleryItem = {
-  id: string;
-  src: string;
-  alt: string;
+  _id: Id<"gallery">;
   title: string;
-  category: 'award' | 'certificate' | 'photo' | 'trophy';
+  imageUrl: string;
   description?: string;
+  category: 'award' | 'certificate' | 'photo' | 'trophy' | 'achievement';
   date?: string;
-  height?: 'small' | 'medium' | 'large'; // For masonry layout
+  isPublished: boolean;
+  sortOrder: number;
+  uploadedAt: number;
+  associatedCatId?: Id<"cats">;
+  tags?: string[];
 };
 
-// Mock data for demonstration - this would come from the database in production
-const mockGalleryItems: BusinessGalleryItem[] = [
-  {
-    id: '1',
-    src: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop&auto=format',
-    alt: 'Best Cattery Award 2024',
-    title: 'Best Cattery Award 2024',
-    category: 'award',
-    description: 'Awarded for excellence in Ragdoll breeding and care',
-    date: '2024',
-    height: 'medium'
-  },
-  {
-    id: '2',
-    src: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=600&fit=crop&auto=format',
-    alt: 'TICA Registration Certificate',
-    title: 'TICA Registration Certificate',
-    category: 'certificate',
-    description: 'Official TICA cattery registration certificate',
-    date: '2023',
-    height: 'large'
-  },
-  {
-    id: '3',
-    src: 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=400&h=400&fit=crop&auto=format',
-    alt: 'Champion Ragdoll at Show',
-    title: 'Champion at Regional Show',
-    category: 'photo',
-    description: 'Our beautiful Ragdoll winning first place',
-    date: '2024',
-    height: 'small'
-  },
-  {
-    id: '4',
-    src: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=600&fit=crop&auto=format',
-    alt: 'First Place Trophy',
-    title: 'Championship Trophy',
-    category: 'trophy',
-    description: 'First place at the International Cat Show',
-    date: '2024',
-    height: 'medium'
-  },
-  {
-    id: '5',
-    src: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=400&h=700&fit=crop&auto=format',
-    alt: 'Ragdoll Kittens',
-    title: 'New Litter of Champions',
-    category: 'photo',
-    description: 'Our latest litter showing perfect Ragdoll characteristics',
-    date: '2024',
-    height: 'large'
-  },
-  {
-    id: '6',
-    src: 'https://images.unsplash.com/photo-1594736797933-d0301ba8807d?w=400&h=400&fit=crop&auto=format',
-    alt: 'Excellence in Breeding Award',
-    title: 'Excellence in Breeding',
-    category: 'award',
-    description: 'Recognition for maintaining breed standards',
-    date: '2023',
-    height: 'small'
-  },
-  {
-    id: '7',
-    src: 'https://images.unsplash.com/photo-1562013307-b33cb8ad4835?w=400&h=600&fit=crop&auto=format',
-    alt: 'Breeder Excellence Certificate',
-    title: 'Breeder Excellence Certificate',
-    category: 'certificate',
-    description: 'Certified excellence in Ragdoll breeding standards',
-    date: '2024',
-    height: 'medium'
-  },
-  {
-    id: '8',
-    src: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=600&fit=crop&auto=format',
-    alt: 'International Trophy',
-    title: 'International Cat Show Victory',
-    category: 'trophy',
-    description: 'Grand champion at international competition',
-    date: '2024',
-    height: 'large'
-  }
-];
+// Get random height for masonry layout
+const getRandomHeight = (): 'small' | 'medium' | 'large' => {
+  const heights: ('small' | 'medium' | 'large')[] = ['small', 'medium', 'large'];
+  return heights[Math.floor(Math.random() * heights.length)];
+};
 
 const categoryConfig = {
   award: { 
@@ -133,31 +59,49 @@ const categoryConfig = {
     bgColor: 'bg-purple-50 border-purple-200',
     hoverColor: 'hover:bg-purple-100',
     activeColor: 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/25'
+  },
+  achievement: { 
+    icon: Target, 
+    label: 'Achievements', 
+    color: 'text-pink-500', 
+    bgColor: 'bg-pink-50 border-pink-200',
+    hoverColor: 'hover:bg-pink-100',
+    activeColor: 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25'
   }
 };
 
-type CategoryFilter = 'all' | 'award' | 'certificate' | 'photo' | 'trophy';
+type CategoryFilter = 'all' | 'award' | 'certificate' | 'photo' | 'trophy' | 'achievement';
 
 export default function BusinessGallery() {
   const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  // In production, this would query the database for business gallery images
-  // const businessImages = useQuery(api.images.getBusinessGalleryImages);
+  // Fetch gallery items from database
+  const galleryItems = useQuery(api.gallery.getPublishedGalleryItems, activeFilter !== 'all' ? { category: activeFilter } : {});
+  const categories = useQuery(api.gallery.getGalleryCategoriesWithCounts);
   
   // Filter items based on selected category
-  const filteredItems = activeFilter === 'all' 
-    ? mockGalleryItems 
-    : mockGalleryItems.filter(item => item.category === activeFilter);
+  const filteredItems = galleryItems || [];
 
-  const categoryLabels = {
-    all: t('businessGallery.categories.all') || 'All',
-    award: categoryConfig.award.label,
-    certificate: categoryConfig.certificate.label,
-    photo: categoryConfig.photo.label,
-    trophy: categoryConfig.trophy.label
-  };
+  // Show loading if no data yet
+  if (!categories || !galleryItems) {
+    return (
+      <div className="py-16 w-full bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-3 text-muted-foreground">Зареждане на галерията...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show section if no gallery items
+  if (filteredItems.length === 0 && activeFilter === 'all') {
+    return null;
+  }
 
   return (
     <div className="py-16 w-full bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -203,36 +147,36 @@ export default function BusinessGallery() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {(Object.entries(categoryLabels) as [CategoryFilter, string][]).map(([category, label]) => {
-            const categorySettings = category !== 'all' ? categoryConfig[category as keyof typeof categoryConfig] : null;
+          {categories.map((category) => {
+            const categorySettings = category.key !== 'all' ? categoryConfig[category.key as keyof typeof categoryConfig] : null;
             const IconComponent = categorySettings?.icon || Star;
-            const isActive = activeFilter === category;
+            const isActive = activeFilter === category.key;
             
             return (
               <motion.button
-                key={category}
-                onClick={() => setActiveFilter(category)}
+                key={category.key}
+                onClick={() => setActiveFilter(category.key as CategoryFilter)}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold transition-all duration-300 backdrop-blur-sm border-2 ${
                   isActive
-                    ? category === 'all' 
+                    ? category.key === 'all' 
                       ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg shadow-slate-500/25 border-slate-500'
                       : categorySettings?.activeColor || 'bg-primary text-primary-foreground shadow-lg'
-                    : category === 'all'
+                    : category.key === 'all'
                       ? 'bg-white/70 text-slate-700 hover:bg-white/90 shadow-md border-slate-200 hover:border-slate-300'
                       : `${categorySettings?.bgColor || 'bg-white/70'} ${categorySettings?.color || 'text-muted-foreground'} ${categorySettings?.hoverColor || 'hover:bg-white/90'} shadow-md border-2`
                 }`}
               >
                 <IconComponent className="w-4 h-4" />
-                {label}
-                {category !== 'all' && (
+                {category.label}
+                {category.key !== 'all' && (
                   <span className={`text-xs px-2 py-1 rounded-full font-bold ${
                     isActive 
                       ? 'bg-white/20 text-white'
                       : 'bg-white/60 text-slate-600'
                   }`}>
-                    {mockGalleryItems.filter(item => item.category === category).length}
+                    {category.count}
                   </span>
                 )}
               </motion.button>
@@ -247,51 +191,59 @@ export default function BusinessGallery() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          {filteredItems.map((item, index) => {
-            const categorySettings = categoryConfig[item.category];
-            const IconComponent = categorySettings.icon;
-            const categoryColor = categorySettings.color;
-            
-            return (
-              <motion.div
-                key={item.id}
-                className={`break-inside-avoid mb-6 group cursor-pointer ${
-                  item.height === 'small' ? 'h-64' :
-                  item.height === 'large' ? 'h-96' : 'h-80'
-                }`}
-                onHoverStart={() => setHoveredItem(item.id)}
-                onHoverEnd={() => setHoveredItem(null)}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: index * 0.1,
-                  ease: "easeOut"
-                }}
-                whileHover={{ 
-                  y: -8,
-                  transition: { duration: 0.3 }
-                }}
-              >
-                {/* Card Container */}
-                <div className="relative h-full rounded-2xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/20 backdrop-blur-sm">
-                  {/* Image */}
-                  <div className="relative h-2/3 overflow-hidden">
-                    <img
-                      src={item.src}
-                      alt={item.alt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      onError={(e) => {
-                        // Fallback for missing images based on category
-                        const fallbackImages = {
-                          award: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=600&fit=crop&auto=format',
-                          trophy: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=600&fit=crop&auto=format',
-                          certificate: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=600&fit=crop&auto=format',
-                          photo: 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=400&h=600&fit=crop&auto=format'
-                        };
-                        e.currentTarget.src = fallbackImages[item.category] || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDQwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMjUwSDIyMFYzNTBIMjAwVjI1MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                      }}
-                    />
+          {filteredItems.length === 0 ? (
+            <div className="text-center py-12 col-span-full">
+              <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Няма елементи за показване в тази категория.</p>
+            </div>
+          ) : (
+            filteredItems.map((item, index) => {
+              const categorySettings = categoryConfig[item.category];
+              const IconComponent = categorySettings.icon;
+              const categoryColor = categorySettings.color;
+              const randomHeight = getRandomHeight();
+              
+              return (
+                <motion.div
+                  key={item._id}
+                  className={`break-inside-avoid mb-6 group cursor-pointer ${
+                    randomHeight === 'small' ? 'h-64' :
+                    randomHeight === 'large' ? 'h-96' : 'h-80'
+                  }`}
+                  onHoverStart={() => setHoveredItem(item._id)}
+                  onHoverEnd={() => setHoveredItem(null)}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    y: -8,
+                    transition: { duration: 0.3 }
+                  }}
+                >
+                  {/* Card Container */}
+                  <div className="relative h-full rounded-2xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/20 backdrop-blur-sm">
+                    {/* Image */}
+                    <div className="relative h-2/3 overflow-hidden">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                          // Fallback for missing images based on category
+                          const fallbackImages = {
+                            award: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=600&fit=crop&auto=format',
+                            trophy: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=600&fit=crop&auto=format',
+                            certificate: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=600&fit=crop&auto=format',
+                            photo: 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=400&h=600&fit=crop&auto=format',
+                            achievement: 'https://images.unsplash.com/photo-1594736797933-d0301ba8807d?w=400&h=600&fit=crop&auto=format'
+                          };
+                          e.currentTarget.src = fallbackImages[item.category] || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDQwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMjUwSDIyMFYzNTBIMjAwVjI1MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                        }}
+                      />
                     
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -308,8 +260,8 @@ export default function BusinessGallery() {
                       className="absolute top-3 right-3 flex gap-2 z-20"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ 
-                        opacity: hoveredItem === item.id ? 1 : 0,
-                        scale: hoveredItem === item.id ? 1 : 0.8
+                        opacity: hoveredItem === item._id ? 1 : 0,
+                        scale: hoveredItem === item._id ? 1 : 0.8
                       }}
                       transition={{ duration: 0.3 }}
                     >
@@ -360,7 +312,8 @@ export default function BusinessGallery() {
                 </div>
               </motion.div>
             );
-          })}
+          })
+        )}
         </motion.div>
         
         {/* Bottom decorative element */}

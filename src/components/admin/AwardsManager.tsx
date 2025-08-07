@@ -5,11 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ImageUpload } from '@/components/ui/ImageUpload';
-import { GlowButton, RippleButton, BounceButton } from '@/components/ui/animated-button';
+import { GlowButton, RippleButton } from '@/components/ui/animated-button';
 import { Plus, Edit, Trash2, Save, Eye, Trophy, Calendar, Building2, X, ImagePlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -18,13 +17,46 @@ import {
   useUpdateAward,
   useDeleteAward,
   useToggleAwardPublication,
-  AwardData,
-  AwardCategory,
+  type AwardData,
+  type AwardCategory,
   formatAwardDate,
   getCategoryLabel,
   getCategoryColor
 } from '@/services/convexAwardService';
-import { useCats } from '@/services/convexCatService';
+import { useCats, type CatData } from '@/services/convexCatService';
+import { Id } from '../../../convex/_generated/dataModel';
+
+interface AwardFormData {
+  title: string;
+  description: string;
+  awardDate: string; // YYYY-MM-DD format for input
+  awardingOrganization: string;
+  category: AwardCategory;
+  certificateImage: string;
+  galleryImages: string[];
+  associatedCatId: string; // Empty string for no selection
+  achievements: string;
+}
+
+const initialFormData: AwardFormData = {
+  title: '',
+  description: '',
+  awardDate: new Date().toISOString().split('T')[0],
+  awardingOrganization: '',
+  category: 'other',
+  certificateImage: '',
+  galleryImages: [],
+  associatedCatId: '',
+  achievements: '',
+};
+
+const AWARD_CATEGORIES: { value: AwardCategory; label: string }[] = [
+  { value: 'best_in_show', label: 'Най-добър от изложбата' },
+  { value: 'championship', label: 'Шампионат' },
+  { value: 'cattery_recognition', label: 'Признание за развъдник' },
+  { value: 'breeding_award', label: 'Награда за развъждане' },
+  { value: 'other', label: 'Други' },
+];
 
 const AwardsManager = () => {
   const awards = useAllAwards();
@@ -36,37 +68,13 @@ const AwardsManager = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAward, setEditingAward] = useState<AwardData | null>(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    awardDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-    awardingOrganization: '',
-    category: 'other' as AwardCategory,
-    certificateImage: '',
-    certificateImageStorageId: '',
-    galleryImages: [] as string[],
-    galleryImageStorageIds: [] as string[],
-    associatedCatId: '',
-    achievements: '',
-  });
+  const [formData, setFormData] = useState<AwardFormData>(initialFormData);
   const [isSaving, setIsSaving] = useState(false);
 
   // Reset form when dialog closes
   useEffect(() => {
     if (!isDialogOpen) {
-      setFormData({
-        title: '',
-        description: '',
-        awardDate: new Date().toISOString().split('T')[0],
-        awardingOrganization: '',
-        category: 'other',
-        certificateImage: '',
-        certificateImageStorageId: '',
-        galleryImages: [],
-        galleryImageStorageIds: [],
-        associatedCatId: '',
-        achievements: '',
-      });
+      setFormData(initialFormData);
       setEditingAward(null);
     }
   }, [isDialogOpen]);
@@ -81,40 +89,32 @@ const AwardsManager = () => {
         awardingOrganization: editingAward.awardingOrganization,
         category: editingAward.category,
         certificateImage: editingAward.certificateImage,
-        certificateImageStorageId: '',
-        galleryImages: editingAward.galleryImages,
-        galleryImageStorageIds: [],
+        galleryImages: editingAward.galleryImages || [],
         associatedCatId: editingAward.associatedCatId || '',
         achievements: editingAward.achievements || '',
       });
     }
   }, [editingAward]);
 
-  const handleInputChange = (field: string, value: string | string[]) => {
+  const handleInputChange = (field: keyof AwardFormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleCertificateUpload = (url: string, storageId: string) => {
-    setFormData(prev => ({
-      ...prev,
-      certificateImage: url,
-      certificateImageStorageId: storageId
-    }));
+  const handleCertificateUpload = (url: string) => {
+    setFormData(prev => ({ ...prev, certificateImage: url }));
   };
 
-  const handleGalleryUpload = (url: string, storageId: string) => {
+  const handleGalleryUpload = (url: string) => {
     setFormData(prev => ({
       ...prev,
-      galleryImages: [...prev.galleryImages, url],
-      galleryImageStorageIds: [...prev.galleryImageStorageIds, storageId]
+      galleryImages: [...prev.galleryImages, url]
     }));
   };
 
   const removeGalleryImage = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      galleryImages: prev.galleryImages.filter((_, i) => i !== index),
-      galleryImageStorageIds: prev.galleryImageStorageIds.filter((_, i) => i !== index)
+      galleryImages: prev.galleryImages.filter((_, i) => i !== index)
     }));
   };
 
@@ -143,7 +143,7 @@ const AwardsManager = () => {
         category: formData.category,
         certificateImage: formData.certificateImage,
         galleryImages: formData.galleryImages,
-        associatedCatId: formData.associatedCatId ? formData.associatedCatId as any : undefined,
+        associatedCatId: formData.associatedCatId ? formData.associatedCatId as Id<"cats"> : undefined,
         achievements: formData.achievements.trim() || undefined,
       };
 
@@ -188,7 +188,7 @@ const AwardsManager = () => {
     }
 
     try {
-      await deleteAward({ id: awardId as any });
+      await deleteAward({ id: awardId as Id<"awards"> });
       toast({
         title: "Успех",
         description: "Наградата е изтрита успешно.",
@@ -205,7 +205,7 @@ const AwardsManager = () => {
 
   const handleTogglePublication = async (awardId: string) => {
     try {
-      await togglePublication({ id: awardId as any });
+      await togglePublication({ id: awardId as Id<"awards"> });
       toast({
         title: "Успех",
         description: "Статусът на публикация е променен.",
@@ -314,11 +314,11 @@ const AwardsManager = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="best_in_show">Най-добър от изложбата</SelectItem>
-                      <SelectItem value="championship">Шампионат</SelectItem>
-                      <SelectItem value="cattery_recognition">Признание за развъдник</SelectItem>
-                      <SelectItem value="breeding_award">Награда за развъждане</SelectItem>
-                      <SelectItem value="other">Други</SelectItem>
+                      {AWARD_CATEGORIES.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -333,8 +333,7 @@ const AwardsManager = () => {
                       <SelectValue placeholder="Изберете котка..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Няма</SelectItem>
-                      {cats?.map((cat) => (
+                      {cats?.map((cat: CatData) => (
                         <SelectItem key={cat._id} value={cat._id}>
                           {cat.name}
                         </SelectItem>
@@ -353,7 +352,7 @@ const AwardsManager = () => {
                   label="Сертификат"
                   placeholder="Качете снимка на сертификата"
                   required
-                  uploadOptions={{ imageType: "award_certificate" }}
+                  uploadOptions={{ imageType: "general" }}
                   previewSize="large"
                 />
               </div>
@@ -389,7 +388,7 @@ const AwardsManager = () => {
                     onUploadSuccess={handleGalleryUpload}
                     label="Добави снимка към галерията"
                     placeholder="Качете допълнителни снимки"
-                    uploadOptions={{ imageType: "award_gallery" }}
+                    uploadOptions={{ imageType: "gallery" }}
                     className="border-dashed"
                   />
                 </div>
@@ -481,7 +480,7 @@ const AwardsManager = () => {
                         <Building2 className="h-4 w-4" />
                         {award.awardingOrganization}
                       </div>
-                      {award.galleryImages.length > 0 && (
+                      {award.galleryImages && award.galleryImages.length > 0 && (
                         <div className="flex items-center gap-1">
                           <ImagePlus className="h-4 w-4" />
                           +{award.galleryImages.length} снимки

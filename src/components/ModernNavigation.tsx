@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useActiveSection, useScrollPosition } from "@/hooks/useScrollAnimation";
 import SocialContactModal from "./SocialContactModal";
@@ -9,9 +10,12 @@ import ragdollLogo from "@/assets/ragdoll-logo.png";
 const ModernNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const location = useLocation();
   const activeSection = useActiveSection(['home', 'models', 'males', 'females', 'kittens', 'tiktok', 'contact']);
   const { scrollY } = useScrollPosition();
   const { t } = useLanguage();
+  
+  const isNewsPage = location.pathname.startsWith('/news');
 
   const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -94,6 +98,16 @@ const ModernNavigation = () => {
             >
               {t('navigation.kittens')}
             </button>
+            <Link 
+              to="/news"
+              className={`transition-colors text-sm font-medium ${
+                isNewsPage 
+                  ? `${textColor} border-b-2 ${scrollY > 50 ? 'border-foreground' : 'border-white'}` 
+                  : `${scrollY > 50 ? 'text-muted-foreground hover:text-foreground' : 'text-white/80 hover:text-white'}`
+              }`}
+            >
+              {t('navigation.news')}
+            </Link>
             <button 
               onClick={() => scrollToSection('tiktok')}
               className={`transition-colors text-sm font-medium ${
@@ -182,6 +196,15 @@ const ModernNavigation = () => {
               >
                 {t('navigation.kittens')}
               </button>
+              <Link 
+                to="/news"
+                onClick={() => setIsOpen(false)}
+                className={`block px-3 py-2 transition-colors text-sm w-full text-left ${
+                  isNewsPage ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t('navigation.news')}
+              </Link>
               <button 
                 onClick={() => scrollToSection('tiktok')}
                 className={`block px-3 py-2 transition-colors text-sm w-full text-left ${

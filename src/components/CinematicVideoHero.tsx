@@ -9,6 +9,9 @@ const CinematicVideoHero = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isPortraitVideo, setIsPortraitVideo] = useState(false);
+  const [videoAspectRatio, setVideoAspectRatio] = useState<number | null>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useLanguage();
   
@@ -30,10 +33,36 @@ const CinematicVideoHero = () => {
   console.log('Active hero video:', activeHeroVideo);
   console.log('Video source being used:', videoSource);
 
+  // Window resize effect for responsive handling
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
       const handleLoadedData = () => {
+        // Get video dimensions for aspect ratio analysis
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        const aspectRatio = width / height;
+        
+        // Consider video portrait if aspect ratio is less than 1 (height > width)
+        // or if it's close to common mobile ratios (9:16 ≈ 0.56, 3:4 ≈ 0.75)
+        const isPortrait = aspectRatio < 1 || aspectRatio <= 0.8;
+        
+        console.log(`Video dimensions: ${width}x${height}, aspect ratio: ${aspectRatio.toFixed(2)}, isPortrait: ${isPortrait}, isMobile: ${isMobileView}`);
+        
+        setVideoAspectRatio(aspectRatio);
+        setIsPortraitVideo(isPortrait);
         setIsVideoLoaded(true);
         setVideoError(false);
         setTimeout(() => setShowContent(true), 500);
@@ -43,6 +72,9 @@ const CinematicVideoHero = () => {
         console.error('Video failed to load, falling back to static video');
         setVideoError(true);
         setIsVideoLoaded(true);
+        // Reset aspect ratio states on error
+        setIsPortraitVideo(false);
+        setVideoAspectRatio(null);
         setTimeout(() => setShowContent(true), 500);
       };
 
@@ -69,22 +101,66 @@ const CinematicVideoHero = () => {
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video
-          key={videoSource} // Force React to recreate video element when source changes
-          ref={videoRef}
-          autoPlay={videoSettings.shouldAutoplay}
-          loop={videoSettings.shouldLoop}
-          muted={videoSettings.shouldMute}
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          onLoadedData={() => setIsVideoLoaded(true)}
-          onError={() => setVideoError(true)}
-        >
-          <source src={videoError ? ragdollVideo : videoSource} type="video/mp4" />
-          {/* Fallback source */}
-          <source src={ragdollVideo} type="video/mp4" />
-        </video>
+      <div className="absolute inset-0 z-0 bg-black">
+        {/* Letterbox container for portrait videos */}
+        <div className={`
+          absolute inset-0 flex items-center justify-center
+          ${isPortraitVideo && !isMobileView 
+            ? 'bg-gradient-to-r from-black via-gray-900 to-black' 
+            : ''
+          }
+        `}>
+          <video
+            key={videoSource} // Force React to recreate video element when source changes
+            ref={videoRef}
+            autoPlay={videoSettings.shouldAutoplay}
+            loop={videoSettings.shouldLoop}
+            muted={videoSettings.shouldMute}
+            playsInline
+            className={`
+              w-full h-full transition-all duration-700 ease-out
+              ${isPortraitVideo 
+                ? (isMobileView 
+                    ? 'object-cover' // Mobile: fill screen even for portrait videos
+                    : 'object-contain' // Desktop: letterbox portrait videos
+                  )
+                : 'object-cover' // Landscape: always fill with cropping
+              }
+              ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}
+            `}
+            style={{
+              // Enhanced responsive video sizing
+              ...(isPortraitVideo && videoAspectRatio && !isMobileView && {
+                // Desktop letterboxing for portrait videos
+                maxHeight: '100vh',
+                maxWidth: `min(100vw, ${100 * videoAspectRatio}vh)`,
+                aspectRatio: videoAspectRatio,
+              }),
+              // Mobile portrait videos fill the screen
+              ...(isPortraitVideo && isMobileView && {
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              })
+            }}
+            onLoadedData={() => setIsVideoLoaded(true)}
+            onError={() => setVideoError(true)}
+          >
+            <source src={videoError ? ragdollVideo : videoSource} type="video/mp4" />
+            {/* Fallback source */}
+            <source src={ragdollVideo} type="video/mp4" />
+          </video>
+        </div>
+        
+        {/* Portrait Video Letterbox Enhancement */}
+        {isPortraitVideo && !isMobileView && (
+          <div className="absolute inset-0 z-5">
+            {/* Subtle letterbox bars with cinematic gradient */}
+            <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-r from-black via-transparent to-black opacity-60" />
+            {/* Additional edge vignetting for portrait videos */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent via-transparent to-black/40" />
+          </div>
+        )}
         
         {/* Video Overlay for cinematic effect */}
         <div className="absolute inset-0 bg-black/20 z-10" />
@@ -190,6 +266,7 @@ const CinematicVideoHero = () => {
           </div>
         </div>
       )}
+
 
       {/* Enhanced film grain overlay for cinematic effect */}
       <div className="absolute inset-0 z-15 pointer-events-none opacity-30 mix-blend-multiply">

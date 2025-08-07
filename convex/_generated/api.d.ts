@@ -19,6 +19,7 @@ import type * as awards from "../awards.js";
 import type * as cats from "../cats.js";
 import type * as contact from "../contact.js";
 import type * as files from "../files.js";
+import type * as gallery from "../gallery.js";
 import type * as heroImages from "../heroImages.js";
 import type * as heroVideos from "../heroVideos.js";
 import type * as imageMigration from "../imageMigration.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   cats: typeof cats;
   contact: typeof contact;
   files: typeof files;
+  gallery: typeof gallery;
   heroImages: typeof heroImages;
   heroVideos: typeof heroVideos;
   imageMigration: typeof imageMigration;

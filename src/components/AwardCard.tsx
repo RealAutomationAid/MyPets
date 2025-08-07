@@ -21,7 +21,7 @@ const AwardCard = ({ award, onClick }: AwardCardProps) => {
 
   const cardContent = (
     <Card 
-      className="group relative overflow-hidden cursor-pointer bg-card shadow-card hover:shadow-lg transition-all duration-300"
+      className="group relative overflow-hidden cursor-pointer bg-card/50 backdrop-blur-sm border border-border/50 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50"
       onClick={handleClick}
     >
       {/* Certificate Image */}
@@ -37,10 +37,17 @@ const AwardCard = ({ award, onClick }: AwardCardProps) => {
         <div className="absolute top-3 left-3">
           <Badge 
             variant="secondary" 
-            className={`${getCategoryColor(award.category)} font-medium`}
+            className={`${getCategoryColor(award.category)} font-medium shadow-lg backdrop-blur-sm`}
           >
             {getCategoryLabel(award.category)}
           </Badge>
+        </div>
+        
+        {/* Click indicator */}
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="bg-primary/90 text-primary-foreground px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+            Щракнете за повече
+          </div>
         </div>
       </div>
 
@@ -79,15 +86,24 @@ const AwardCard = ({ award, onClick }: AwardCardProps) => {
         </div>
 
         {/* Hover/Touch Indicator */}
-        <div className="mt-4 flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <span>Вижте повече</span>
-          <motion.div
-            animate={{ x: isTouched ? 4 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="ml-2"
-          >
-            →
-          </motion.div>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span>Вижте повече</span>
+            <motion.div
+              animate={{ x: isTouched ? 4 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="ml-2"
+            >
+              →
+            </motion.div>
+          </div>
+          
+          {/* Visual click hint */}
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -81,7 +81,8 @@ export default defineSchema({
       v.literal("general"),
       v.literal("news"),
       v.literal("award_certificate"),
-      v.literal("award_gallery")
+      v.literal("award_gallery"),
+      v.literal("business_gallery")
     ),
   })
     .index("by_cat", ["associatedCatId"])
@@ -97,7 +98,8 @@ export default defineSchema({
       v.literal("site_content"),
       v.literal("feature_toggle"),
       v.literal("analytics"),
-      v.literal("seo")
+      v.literal("seo"),
+      v.literal("location")
     ),
     description: v.optional(v.string()), // Human-readable description
   })
@@ -205,4 +207,29 @@ export default defineSchema({
   })
     .index("by_active", ["isActive"])
     .index("by_uploaded", ["uploadedAt"]),
+
+  // Business gallery items (separate from awards)
+  gallery: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.string(),
+    category: v.union(
+      v.literal("award"), 
+      v.literal("certificate"), 
+      v.literal("photo"), 
+      v.literal("trophy"),
+      v.literal("achievement")
+    ),
+    date: v.optional(v.string()), // Display date (string for flexibility)
+    isPublished: v.boolean(),
+    sortOrder: v.number(),
+    uploadedAt: v.number(), // Unix timestamp
+    // Additional metadata
+    associatedCatId: v.optional(v.id("cats")), // Link to specific cat if applicable
+    tags: v.optional(v.array(v.string())), // Searchable tags
+  })
+    .index("by_published", ["isPublished", "sortOrder"])
+    .index("by_category", ["category"])
+    .index("by_cat", ["associatedCatId"])
+    .index("by_published_category", ["isPublished", "category"]),
 }); 

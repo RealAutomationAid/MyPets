@@ -25,8 +25,58 @@ const NewsSection = () => {
     return slug || id;
   };
 
-  if (!latestNews || latestNews.length === 0) {
-    return null; // Don't show section if no news
+
+  // Show loading state while data is being fetched
+  if (latestNews === undefined) {
+    return (
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-playfair text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              Новини от
+              <span className="text-primary"> BleuRoi Ragdoll Cattery</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Следете последните новини и събития от нашето семейство
+            </p>
+          </div>
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-3 text-muted-foreground">Зареждане на новини...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show section with placeholder when no news exists
+  if (latestNews.length === 0) {
+    return (
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-playfair text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              Новини от
+              <span className="text-primary"> BleuRoi Ragdoll Cattery</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Следете последните новини и събития от нашето семейство
+            </p>
+          </div>
+          <div className="text-center py-12">
+            <div className="bg-muted/50 rounded-lg p-8 max-w-md mx-auto">
+              <div className="text-muted-foreground mb-3">📰</div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Скоро ще има новини
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Нови истории и събития ще бъдат споделени скоро
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (

@@ -81,7 +81,7 @@ export const createAnnouncement = mutation({
     const now = Date.now();
     
     // Generate unique slug
-    let baseSlug = generateSlug(args.title);
+    const baseSlug = generateSlug(args.title);
     let slug = baseSlug;
     let counter = 1;
     
@@ -125,11 +125,11 @@ export const updateAnnouncement = mutation({
     }
 
     const now = Date.now();
-    let updatePayload: typeof updateData & { slug?: string } = { ...updateData };
+    const updatePayload: typeof updateData & { slug?: string } = { ...updateData };
     
     // Update slug if title changed
     if (updateData.title !== existing.title) {
-      let baseSlug = generateSlug(updateData.title);
+      const baseSlug = generateSlug(updateData.title);
       let slug = baseSlug;
       let counter = 1;
       
@@ -199,3 +199,4 @@ export const updateSortOrder = mutation({
     return await Promise.all(promises);
   },
 });
+

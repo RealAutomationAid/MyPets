@@ -7,7 +7,7 @@ export const useAllSiteSettings = () => {
   return useQuery(api.siteSettings.getAllSettings);
 };
 
-export const useSettingsByType = (type: 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo') => {
+export const useSettingsByType = (type: 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo' | 'location') => {
   return useQuery(api.siteSettings.getSettingsByType, { type });
 };
 
@@ -19,6 +19,10 @@ export const useSocialMediaSettings = () => {
   return useQuery(api.siteSettings.getSocialMediaSettings);
 };
 
+export const useLocationSettings = () => {
+  return useQuery(api.siteSettings.getLocationSettings);
+};
+
 // Mutation hooks for site settings
 export const useUpsertSetting = () => {
   return useMutation(api.siteSettings.upsertSetting);
@@ -26,6 +30,10 @@ export const useUpsertSetting = () => {
 
 export const useUpdateSocialMediaSettings = () => {
   return useMutation(api.siteSettings.updateSocialMediaSettings);
+};
+
+export const useUpdateLocationSettings = () => {
+  return useMutation(api.siteSettings.updateLocationSettings);
 };
 
 export const useDeleteSetting = () => {
@@ -37,7 +45,7 @@ export const useInitializeDefaultSettings = () => {
 };
 
 // Type exports
-export type SiteSettingType = 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo';
+export type SiteSettingType = 'social_media' | 'contact_info' | 'site_content' | 'feature_toggle' | 'analytics' | 'seo' | 'location';
 
 export type SiteSetting = {
   _id: Id<"siteSettings">;
@@ -52,4 +60,12 @@ export type SocialMediaSettings = {
   facebook_url?: string;
   instagram_url?: string;
   tiktok_url?: string;
+};
+
+export type LocationSettings = {
+  establishment_address?: string;
+  establishment_coordinates?: string; // JSON string: {lat: number, lng: number}
+  google_maps_url?: string;
+  apple_maps_url?: string;
+  location_display_name?: string;
 };

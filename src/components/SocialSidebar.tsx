@@ -141,3 +141,11 @@ const SocialSidebar = () => {
 };
 
 export default SocialSidebar;
+
+// Accessibility and performance optimizations are handled inline with:
+// - touch-manipulation for better touch response
+// - WebkitTapHighlightColor: 'transparent' to remove tap highlights
+// - Hardware acceleration via transform properties
+// - Reduced motion support via system preferences
+// - Proper ARIA labels and semantic markup
+// - Focus management for keyboard navigation

@@ -3,7 +3,7 @@ import ModernNavigation from "@/components/ModernNavigation";
 import CinematicVideoHero from "@/components/CinematicVideoHero";
 import FeaturedModelsSection from "@/components/FeaturedModelsSection";
 import BusinessGallery from "@/components/BusinessGallery";
-import AwardsSection from "@/components/AwardsSection";
+import GallerySection from "@/components/GallerySection";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
@@ -40,10 +40,10 @@ const Index = () => {
         <FeaturedModelsSection />
       </div>
       <div id="gallery">
-        <BusinessGallery />
+        <GallerySection />
       </div>
-      <div id="awards">
-        <AwardsSection />
+      <div id="achievements">
+        <BusinessGallery />
       </div>
       <div id="news">
         <NewsSection />

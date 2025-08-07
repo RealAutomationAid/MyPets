@@ -7,7 +7,7 @@ import PedigreeCanvas from '@/components/admin/PedigreeCanvas';
 import TikTokVideoManager from '@/components/admin/TikTokVideoManager';
 import SocialMediaSettings from '@/components/admin/SocialMediaSettings';
 import NewsManager from '@/components/admin/NewsManager';
-import AwardsManager from '@/components/admin/AwardsManager';
+import GalleryManager from '@/components/admin/GalleryManager';
 
 import HeroVideoManager from '@/components/admin/HeroVideoManager';
 import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
@@ -15,7 +15,7 @@ import { CatData } from '@/services/convexCatService';
 import ragdollLogo from '@/assets/ragdoll-logo.png';
 import { Menu, X } from 'lucide-react';
 
-type AdminTab = 'pedigree' | 'news' | 'awards' | 'tiktok' | 'social' | 'herovideo' | 'qr';
+type AdminTab = 'pedigree' | 'news' | 'gallery' | 'tiktok' | 'social' | 'herovideo' | 'qr';
 
 const Admin = () => {
   const { isAuthenticated, isLoading, logout } = useAdminAuth();
@@ -27,10 +27,9 @@ const Admin = () => {
   const adminTabs = [
     { id: 'pedigree' as AdminTab, label: 'Родословие', icon: '🌳' },
     { id: 'news' as AdminTab, label: 'Новини', icon: '📰' },
-    { id: 'awards' as AdminTab, label: 'Награди', icon: '🏆' },
+    { id: 'gallery' as AdminTab, label: 'Галерия', icon: '🖼️' },
     { id: 'tiktok' as AdminTab, label: 'TikTok видеа', icon: '🎵' },
     { id: 'social' as AdminTab, label: 'Социални мрежи', icon: '📱' },
-
     { id: 'herovideo' as AdminTab, label: 'Hero Видео', icon: '🎬' },
     { id: 'qr' as AdminTab, label: 'QR Код', icon: '📊' }
   ];
@@ -86,8 +85,8 @@ const Admin = () => {
         );
       case 'news':
         return <NewsManager />;
-      case 'awards':
-        return <AwardsManager />;
+      case 'gallery':
+        return <GalleryManager />;
       case 'tiktok':
         return <TikTokVideoManager />;
       case 'social':

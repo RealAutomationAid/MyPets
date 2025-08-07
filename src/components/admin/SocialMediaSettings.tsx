@@ -4,18 +4,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Facebook, Instagram, Save, BarChart, Search, Eye, CheckCircle, AlertCircle } from 'lucide-react';
+import { Facebook, Instagram, Save, BarChart, Search, Eye, CheckCircle, AlertCircle, MapPin } from 'lucide-react';
 import { 
   useSocialMediaSettings, 
   useUpdateSocialMediaSettings,
   useSettingsByType,
-  useUpsertSetting
+  useUpsertSetting,
+  useLocationSettings,
+  useUpdateLocationSettings
 } from '@/services/convexSiteSettingsService';
 
 const SocialMediaSettings = () => {
   const socialSettings = useSocialMediaSettings();
   const updateSocialSettings = useUpdateSocialMediaSettings();
   const analyticsSettings = useSettingsByType('analytics');
+  const locationSettings = useLocationSettings();
+  const updateLocationSettings = useUpdateLocationSettings();
   const upsertSetting = useUpsertSetting();
   
   const [formData, setFormData] = useState({
@@ -28,6 +32,13 @@ const SocialMediaSettings = () => {
     googleSearchConsole: '',
     metaPixelId: '',
     googleAnalyticsId: '',
+  });
+
+  const [locationData, setLocationData] = useState({
+    address: '',
+    displayName: '',
+    googleMapsUrl: '',
+    appleMapsUrl: '',
   });
   
   const [isSaving, setIsSaving] = useState(false);
@@ -63,6 +74,18 @@ const SocialMediaSettings = () => {
       });
     }
   }, [analyticsSettings]);
+
+  // Load location settings
+  useEffect(() => {
+    if (locationSettings) {
+      setLocationData({
+        address: locationSettings.establishment_address || '',
+        displayName: locationSettings.location_display_name || '',
+        googleMapsUrl: locationSettings.google_maps_url || '',
+        appleMapsUrl: locationSettings.apple_maps_url || '',
+      });
+    }
+  }, [locationSettings]);
 
   const handleSocialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +145,30 @@ const SocialMediaSettings = () => {
     } catch (error) {
       console.error('Error saving analytics settings:', error);
       setSaveMessage('Грешка при запазването на аналитичните настройки');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleLocationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setSaveMessage('');
+    
+    try {
+      await updateLocationSettings({
+        address: locationData.address || undefined,
+        displayName: locationData.displayName || undefined,
+        googleMapsUrl: locationData.googleMapsUrl || undefined,
+        appleMapsUrl: locationData.appleMapsUrl || undefined,
+      });
+      
+      setSaveMessage('Настройки за локация са запазени успешно!');
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving location settings:', error);
+      setSaveMessage('Грешка при запазването на настройките за локация');
       setTimeout(() => setSaveMessage(''), 3000);
     } finally {
       setIsSaving(false);
@@ -232,6 +279,130 @@ const SocialMediaSettings = () => {
                   {isSaving ? 'Запазване...' : 'Запази социални мрежи'}
                 </Button>
               </form>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Location Settings */}
+          <AccordionItem value="location">
+            <AccordionTrigger className="text-left min-h-[44px]">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <MapPin className="h-4 w-4 text-orange-600" />
+                </div>
+                <span>Локация & Адрес</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pt-4">
+              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-sm text-orange-800">
+                  <strong>Забележка:</strong> Тези настройки ще се използват за показване на локацията в страничния панел и ще позволят на посетителите лесно да намерят развъдника.
+                </p>
+              </div>
+
+              <form onSubmit={handleLocationSubmit} className="space-y-6">
+                {/* Address */}
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-orange-600" />
+                    Адрес
+                  </Label>
+                  <Input
+                    id="address"
+                    value={locationData.address}
+                    onChange={(e) => setLocationData(prev => ({ ...prev, address: e.target.value }))}
+                    placeholder="София, България"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Физическият адрес на развъдника
+                  </p>
+                </div>
+
+                {/* Display Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="displayName">Име за показване</Label>
+                  <Input
+                    id="displayName"
+                    value={locationData.displayName}
+                    onChange={(e) => setLocationData(prev => ({ ...prev, displayName: e.target.value }))}
+                    placeholder="BleuRoi Ragdoll Cattery"
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Как да се показва името в бутона за локация
+                  </p>
+                </div>
+
+                {/* Google Maps URL */}
+                <div className="space-y-2">
+                  <Label htmlFor="googleMapsUrl">Google Maps URL (по избор)</Label>
+                  <Input
+                    id="googleMapsUrl"
+                    type="url"
+                    value={locationData.googleMapsUrl}
+                    onChange={(e) => setLocationData(prev => ({ ...prev, googleMapsUrl: e.target.value }))}
+                    placeholder="https://maps.google.com/?q=..."
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Персонализиран Google Maps линк (ако е празно ще се генерира автоматично)
+                  </p>
+                </div>
+
+                {/* Apple Maps URL */}
+                <div className="space-y-2">
+                  <Label htmlFor="appleMapsUrl">Apple Maps URL (по избор)</Label>
+                  <Input
+                    id="appleMapsUrl"
+                    type="url"
+                    value={locationData.appleMapsUrl}
+                    onChange={(e) => setLocationData(prev => ({ ...prev, appleMapsUrl: e.target.value }))}
+                    placeholder="https://maps.apple.com/?q=..."
+                    className="w-full min-h-[44px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Персонализиран Apple Maps линк (ако е празно ще се генерира автоматично)
+                  </p>
+                </div>
+
+                {/* Submit Button */}
+                <Button 
+                  type="submit" 
+                  disabled={isSaving}
+                  className="w-full min-h-[44px] bg-orange-600 text-white hover:bg-orange-700 flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {isSaving ? 'Запазване...' : 'Запази настройки за локация'}
+                </Button>
+              </form>
+
+              {/* Location Status indicators */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-medium mb-3">Статус на настройките:</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    {locationData.address ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-gray-400" />
+                    }
+                    <span>Адрес: {locationData.address ? 'Настроен' : 'Не е настроен'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {locationData.displayName ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-gray-400" />
+                    }
+                    <span>Име за показване: {locationData.displayName ? 'Настроено' : 'Използва се адресът'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {locationData.googleMapsUrl ? 
+                      <CheckCircle className="w-4 h-4 text-green-600" /> : 
+                      <AlertCircle className="w-4 h-4 text-orange-400" />
+                    }
+                    <span>Google Maps: {locationData.googleMapsUrl ? 'Персонализиран' : 'Автоматичен'}</span>
+                  </div>
+                </div>
+              </div>
             </AccordionContent>
           </AccordionItem>
 
