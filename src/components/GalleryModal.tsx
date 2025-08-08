@@ -27,12 +27,12 @@ const GalleryModal = ({ item, isOpen, onClose }: GalleryModalProps) => {
             <X className="h-4 w-4" />
           </Button>
 
-          {/* Image */}
-          <div className="aspect-[16/10] overflow-hidden">
+          {/* Image - ensure full image visible */}
+          <div className="aspect-[16/10] overflow-hidden flex items-center justify-center bg-black">
             <img
               src={item.imageUrl}
               alt={item.title}
-              className="w-full h-full object-cover"
+              className="max-w-full max-h-full object-contain"
             />
           </div>
 

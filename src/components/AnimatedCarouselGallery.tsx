@@ -118,10 +118,10 @@ export default function AnimatedCarouselGallery() {
                 }}
               >
                 {/* Image Container */}
-                <div className="relative aspect-[4/5] overflow-hidden">
+                <div className="relative aspect-[4/5] overflow-hidden flex items-center justify-center bg-muted">
                   <RagdollImage
                     src={cat.image}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="max-w-full max-h-full object-contain transition-transform duration-700"
                     alt={cat.name}
                     fallbackSrc="/placeholder.svg"
                   />

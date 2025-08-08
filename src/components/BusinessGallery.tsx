@@ -227,11 +227,11 @@ export default function BusinessGallery() {
                   {/* Card Container */}
                   <div className="relative h-full rounded-2xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/20 backdrop-blur-sm">
                     {/* Image */}
-                    <div className="relative h-2/3 overflow-hidden">
+                    <div className="relative h-2/3 overflow-hidden flex items-center justify-center bg-muted">
                       <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="max-w-full max-h-full object-contain transition-transform duration-700"
                         onError={(e) => {
                           // Fallback for missing images based on category
                           const fallbackImages = {

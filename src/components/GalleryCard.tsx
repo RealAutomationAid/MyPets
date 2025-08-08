@@ -16,11 +16,11 @@ const GalleryCard = ({ item, onClick }: GalleryCardProps) => {
     >
       {/* Image Container */}
       <div className="relative overflow-hidden">
-        <div className="aspect-[4/3] overflow-hidden">
+        <div className="aspect-[4/3] overflow-hidden flex items-center justify-center bg-muted">
           <img
             src={item.imageUrl}
             alt={item.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="max-w-full max-h-full object-contain transition-opacity duration-300"
           />
         </div>
         
