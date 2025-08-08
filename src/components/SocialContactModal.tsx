@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Facebook, Phone } from 'lucide-react';
+import { Facebook, Instagram, Phone } from 'lucide-react';
 import { CatData } from '@/services/convexCatService';
 import { useSocialMediaSettings } from '@/services/convexSiteSettingsService';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -30,6 +30,12 @@ const SocialContactModal = ({ cat, isOpen, onClose }: SocialContactModalProps) =
       icon: Facebook,
       url: socialSettings?.facebook_url || 'https://www.facebook.com/profile.php?id=61561853557367',
       color: 'bg-blue-600 hover:bg-blue-700',
+    },
+    {
+      name: 'Instagram',
+      icon: Instagram,
+      url: socialSettings?.instagram_url || 'https://instagram.com/radanovpride',
+      color: 'bg-pink-600 hover:bg-pink-700',
     },
     {
       name: 'TikTok',
