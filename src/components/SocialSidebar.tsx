@@ -3,6 +3,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { useLocation } from "react-router-dom";
 import { useSocialMediaSettings } from "@/services/convexSiteSettingsService";
 import { Instagram } from "lucide-react";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
+import { WHATSAPP_LINK } from "@/config/contact";
 
 const SocialSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,6 +28,17 @@ const SocialSidebar = () => {
 
   const SocialLinks = ({ mobile = false, showTheme = true }: { mobile?: boolean; showTheme?: boolean }) => (
     <>
+      {/* WhatsApp Link */}
+      <a
+        href={WHATSAPP_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`block ${mobile ? 'w-10 h-10' : 'w-12 h-12'} bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition-colors group hover:scale-110 transform duration-200`}
+        aria-label="WhatsApp"
+      >
+        <WhatsAppIcon className={mobile ? "w-5 h-5" : "w-6 h-6"} title="WhatsApp" />
+      </a>
+
       {/* Facebook Link */}
       <a
         href={facebookUrl}

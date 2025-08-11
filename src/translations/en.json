@@ -115,5 +115,8 @@
   "footer": {
     "address": "Bulgaria, Gotse Delchev, Sestri Dukovi 4, 2900",
     "copyright": "© 2025 BleuRoi Ragdoll Cattery. All rights reserved."
+  },
+  "locationMap": {
+    "title": "You can find us at"
   }
 }

@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, ArrowLeft, ArrowRight, Share2, Eye } from 'lucide-react';
 import ModernNavigation from '@/components/ModernNavigation';
 import Footer from '@/components/Footer';
+import LocationMap from '@/components/LocationMap';
 import { useAnnouncementBySlug, useLatestAnnouncements } from '@/services/convexAnnouncementService';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from '@/hooks/use-toast';
@@ -330,6 +331,7 @@ const NewsArticle = () => {
           </article>
         </main>
 
+        <LocationMap />
         <Footer />
       </div>
     </>

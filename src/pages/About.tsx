@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import ModernNavigation from '@/components/ModernNavigation';
 import Footer from '@/components/Footer';
+import LocationMap from '@/components/LocationMap';
 import SocialSidebar from '@/components/SocialSidebar';
 import AboutHero from '../components/about/AboutHero';
 import CatteryIntro from '../components/about/CatteryIntro';
@@ -105,6 +106,7 @@ const About = () => {
         {mounted && <SocialSidebar />}
 
         {/* Footer */}
+        <LocationMap />
         <Footer />
       </div>
     </>

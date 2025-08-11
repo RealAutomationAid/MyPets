@@ -1,6 +1,8 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import ragdollLogo from "@/assets/ragdoll-logo.png";
 import { useSocialMediaSettings } from "@/services/convexSiteSettingsService";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
+import { WHATSAPP_LINK, CONTACT_PHONE_E164, CONTACT_PHONE_DISPLAY } from "@/config/contact";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -27,11 +29,23 @@ const Footer = () => {
   {t('footer.address')}
             </p>
             <p className="text-white/90 text-sm">
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="inline-flex items-center justify-center text-green-500 hover:text-green-400 transition-colors"
+                title="WhatsApp"
+              >
+                <WhatsAppIcon className="w-8 h-8" />
+              </a>
+            </p>
+            <p className="text-white/90 text-sm">
               <a 
-                href="tel:+359894474966" 
+                href={`tel:${CONTACT_PHONE_E164}`}
                 className="hover:text-white transition-colors hover:underline"
               >
-                +359894 474 966
+                {CONTACT_PHONE_DISPLAY}
               </a>
             </p>
           </div>

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight, ArrowLeft, Newspaper } from 'lucide-react';
 import ModernNavigation from '@/components/ModernNavigation';
 import Footer from '@/components/Footer';
+import LocationMap from '@/components/LocationMap';
 import { usePublishedAnnouncements } from '@/services/convexAnnouncementService';
 import { useLanguage } from '@/hooks/useLanguage';
 
@@ -238,6 +239,7 @@ const News = () => {
           </section>
         </main>
 
+        <LocationMap />
         <Footer />
       </div>
     </>

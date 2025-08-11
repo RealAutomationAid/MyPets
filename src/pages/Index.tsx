@@ -7,6 +7,7 @@ import GallerySection from "@/components/GallerySection";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
+import LocationMap from "@/components/LocationMap";
 import SocialSidebar from "@/components/SocialSidebar";
 
 import CatCarePopup from "@/components/CatCarePopup";
@@ -50,6 +51,7 @@ const Index = () => {
         <TikTokSection />
       </div>
       <div id="contact">
+        <LocationMap />
         <Footer />
       </div>
       
