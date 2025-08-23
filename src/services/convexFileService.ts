@@ -38,7 +38,16 @@ export const useFileUpload = () => {
       let fileToUpload = file;
       if (file.type.startsWith('image/')) {
         try {
-          fileToUpload = await compressImage(file);
+          // Use enhanced compression with smart defaults based on image type
+          const compressionOptions: ImageCompressionOptions = {
+            maxSizeBytes: 800 * 1024, // 800KB for Convex storage
+            maxDimension: options.imageType === 'profile' ? 1024 : 1920,
+            quality: options.imageType === 'profile' ? 0.85 : 0.8,
+            outputFormat: 'jpeg', // JPEG for best compression
+            preserveMetadata: false
+          };
+
+          fileToUpload = await compressImage(file, compressionOptions);
           console.log(`Image compressed from ${formatFileSize(file.size)} to ${formatFileSize(fileToUpload.size)}`);
         } catch (compressionError) {
           console.warn('Image compression failed, uploading original:', compressionError);
@@ -167,11 +176,28 @@ export const validateVideoFile = (file: File): { valid: boolean; error?: string 
   return { valid: true };
 };
 
-// Utility to compress images to stay under Convex 1 MiB storage limit
-export const compressImage = async (file: File, maxSizeBytes: number = 800 * 1024): Promise<File> => {
+// Enhanced image compression options
+export interface ImageCompressionOptions {
+  maxSizeBytes?: number;
+  maxDimension?: number;
+  quality?: number;
+  outputFormat?: 'jpeg' | 'webp' | 'png';
+  preserveMetadata?: boolean;
+}
+
+// Utility to compress images with advanced options
+export const compressImage = async (file: File, options: ImageCompressionOptions = {}): Promise<File> => {
+  const {
+    maxSizeBytes = 800 * 1024, // 800KB default for Convex
+    maxDimension = 1920,
+    quality = 0.8,
+    outputFormat = 'jpeg',
+    preserveMetadata = false
+  } = options;
+
   return new Promise((resolve, reject) => {
-    // If file is already small enough, return as-is
-    if (file.size <= maxSizeBytes) {
+    // If file is already small enough, return as-is (unless we need format conversion)
+    if (file.size <= maxSizeBytes && (file.type.includes(outputFormat) || outputFormat === 'jpeg')) {
       resolve(file);
       return;
     }
@@ -184,9 +210,19 @@ export const compressImage = async (file: File, maxSizeBytes: number = 800 * 102
       try {
         // Calculate new dimensions to reduce file size
         let { width, height } = img;
-        const maxDimension = 1920; // Max dimension for compressed image
         
-        // Scale down if image is too large
+        // Apply intelligent scaling based on image content
+        const aspectRatio = width / height;
+        
+        // For very large images, use progressive scaling
+        if (width > maxDimension * 2 || height > maxDimension * 2) {
+          // First pass: scale to 150% of max dimension
+          const scaleFactor = maxDimension * 1.5 / Math.max(width, height);
+          width *= scaleFactor;
+          height *= scaleFactor;
+        }
+        
+        // Final scaling to max dimension
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
             height = (height * maxDimension) / width;
@@ -197,19 +233,27 @@ export const compressImage = async (file: File, maxSizeBytes: number = 800 * 102
           }
         }
 
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = Math.round(width);
+        canvas.height = Math.round(height);
 
         if (!ctx) {
           reject(new Error('Failed to get canvas context'));
           return;
         }
 
-        // Draw and compress
-        ctx.drawImage(img, 0, 0, width, height);
+        // Apply image smoothing for better quality
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
 
-        // Try different quality levels to get under the size limit
-        const tryCompress = (quality: number): void => {
+        // Draw image with potential filters for optimization
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Determine output MIME type
+        const outputMimeType = outputFormat === 'webp' ? 'image/webp' : 
+                               outputFormat === 'png' ? 'image/png' : 'image/jpeg';
+
+        // Progressive quality reduction to meet size constraints
+        const tryCompress = (currentQuality: number, attempt: number = 1): void => {
           canvas.toBlob(
             (blob) => {
               if (!blob) {
@@ -217,27 +261,46 @@ export const compressImage = async (file: File, maxSizeBytes: number = 800 * 102
                 return;
               }
 
-              // If still too large and quality can be reduced further, try again
-              if (blob.size > maxSizeBytes && quality > 0.1) {
-                tryCompress(quality - 0.1);
+              console.log(`Compression attempt ${attempt}: ${formatFileSize(blob.size)} at quality ${currentQuality}`);
+
+              // If still too large and we can reduce quality further
+              if (blob.size > maxSizeBytes && currentQuality > 0.1) {
+                // More aggressive quality reduction for larger files
+                const qualityReduction = blob.size > maxSizeBytes * 2 ? 0.15 : 0.1;
+                tryCompress(Math.max(0.1, currentQuality - qualityReduction), attempt + 1);
+                return;
+              }
+
+              // If still too large even at lowest quality, try further dimension reduction
+              if (blob.size > maxSizeBytes && currentQuality <= 0.1 && canvas.width > 800) {
+                const newWidth = Math.round(canvas.width * 0.8);
+                const newHeight = Math.round(canvas.height * 0.8);
+                
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                
+                tryCompress(0.6, attempt + 1); // Reset quality for smaller image
                 return;
               }
 
               // Create new file with compressed blob
-              const compressedFile = new File([blob], file.name, {
-                type: blob.type,
+              const compressedFile = new File([blob], 
+                file.name.replace(/\.[^/.]+$/, `.${outputFormat === 'jpeg' ? 'jpg' : outputFormat}`), {
+                type: outputMimeType,
                 lastModified: Date.now(),
               });
 
+              console.log(`Final compression: ${formatFileSize(file.size)} → ${formatFileSize(compressedFile.size)}`);
               resolve(compressedFile);
             },
-            'image/jpeg', // Convert to JPEG for better compression
-            quality
+            outputMimeType,
+            currentQuality
           );
         };
 
-        // Start with quality 0.8
-        tryCompress(0.8);
+        // Start compression
+        tryCompress(quality);
       } catch (error) {
         reject(error);
       }
