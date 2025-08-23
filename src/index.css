@@ -1,3 +1,5 @@
+@import './styles/performance.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -64,6 +66,13 @@
 @keyframes floatReverse {
   0%, 100% { transform: translateY(0px) rotate(-3deg); }
   50% { transform: translateY(-12px) rotate(-3deg); }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, -1px); }
+  50% { transform: translate(1px, 0px); }
+  75% { transform: translate(0px, 1px); }
 }
 
 @keyframes floatSlow {
@@ -194,6 +203,122 @@
   }
 }
 
+/* V0 Hero Section Animations */
+@layer components {
+  .cat-image-1 {
+    top: 5%;
+    left: 5%;
+    animation: super-smooth-float 150s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .cat-image-2 {
+    top: 10%;
+    right: 2%;
+    animation: super-smooth-float 160s ease-in-out infinite;
+    animation-delay: 30s;
+  }
+
+  .cat-image-3 {
+    top: 75%;
+    left: 2%;
+    animation: super-smooth-float 170s ease-in-out infinite;
+    animation-delay: 60s;
+  }
+
+  .cat-image-4 {
+    top: 80%;
+    right: 8%;
+    animation: super-smooth-float 155s ease-in-out infinite;
+    animation-delay: 90s;
+  }
+
+  .cat-image-5 {
+    top: 20%;
+    left: 85%;
+    animation: super-smooth-float 165s ease-in-out infinite;
+    animation-delay: 120s;
+  }
+
+  .cat-image-6 {
+    top: 70%;
+    right: 75%;
+    animation: super-smooth-float 175s ease-in-out infinite;
+    animation-delay: 150s;
+  }
+}
+
+@keyframes ultra-gentle-float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateY(-5px) translateX(3px) rotate(0.5deg) scale(1.005);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(3px) translateX(-4px) rotate(-0.3deg) scale(1);
+    opacity: 0.85;
+  }
+  75% {
+    transform: translateY(-4px) translateX(6px) rotate(0.8deg) scale(1.008);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes super-smooth-float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.85;
+  }
+  20% {
+    transform: translateY(-2px) translateX(1px) rotate(0.1deg) scale(1.002);
+    opacity: 0.9;
+  }
+  40% {
+    transform: translateY(1px) translateX(-1.5px) rotate(-0.1deg) scale(1);
+    opacity: 0.88;
+  }
+  60% {
+    transform: translateY(-1.5px) translateX(2px) rotate(0.15deg) scale(1.003);
+    opacity: 0.92;
+  }
+  80% {
+    transform: translateY(0.5px) translateX(-0.5px) rotate(-0.05deg) scale(1.001);
+    opacity: 0.87;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes paw-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(100vh) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.animate-paw-fall {
+  animation: paw-fall linear infinite;
+}
+
 .animate-spin-slow {
   animation: spin-slow 3s linear infinite;
 }
@@ -246,6 +371,8 @@
   animation: subtleRotate 20s linear infinite;
 }
 
+
+
 .animate-delay-100 {
   animation-delay: 100ms;
 }
@@ -282,75 +409,77 @@
   transform: translateY(0);
 }
 
-/* Ragdoll Radanov Pride - Modern Minimalistic Design System
-Clean, sophisticated aesthetic inspired by modern cat portfolios
+/* BleuRoi Ragdoll Cattery - Ragdoll-Inspired Design System
+Soft, elegant aesthetic inspired by ragdoll cat colorations - creams, grays, blues, lavenders
 */
 
 @layer base {
   :root {
-    /* Modern minimalistic palette */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    /* Ragdoll-inspired palette - soft grey gradients like ragdoll cat fur */
+    --background: 220 10% 96%;     /* #F5F6F8 - Soft grey-white background */
+    --foreground: 225 15% 20%;     /* #2A2F3A - Deep charcoal text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card: 0 0% 100%;             /* Pure white cards for contrast */
+    --card-foreground: 225 15% 20%; /* Deep charcoal text on cards */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 225 15% 20%;
 
-    /* Sophisticated dark primary */
-    --primary: 0 0% 20%;
-    --primary-foreground: 0 0% 98%;
+    /* Ragdoll blue-grey primary inspired by their distinctive eye color */
+    --primary: 215 25% 60%;        /* #8B9DC3 - Ragdoll blue-grey eyes */
+    --primary-foreground: 0 0% 100%;
 
-    /* Clean neutral secondary */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 20%;
+    /* Soft grey secondary */
+    --secondary: 220 8% 88%;       /* #DADDE3 - Light blue-grey */
+    --secondary-foreground: 225 15% 20%;
 
-    /* Subtle muted tones */
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45%;
+    /* Muted grey tones inspired by ragdoll coat patterns */
+    --muted: 220 12% 85%;          /* #D1D5DC - Soft blue-grey */
+    --muted-foreground: 220 10% 45%; /* #6B7280 - Medium grey */
 
-    /* Elegant accent - warm beige */
-    --accent: 30 15% 88%;
-    --accent-foreground: 0 0% 20%;
+    /* Elegant accent - warm grey */
+    --accent: 220 15% 82%;         /* #C8D0E0 - Lavender-grey accent */
+    --accent-foreground: 225 15% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 20%;
+    --border: 220 15% 80%;         /* #C1CAD6 - Soft grey border */
+    --input: 220 20% 90%;          /* #E5E9F0 - Light grey input */
+    --ring: 215 25% 60%;           /* Match primary - ragdoll blue */
 
     --radius: 12px;
 
-    /* Modern design tokens */
-    --modern-dark: 0 0% 15%;
-    --modern-light: 0 0% 98%;
-    --modern-beige: 30 15% 88%;
-    --modern-warm: 25 20% 85%;
+    /* Ragdoll-inspired design tokens */
+    --modern-dark: 225 15% 20%;    /* Deep charcoal */
+    --modern-light: 220 10% 96%;   /* Light grey background */
+    --modern-beige: 220 8% 88%;    /* Soft grey */
+    --modern-warm: 215 20% 75%;    /* Warm blue-grey */
 
-    /* Subtle gradients */
-    --gradient-subtle: linear-gradient(135deg, hsl(0 0% 98%), hsl(30 15% 96%));
-    --gradient-overlay: linear-gradient(135deg, hsl(0 0% 15% / 0.7), hsl(0 0% 15% / 0.9));
+    /* Ragdoll-inspired gradients with grey tones */
+    --gradient-subtle: linear-gradient(135deg, hsl(220 10% 96%), hsl(220 15% 92%));
+    --gradient-overlay: linear-gradient(135deg, hsl(225 15% 20% / 0.7), hsl(220 10% 15% / 0.9));
+    --gradient-ragdoll: linear-gradient(135deg, hsl(220 12% 90%), hsl(215 15% 85%), hsl(210 18% 80%));
 
-    /* Modern shadows */
-    --shadow-modern: 0 4px 24px -6px hsl(0 0% 15% / 0.08);
-    --shadow-hover: 0 8px 32px -8px hsl(0 0% 15% / 0.12);
-    --shadow-card: 0 2px 16px -4px hsl(0 0% 15% / 0.05);
+    /* Soft ragdoll-inspired shadows with grey undertones */
+    --shadow-modern: 0 4px 24px -6px hsl(220 15% 25% / 0.08);
+    --shadow-hover: 0 8px 32px -8px hsl(215 20% 30% / 0.12);
+    --shadow-card: 0 2px 16px -4px hsl(220 12% 20% / 0.05);
 
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Sidebar variables */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Ragdoll-inspired sidebar variables */
+    --sidebar-background: 220 10% 96%;
+    --sidebar-foreground: 225 15% 20%;
+    --sidebar-primary: 215 25% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 12% 85%;
+    --sidebar-accent-foreground: 225 15% 20%;
+    --sidebar-border: 220 15% 80%;
+    --sidebar-ring: 215 25% 60%;
   }
 
   .dark {
@@ -428,7 +557,103 @@ Clean, sophisticated aesthetic inspired by modern cat portfolios
   body {
     @apply bg-background text-foreground;
     font-family: 'Perun', system-ui, sans-serif;
-    cursor: url('/src/assets/cursor.cur'), auto;
+    cursor: default;
+  }
+
+  /* Modern Cursor System */
+  .modern-cursor-default {
+    cursor: default;
+  }
+
+  .modern-cursor-pointer {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .modern-cursor-pointer:hover {
+    transform: scale(1.05);
+  }
+
+  /* Cat-themed cursors for interactive elements */
+  button, 
+  .button, 
+  [role="button"],
+  .gallery-item,
+  .cat-card,
+  .interactive {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  button:hover,
+  .button:hover,
+  [role="button"]:hover,
+  .gallery-item:hover,
+  .cat-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Text selection cursors */
+  input, 
+  textarea, 
+  [contenteditable] {
+    cursor: text;
+  }
+
+  /* Link hover effects with paw cursor */
+  a {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+    transition: all 0.2s ease;
+  }
+
+  a:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Special cursor for drag operations */
+  .draggable {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, grab;
+  }
+
+  .dragging {
+    cursor: url('/src/assets/paw-cursor.png') 16 16, grabbing;
+  }
+
+  /* Hover effects for interactive cat elements */
+  .cat-image {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+  }
+
+  .cat-image:hover {
+    transform: scale(1.02) rotate(0.5deg);
+    filter: brightness(1.05);
+  }
+
+  /* Modern Professional Cursor System */
+  .cursor-paw {
+    cursor: url('/src/assets/paw-cursor.png') 12 12, pointer;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .cursor-pointer:hover {
+    transform: scale(1.05);
+  }
+
+  /* Apply paw cursor to interactive elements */
+  button, .btn, [role="button"], a, .cursor-paw,
+  .gallery-item, .cat-card, .interactive {
+    cursor: url('/src/assets/paw-cursor.png') 12 12, pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  button:hover, .btn:hover, [role="button"]:hover, 
+  a:hover, .gallery-item:hover, .cat-card:hover {
+    transform: translateY(-1px);
   }
 }
 
@@ -462,10 +687,60 @@ Clean, sophisticated aesthetic inspired by modern cat portfolios
   -webkit-line-clamp: 3;
 }
 
+/* Ragdoll gradient backgrounds */
+.bg-gradient-ragdoll {
+  background: var(--gradient-ragdoll);
+}
+
+.bg-gradient-subtle {
+  background: var(--gradient-subtle);
+}
+
+/* Gallery grid animations */
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-gallery-fade-in {
+  animation: galleryFadeIn 0.6s ease-out forwards;
+}
+
+/* Enhanced hover effects for gallery items */
+@keyframes galleryHover {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: var(--shadow-card);
+  }
+  100% {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+.gallery-item:hover {
+  animation: galleryHover 0.3s ease-out forwards;
+}
+
+/* Smooth grid layout transitions */
+.gallery-grid {
+  transition: var(--transition-smooth);
+}
+
+.gallery-grid > * {
+  transition: var(--transition-smooth);
+}
+
 /* Mobile touch improvements */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   /* Ensure minimum touch target size */
-  button, .touch-manipulation {
+  button, .touch-manipulation, [role="button"] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -479,6 +754,298 @@ Clean, sophisticated aesthetic inspired by modern cat portfolios
   input, textarea, select {
     font-size: 16px;
   }
+  
+  /* Mobile-specific gallery improvements */
+  .gallery-item {
+    touch-action: manipulation;
+  }
+  
+  .gallery-grid {
+    gap: 1rem;
+  }
+
+  /* Enhanced mobile navigation */
+  .mobile-nav-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Better mobile modal handling */
+  .mobile-modal {
+    padding: 1rem;
+  }
+
+  /* Improved mobile typography */
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  /* Better mobile spacing */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Enhanced responsive breakpoints */
+@media (max-width: 480px) {
+  /* Extra small mobile optimizations */
+  .gallery-grid {
+    gap: 0.75rem;
+  }
+  
+  /* Smaller touch targets for very small screens but still accessible */
+  .compact-touch {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  .gallery-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Enhanced animations for modern browsers */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-spring {
+    transition: var(--transition-spring);
+  }
+  
+  .animate-smooth-scale {
+    transition: transform 0.2s ease-out;
+  }
+  
+  .animate-smooth-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .animate-fade-in-spring {
+    animation: fadeInSpring 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Professional Cat-themed Interactive Elements */
+  .cat-interactive {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.1),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .cat-interactive:hover::before {
+    left: 100%;
+  }
+
+  /* Paw print trail effect for special elements */
+  .paw-trail {
+    position: relative;
+  }
+
+  .paw-trail::after {
+    content: '🐾';
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+  }
+
+  .paw-trail:hover::after {
+    right: -20px;
+    opacity: 0.6;
+  }
+
+  /* Smooth image loading animation */
+  .image-fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .image-fade-in.loaded {
+    opacity: 1;
+  }
+
+  /* Enhanced button interactions */
+  .btn-enhanced {
+    position: relative;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    color: hsl(var(--primary-foreground));
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  }
+
+  .btn-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
+  }
+
+  .btn-enhanced:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  }
+}
+
+@keyframes fadeInSpring {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .gallery-item:hover {
+    transform: none;
+  }
+}
+
+/* Better focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Modern Animated Scrollbar System */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 6px;
+  margin: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.4),
+    hsl(var(--primary) / 0.6)
+  );
+  border-radius: 6px;
+  border: 1px solid hsl(var(--background));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.6),
+    hsl(var(--primary) / 0.8)
+  );
+  transform: scaleY(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.7),
+    hsl(var(--primary) / 0.9)
+  );
+  transform: scaleY(1.05);
+}
+
+/* Scrollbar corner styling */
+::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+/* Enhanced scrollbar for dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.5),
+    hsl(var(--primary) / 0.7)
+  );
+  border: 1px solid hsl(var(--background));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.7),
+    hsl(var(--primary) / 0.9)
+  );
+}
+
+/* Smooth scrolling enhancement */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.5) hsl(var(--muted) / 0.3);
+}
+
+/* Scrollable container improvements */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.4) transparent;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.4);
+  border-radius: 3px;
 }
 
 /* Hanging Cat Animation - Complete Implementation */
@@ -982,3 +1549,171 @@ Clean, sophisticated aesthetic inspired by modern cat portfolios
   0%, 10%, 25%, 80%, 100% { transform: scaleY(1); }
   8%, 23%, 78% { transform: scaleY(0.1); }
 }
+
+/* Enhanced Modern UI Features */
+
+/* Scrollbar Pulse Animation */
+@keyframes scrollbar-glow {
+  0%, 100% {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  animation: scrollbar-glow 4s ease-in-out infinite;
+}
+
+/* Interactive Element Enhancements */
+.interactive-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+}
+
+.interactive-hover:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Paw Trail Effect for Special Elements */
+@keyframes paw-trail {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+.paw-trail {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: url('/src/assets/paw.svg') no-repeat center;
+  background-size: contain;
+  pointer-events: none;
+  animation: paw-trail 0.8s ease-out forwards;
+}
+
+/* Modern Button Enhancements */
+.modern-button {
+  position: relative;
+  overflow: hidden;
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+}
+
+.modern-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all 0.5s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.modern-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Gallery Image Hover Effects */
+.gallery-image-modern {
+  position: relative;
+  overflow: hidden;
+  cursor: url('/src/assets/paw-cursor.png') 16 16, pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-image-modern::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.gallery-image-modern:hover::after {
+  transform: translateX(100%);
+}
+
+.gallery-image-modern:hover {
+  transform: scale(1.05) rotateY(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth Page Transitions */
+.page-transition {
+  animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Enhanced Focus States for Accessibility */
+*:focus-visible {
+  outline: 3px solid hsl(var(--primary) / 0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px hsl(var(--background)), 0 0 20px hsl(var(--primary) / 0.3);
+  transition: all 0.2s ease;
+}
+
+/* Micro-interactions for Better UX */
+.micro-bounce {
+  transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.micro-bounce:active {
+  transform: scale(0.95);
+}
+
+/* Modern Loading State */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+

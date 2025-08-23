@@ -7,16 +7,37 @@ import PedigreeCanvas from '@/components/admin/PedigreeCanvas';
 import TikTokVideoManager from '@/components/admin/TikTokVideoManager';
 import SocialMediaSettings from '@/components/admin/SocialMediaSettings';
 import NewsManager from '@/components/admin/NewsManager';
+import GalleryManager from '@/components/admin/GalleryManager';
+
+import HeroVideoManager from '@/components/admin/HeroVideoManager';
+import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
 import { CatData } from '@/services/convexCatService';
 import ragdollLogo from '@/assets/ragdoll-logo.png';
+import { Menu, X } from 'lucide-react';
 
-type AdminTab = 'pedigree' | 'news' | 'tiktok' | 'social';
+type AdminTab = 'pedigree' | 'news' | 'gallery' | 'tiktok' | 'social' | 'herovideo' | 'qr';
 
 const Admin = () => {
   const { isAuthenticated, isLoading, logout } = useAdminAuth();
   const [selectedCat, setSelectedCat] = useState<CatData | null>(null);
   const [canvasInstance, setCanvasInstance] = useState<{ addCatToCanvas: (cat: CatData, position?: { x: number; y: number }) => void } | null>(null);
   const [activeTab, setActiveTab] = useState<AdminTab>('pedigree');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const adminTabs = [
+    { id: 'pedigree' as AdminTab, label: 'Родословие', icon: '🌳' },
+    { id: 'news' as AdminTab, label: 'Новини', icon: '📰' },
+    { id: 'gallery' as AdminTab, label: 'Галерия', icon: '🖼️' },
+    { id: 'tiktok' as AdminTab, label: 'TikTok видеа', icon: '🎵' },
+    { id: 'social' as AdminTab, label: 'Социални мрежи', icon: '📱' },
+    { id: 'herovideo' as AdminTab, label: 'Hero Видео', icon: '🎬' },
+    { id: 'qr' as AdminTab, label: 'QR Код', icon: '📊' }
+  ];
+
+  const handleTabChange = (tab: AdminTab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false); // Close mobile menu when tab is selected
+  };
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -64,19 +85,26 @@ const Admin = () => {
         );
       case 'news':
         return <NewsManager />;
+      case 'gallery':
+        return <GalleryManager />;
       case 'tiktok':
         return <TikTokVideoManager />;
       case 'social':
         return <SocialMediaSettings />;
+
+      case 'herovideo':
+        return <HeroVideoManager />;
+      case 'qr':
+        return <QRCodeGenerator />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-card shadow-sm border-b border-border">
         <div className="flex items-center justify-between px-4 sm:px-6 py-4">
           <div className="flex items-center space-x-3">
             <img 
@@ -84,41 +112,98 @@ const Admin = () => {
               alt="My Pets Ragdoll Logo" 
               className="w-10 h-10 object-contain"
             />
-            <h1 className="font-playfair text-xl sm:text-2xl font-semibold text-black">
+            <h1 className="font-playfair text-xl sm:text-2xl font-semibold text-foreground">
               Admin Dashboard
             </h1>
           </div>
-          <Button
-            onClick={logout}
-            variant="outline"
-            className="border-black text-black hover:bg-black hover:text-white min-h-[44px] px-4"
-          >
-            Изход
-          </Button>
+          
+          <div className="flex items-center gap-2">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden w-10 h-10 rounded-lg border border-border bg-background hover:bg-muted flex items-center justify-center touch-manipulation"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5 text-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+            
+            {/* Logout Button */}
+            <Button
+              onClick={logout}
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground min-h-[44px] px-4 touch-manipulation"
+            >
+              Изход
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="bg-white border-b">
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="fixed top-0 left-0 w-80 max-w-[85vw] h-full bg-card shadow-xl border-r border-border" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="font-playfair text-lg font-semibold text-foreground">Навигация</h2>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center"
+                >
+                  <X className="w-5 h-5 text-foreground" />
+                </button>
+              </div>
+              
+              <nav className="space-y-2">
+                {adminTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors touch-manipulation ${
+                      activeTab === tab.id
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <span className="text-lg">{tab.icon}</span>
+                    <span className="font-medium">{tab.label}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Tab Navigation */}
+      <div className="hidden lg:block bg-card border-b border-border">
         <div className="flex px-4 sm:px-6 overflow-x-auto">
-          {[
-            { id: 'pedigree' as AdminTab, label: 'Родословие' },
-            { id: 'news' as AdminTab, label: 'Новини' },
-            { id: 'tiktok' as AdminTab, label: 'TikTok видеа' },
-            { id: 'social' as AdminTab, label: 'Социални мрежи' }
-          ].map(tab => (
+          {adminTabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-3 sm:px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
+              onClick={() => handleTabChange(tab.id)}
+              className={`flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap min-h-[60px] touch-manipulation ${
                 activeTab === tab.id
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-primary text-primary bg-primary/5'
+                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
               }`}
             >
-              {tab.label}
+              <span className="text-base">{tab.icon}</span>
+              <span>{tab.label}</span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Mobile Active Tab Indicator */}
+      <div className="lg:hidden bg-card border-b border-border px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">{adminTabs.find(tab => tab.id === activeTab)?.icon}</span>
+          <span className="font-medium text-foreground">{adminTabs.find(tab => tab.id === activeTab)?.label}</span>
         </div>
       </div>
 

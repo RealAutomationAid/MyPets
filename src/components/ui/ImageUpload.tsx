@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +18,7 @@ interface ImageUploadProps {
   previewSize?: 'small' | 'medium' | 'large';
 }
 
-export const ImageUpload = ({
+export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(({
   onUploadSuccess,
   onUploadError,
   currentImageUrl,
@@ -28,13 +28,14 @@ export const ImageUpload = ({
   uploadOptions = {},
   className = '',
   previewSize = 'medium'
-}: ImageUploadProps) => {
+}, ref) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null);
   const [isDragOver, setIsDragOver] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = ref || fileInputRef;
   const { uploadFile } = useFileUpload();
 
   const getPreviewSizeClasses = () => {
@@ -137,13 +138,15 @@ export const ImageUpload = ({
 
   const clearImage = () => {
     setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    if (inputRef && 'current' in inputRef && inputRef.current) {
+      inputRef.current.value = '';
     }
   };
 
   const openFileDialog = () => {
-    fileInputRef.current?.click();
+    if (inputRef && 'current' in inputRef && inputRef.current) {
+      inputRef.current.click();
+    }
   };
 
   return (
@@ -156,7 +159,7 @@ export const ImageUpload = ({
 
       {/* Hidden file input */}
       <Input
-        ref={fileInputRef}
+        ref={inputRef}
         type="file"
         accept="image/*"
         onChange={handleFileInputChange}
@@ -270,4 +273,6 @@ export const ImageUpload = ({
       </div>
     </div>
   );
-};
+});
+
+ImageUpload.displayName = "ImageUpload";

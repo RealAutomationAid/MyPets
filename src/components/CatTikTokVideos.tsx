@@ -5,7 +5,7 @@ import { useTikTokVideosByCat } from "@/services/convexTikTokService";
 import { Id } from "../../convex/_generated/dataModel";
 
 interface CatTikTokVideosProps {
-  catId: Id<"cats">;
+  catId: Id<"cats"> | string;
   catName: string;
 }
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -11,7 +11,7 @@ interface AnimatedButtonProps extends ButtonProps {
   children: React.ReactNode;
 }
 
-export const AnimatedButton = ({ 
+export const AnimatedButton = forwardRef<HTMLButtonElement, AnimatedButtonProps>(({ 
   animationType = "glow", 
   glowColor = "#60a5fa",
   className,
@@ -19,7 +19,7 @@ export const AnimatedButton = ({
   onMouseEnter,
   onMouseLeave,
   ...props 
-}: AnimatedButtonProps) => {
+}, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -110,6 +110,7 @@ export const AnimatedButton = ({
       className="relative inline-block"
     >
       <Button
+        ref={ref}
         className={cn(
           "relative overflow-hidden",
           animationType === "glow" && "transition-all duration-300",
@@ -180,29 +181,43 @@ export const AnimatedButton = ({
       </Button>
     </motion.div>
   );
-};
+});
 
-// Preset button variants
-export const GlowButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="glow" {...props} />
-);
+AnimatedButton.displayName = "AnimatedButton";
 
-export const RippleButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="ripple" {...props} />
-);
+// Preset button variants with proper forwardRef
+export const GlowButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="glow" {...props} />
+));
 
-export const SlideButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="slide" {...props} />
-);
+GlowButton.displayName = "GlowButton";
 
-export const BounceButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="bounce" {...props} />
-);
+export const RippleButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="ripple" {...props} />
+));
 
-export const MagneticButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="magnetic" {...props} />
-);
+RippleButton.displayName = "RippleButton";
 
-export const ParticleButton = (props: Omit<AnimatedButtonProps, "animationType">) => (
-  <AnimatedButton animationType="particle" {...props} />
-);
+export const SlideButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="slide" {...props} />
+));
+
+SlideButton.displayName = "SlideButton";
+
+export const BounceButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="bounce" {...props} />
+));
+
+BounceButton.displayName = "BounceButton";
+
+export const MagneticButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="magnetic" {...props} />
+));
+
+MagneticButton.displayName = "MagneticButton";
+
+export const ParticleButton = forwardRef<HTMLButtonElement, Omit<AnimatedButtonProps, "animationType">>((props, ref) => (
+  <AnimatedButton ref={ref} animationType="particle" {...props} />
+));
+
+ParticleButton.displayName = "ParticleButton";

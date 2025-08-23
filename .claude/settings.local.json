@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run build:dev:*)",
+      "mcp__brave-search__brave_web_search"
+    ],
+    "deny": []
+  }
+}

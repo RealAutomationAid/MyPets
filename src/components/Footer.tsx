@@ -1,8 +1,15 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import ragdollLogo from "@/assets/ragdoll-logo.png";
+import { useSocialMediaSettings } from "@/services/convexSiteSettingsService";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
+import { WHATSAPP_LINK, CONTACT_PHONE_E164, CONTACT_PHONE_DISPLAY } from "@/config/contact";
 
 const Footer = () => {
   const { t } = useLanguage();
+  const socialSettings = useSocialMediaSettings();
+  const facebookUrl = socialSettings?.facebook_url || 'https://www.facebook.com/Bleuroi.Ragdol.Cattery';
+  const instagramUrl = socialSettings?.instagram_url || 'https://instagram.com/radanovpride';
+  const tiktokUrl = socialSettings?.tiktok_url || 'https://www.tiktok.com/@blueroi.ragdol.cattery';
   return (
     <footer className="bg-black text-white py-8">
       <div className="container mx-auto px-6 lg:px-8">
@@ -22,14 +29,31 @@ const Footer = () => {
   {t('footer.address')}
             </p>
             <p className="text-white/90 text-sm">
-              088 851 9001
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="inline-flex items-center justify-center text-green-500 hover:text-green-400 transition-colors"
+                title="WhatsApp"
+              >
+                <WhatsAppIcon className="w-8 h-8" />
+              </a>
+            </p>
+            <p className="text-white/90 text-sm">
+              <a 
+                href={`tel:${CONTACT_PHONE_E164}`}
+                className="hover:text-white transition-colors hover:underline"
+              >
+                {CONTACT_PHONE_DISPLAY}
+              </a>
             </p>
           </div>
 
           {/* Social Links */}
           <div className="flex justify-center space-x-6">
             <a 
-              href="https://www.facebook.com/profile.php?id=61561853557367" 
+              href={facebookUrl}
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors"
@@ -39,7 +63,17 @@ const Footer = () => {
               </svg>
             </a>
             <a 
-              href="https://www.tiktok.com/@radanovpridemainecoon?is_from_webapp=1&sender_device=pc" 
+              href={instagramUrl}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm0 2h10c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3zm5 3.5A5.5 5.5 0 106 13a5.5 5.5 0 006-5.5zm0 2A3.5 3.5 0 1112 16a3.5 3.5 0 010-7zm5.8-.9a1.1 1.1 0 11-2.2 0 1.1 1.1 0 012.2 0z" />
+              </svg>
+            </a>
+            <a 
+              href={tiktokUrl}
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white transition-colors"

@@ -20,10 +20,14 @@ type Announcement = {
   title: string;
   content: string;
   featuredImage?: string;
+  gallery?: string[];
   isPublished: boolean;
   publishedAt: number;
   sortOrder: number;
   updatedAt: number;
+  slug?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
 };
 
 const NewsManager = () => {
@@ -40,8 +44,11 @@ const NewsManager = () => {
     content: '',
     featuredImage: '',
     featuredImageStorageId: '',
+    gallery: [] as string[],
     isPublished: false,
     sortOrder: 0,
+    metaDescription: '',
+    metaKeywords: '',
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -54,8 +61,11 @@ const NewsManager = () => {
         content: '',
         featuredImage: '',
         featuredImageStorageId: '',
+        gallery: [],
         isPublished: false,
         sortOrder: 0,
+        metaDescription: '',
+        metaKeywords: '',
       });
     }
   }, [isDialogOpen]);
@@ -68,8 +78,11 @@ const NewsManager = () => {
         content: editingAnnouncement.content,
         featuredImage: editingAnnouncement.featuredImage || '',
         featuredImageStorageId: '',
+        gallery: editingAnnouncement.gallery || [],
         isPublished: editingAnnouncement.isPublished,
         sortOrder: editingAnnouncement.sortOrder,
+        metaDescription: editingAnnouncement.metaDescription || '',
+        metaKeywords: editingAnnouncement.metaKeywords || '',
       });
       setIsDialogOpen(true);
     }
@@ -86,8 +99,11 @@ const NewsManager = () => {
           title: formData.title,
           content: formData.content,
           featuredImage: formData.featuredImage,
+          gallery: formData.gallery,
           isPublished: formData.isPublished,
           sortOrder: formData.sortOrder,
+          metaDescription: formData.metaDescription,
+          metaKeywords: formData.metaKeywords,
         });
       } else {
         const nextSortOrder = announcements ? announcements.length + 1 : 1;
@@ -95,8 +111,11 @@ const NewsManager = () => {
           title: formData.title,
           content: formData.content,
           featuredImage: formData.featuredImage,
+          gallery: formData.gallery,
           isPublished: formData.isPublished,
           sortOrder: nextSortOrder,
+          metaDescription: formData.metaDescription,
+          metaKeywords: formData.metaKeywords,
         });
       }
       setIsDialogOpen(false);
@@ -178,6 +197,42 @@ const NewsManager = () => {
                 />
               </div>
 
+              {/* SEO Fields */}
+              <div className="border-t border-border pt-4 space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <Label className="text-sm font-medium text-muted-foreground">SEO настройки</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="metaDescription">SEO описание</Label>
+                  <Textarea
+                    id="metaDescription"
+                    value={formData.metaDescription}
+                    onChange={(e) => setFormData(prev => ({ ...prev, metaDescription: e.target.value }))}
+                    placeholder="Кратко описание на новината за търсачките (160 знака)"
+                    rows={2}
+                    maxLength={160}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {formData.metaDescription.length}/160 знака
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="metaKeywords">SEO ключови думи</Label>
+                  <Input
+                    id="metaKeywords"
+                    value={formData.metaKeywords}
+                    onChange={(e) => setFormData(prev => ({ ...prev, metaKeywords: e.target.value }))}
+                    placeholder="ключова дума 1, ключова дума 2, ключова дума 3"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Разделете ключовите думи със запетая
+                  </p>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <ImageUpload
                   label="Основна снимка"
@@ -200,7 +255,67 @@ const NewsManager = () => {
                   previewSize="medium"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Качете снимка за новината (JPG, PNG, GIF или WebP, макс. 5MB)
+                  Качете главна снимка за новината (JPG, PNG, GIF или WebP, макс. 5MB)
+                </p>
+              </div>
+
+              {/* Gallery Images */}
+              <div className="space-y-4">
+                <Label className="text-base font-medium">Галерия снимки</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {/* Display existing gallery images */}
+                  {formData.gallery.map((imageUrl, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={imageUrl}
+                        alt={`Gallery image ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg border border-border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            gallery: prev.gallery.filter((_, i) => i !== index)
+                          }));
+                        }}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {/* Add new image button */}
+                  <div className="border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center min-h-24">
+                    <ImageUpload
+                      label=""
+                      onUploadSuccess={(url, storageId) => {
+                        setFormData(prev => ({ 
+                          ...prev, 
+                          gallery: [...prev.gallery, url]
+                        }));
+                      }}
+                      onUploadError={(error) => {
+                        console.error('Gallery upload error:', error);
+                      }}
+                      uploadOptions={{
+                        imageType: 'news',
+                        maxSizeInMB: 5,
+                        quality: 0.8
+                      }}
+                      showPreview={false}
+                      customTrigger={
+                        <div className="cursor-pointer text-center">
+                          <Plus className="h-6 w-6 mx-auto mb-1 text-muted-foreground" />
+                          <p className="text-xs text-muted-foreground">Добави снимка</p>
+                        </div>
+                      }
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Качете допълнителни снимки за новината (JPG, PNG, GIF или WebP, макс. 5MB всяка)
                 </p>
               </div>
 
@@ -295,6 +410,30 @@ const NewsManager = () => {
                           alt={announcement.title}
                           className="w-full h-32 object-cover rounded-lg"
                         />
+                      </div>
+                    )}
+                    
+                    {/* Gallery Images Preview */}
+                    {announcement.gallery && announcement.gallery.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Галерия: {announcement.gallery.length} снимки
+                        </p>
+                        <div className="flex gap-2 overflow-x-auto">
+                          {announcement.gallery.slice(0, 4).map((imageUrl, index) => (
+                            <img
+                              key={index}
+                              src={imageUrl}
+                              alt={`Gallery ${index + 1}`}
+                              className="w-16 h-16 object-cover rounded border border-border flex-shrink-0"
+                            />
+                          ))}
+                          {announcement.gallery.length > 4 && (
+                            <div className="w-16 h-16 bg-gray-100 rounded border border-border flex-shrink-0 flex items-center justify-center text-xs text-muted-foreground">
+                              +{announcement.gallery.length - 4}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
                     <div className="flex items-center gap-2">

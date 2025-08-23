@@ -1,102 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Heart, MessageCircle, Share, Bookmark, MoreHorizontal, ExternalLink } from 'lucide-react';
-import { useTikTokVideosForMainSection } from '@/services/convexTikTokService';
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { useLanguage } from '@/hooks/useLanguage';
 
-// Fallback static TikTok videos when no database content is available
-const FALLBACK_VIDEOS = [
-  {
-    _id: 'fallback-1',
-    title: 'Красиви Ragdoll котки',
-    description: 'Нашите прекрасни котки в техния дом',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#ragdoll', '#котки', '#радановпрайд'],
-    viewCount: 12500,
-    likeCount: 850,
-    commentCount: 45,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-2',
-    title: 'Игриви момичета котенца',
-    description: 'Котенцата си играят заедно',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#котенца', '#игра', '#сладки'],
-    viewCount: 8900,
-    likeCount: 620,
-    commentCount: 32,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-3',
-    title: 'Ragdoll семейство',
-    description: 'Майка с котенца - сърчицетопящи моменти',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#семейство', '#майка', '#котенца'],
-    viewCount: 15600,
-    likeCount: 1200,
-    commentCount: 78,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-4',
-    title: 'Красота и елегантност',
-    description: 'Възрастни котки показват своята красота',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#красота', '#елегантност', '#ragdoll'],
-    viewCount: 9300,
-    likeCount: 470,
-    commentCount: 28,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-5',
-    title: 'Дневна рутина на котките',
-    description: 'Как прекарват деня нашите котки',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#рутина', '#ден', '#живот'],
-    viewCount: 6800,
-    likeCount: 340,
-    commentCount: 19,
-    isActive: true,
-    catId: undefined,
-  },
-  {
-    _id: 'fallback-6',
-    title: 'Най-добрите моменти',
-    description: 'Компилация от най-сладките моменти',
-    thumbnail: '/placeholder.svg',
-    videoUrl: 'https://www.tiktok.com/@radanovprideragdoll',
-    hashtags: ['#моменти', '#компилация', '#сладко'],
-    viewCount: 11200,
-    likeCount: 890,
-    commentCount: 56,
-    isActive: true,
-    catId: undefined,
-  },
+// Professional ragdoll cat images for TikTok thumbnails
+const RAGDOLL_TIKTOK_THUMBNAILS = [
+  '/src/assets/featured-cat-1.jpg',
+  '/src/assets/featured-cat-2.jpg',
+  '/src/assets/model-cat-1.jpg',
+  '/src/assets/model-cat-2.jpg',
+  '/src/assets/model-cat-3.jpg',
+  '/src/assets/9274d091-96de-4d71-abd1-fe6214ea8876.jpg'
 ];
+
+// Fallback static TikTok videos when no database content is available - REMOVED per user request
+const FALLBACK_VIDEOS: any[] = [];
 
 const TikTokSection = () => {
   const { t } = useLanguage();
-  const videos = useTikTokVideosForMainSection(6);
+  const [shouldLoadVideos, setShouldLoadVideos] = useState(false);
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
-  
-  // Three-tier fallback system: cat-specific videos → global admin videos → hardcoded fallback videos
-  const displayVideos = (() => {
-    if (videos && videos.length > 0) {
-      return videos; // Use database videos (cat-specific + global)
+
+  // Lazy load videos only when section is interacted with
+  const videos = useQuery(
+    api.tiktokVideos.getVideosForMainSection,
+    { limit: 6 }
+  );
+
+  // Enable loading when section comes into view or user interacts
+  const handleSectionVisible = () => {
+    setShouldLoadVideos(true);
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadVideos(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const section = document.getElementById('tiktok-section');
+    if (section) {
+      observer.observe(section);
     }
-    return FALLBACK_VIDEOS; // Use fallback videos when no database content
-  })();
+
+    return () => observer.disconnect();
+  }, []);
+  
+  // Use only database videos - no fallback videos
+  const displayVideos = videos || [];
 
   const handleLike = (videoId: string) => {
     setLikedVideos(prev => {
@@ -121,8 +78,18 @@ const TikTokSection = () => {
     return count.toString();
   };
 
+  // Don't render section if no videos available
+  if (displayVideos.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="bg-black py-16 px-4">
+    <section 
+      id="tiktok-section"
+      className="bg-black py-16 px-4"
+      onMouseEnter={handleSectionVisible}
+      onFocus={handleSectionVisible}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -169,9 +136,9 @@ const TikTokSection = () => {
                     {/* User Info */}
                     <div className="flex items-center mb-2">
                       <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mr-2">
-                        <span className="text-white text-xs font-bold">R</span>
+                        <span className="text-white text-xs font-bold">B</span>
                       </div>
-                      <span className="text-white text-sm font-semibold">@radanovpridemainecoon</span>
+                      <span className="text-white text-sm font-semibold">@bleuroi_ragdoll</span>
                     </div>
 
                     {/* Title */}
@@ -238,7 +205,7 @@ const TikTokSection = () => {
         {/* CTA Section */}
         <div className="text-center">
           <a
-            href="https://www.tiktok.com/@radanovpridemainecoon?is_from_webapp=1&sender_device=pc"
+            href="https://www.tiktok.com/@bleuroi_ragdoll?is_from_webapp=1&sender_device=pc"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold text-lg rounded-full hover:from-pink-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"

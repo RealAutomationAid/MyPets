@@ -1,11 +1,15 @@
 {
   "meta": {
     "title": "Purebred Ragdoll Cats",
-    "description": "Purebred Ragdoll cats from Radanov Pride cattery. Beauty, character and health in one!"
+    "description": "Purebred Ragdoll cats from BleuRoi Ragdoll Cattery. Beauty, character and health in one!"
   },
   "navigation": {
     "home": "Home",
     "models": "Models",
+    "males": "Males",
+    "females": "Females",
+    "kittens": "Kittens",
+    "news": "News",
     "tiktok": "TikTok",
     "contact": "Contact"
   },
@@ -21,9 +25,16 @@
       "all": "All",
       "adult": "Adults",
       "kitten": "Kittens",
-      "retired": "Retired"
+      "retired": "Retired",
+      "male": "Males",
+      "female": "Females"
     },
-    "galleryLabel": "Gallery"
+    "galleryLabel": "Gallery",
+    "sectionTitles": {
+      "male": "Males",
+      "female": "Females",
+      "kitten": "Kittens (below 1 year)"
+    }
   },
   "gallery": {
     "subtitle": "Premium Collection",
@@ -35,11 +46,19 @@
       "retired": "Retired"
     }
   },
+  "businessGallery": {
+    "subtitle": "Our Achievements",
+    "title": "Awards & Recognition",
+    "description": "Celebrating our journey of excellence in Ragdoll breeding, showcasing awards, certificates, and memorable moments.",
+    "categories": {
+      "all": "All"
+    }
+  },
   "tiktok": {
     "title": "Our TikTok Videos",
     "subtitle": "Follow us on TikTok for daily moments with our beautiful Ragdoll cats",
     "followButton": "Follow us on TikTok",
-    "followDescription": "@radanovprideragdoll - Daily moments with our Ragdoll cats"
+    "followDescription": "@bleuroi_ragdoll - Daily moments with our Ragdoll cats"
   },
   "contact": {
     "modalTitle": "Contact Us",
@@ -53,7 +72,7 @@
   "pedigree": {
     "title": "Pedigree",
     "familyTree": "Family tree of",
-    "link": "Link: radanov-pride.com",
+    "link": "Link: ragdollbleuroi.eu",
     "loading": "Loading pedigree...",
     "clickInfo": "Click for more information",
     "mother": "Mother",
@@ -77,9 +96,16 @@
       "all": "All",
       "adult": "Adults",
       "kitten": "Kittens",
-      "retired": "Retired"
+      "retired": "Retired",
+      "male": "Males",
+      "female": "Females"
     },
     "galleryLabel": "Gallery",
+    "sectionTitles": {
+      "male": "Males",
+      "female": "Females",
+      "kitten": "Kittens (below 1 year)"
+    },
     "loading": "Loading cats...",
     "noAvailable": "No cats available at the moment",
     "selectModel": "Select This Model",
@@ -87,7 +113,10 @@
     "morePhotos": "More Photos"
   },
   "footer": {
-    "address": "Bulgaria, Razlog, Bulgaria, 2760",
-    "copyright": "© 2024 Radanov Pride. All rights reserved."
+    "address": "Bulgaria, Gotse Delchev, Sestri Dukovi 4, 2900",
+    "copyright": "© 2025 BleuRoi Ragdoll Cattery. All rights reserved."
+  },
+  "locationMap": {
+    "title": "You can find us at"
   }
 }

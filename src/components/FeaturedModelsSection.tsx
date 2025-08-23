@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useDisplayedCatsByCategory, CatData } from "@/services/convexCatService";
+import { useDisplayedCatsByGenderAndAge, CatData, useCatById } from "@/services/convexCatService";
 import { getFallbackRagdollCatsWithIds } from "@/data/fallbackRagdollCats";
 import PedigreeModal from "./PedigreeModal";
 import SocialContactModal from "./SocialContactModal";
@@ -11,15 +12,121 @@ import CatTikTokVideos from "./CatTikTokVideos";
 import { useTikTokVideosByCat } from "@/services/convexTikTokService";
 import CatStatusTag from "./ui/cat-status-tag";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCatURL } from "@/hooks/useCatURL";
+import { Id } from "../../convex/_generated/dataModel";
+import { Share2 } from "lucide-react";
+import { toast } from "sonner";
 
-type CategoryFilter = 'all' | 'kitten';
+type SectionType = 'male' | 'female' | 'kitten';
+
+// Component for individual cat sections
+interface CatSectionProps {
+  title: string;
+  cats: CatData[];
+  onCatClick: (cat: CatData) => void;
+  onPedigreeClick: (cat: CatData) => void;
+  t: any;
+  gridVisible: boolean;
+  sectionId: string;
+}
+
+const CatSection = ({ title, cats, onCatClick, onPedigreeClick, t, gridVisible, sectionId }: CatSectionProps) => {
+  return (
+    <div id={sectionId} className="space-y-8 scroll-mt-32">
+      {/* Section Title */}
+      <h3 className="font-playfair text-3xl lg:text-4xl font-light text-foreground text-center">
+        {title}
+      </h3>
+      
+      {/* 3-column grid for cats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center max-w-5xl mx-auto">
+        {cats.map((cat, index) => (
+          <div 
+            key={cat._id} 
+            className={`group relative transition-all duration-300 max-w-xs w-full ${
+              gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+            }`}
+            style={{
+              transitionDelay: gridVisible ? `${index * 0.1}s` : '0s'
+            }}
+          >
+            {/* Main circular card */}
+            <div 
+              className="relative cursor-pointer"
+              onClick={() => onCatClick(cat)}
+            >
+              {/* Circular image container */}
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 mx-auto">
+                {/* Status Tag - positioned at top center */}
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                  <CatStatusTag status={cat.status} />
+                </div>
+
+                <div className="w-full h-full rounded-full overflow-hidden shadow-xl group-hover:shadow-2xl transition-shadow duration-300 border-4 border-white">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                
+                {/* Gradient overlay for text */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8">
+                  <div className="text-white text-center">
+                    <h3 className="font-bold text-lg mb-1">{cat.name}</h3>
+                    <p className="text-xs uppercase tracking-wide">{cat.subtitle}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card content below the circle */}
+            <div className="mt-6 text-center space-y-3">
+              <div>
+                <h3 className="font-playfair text-xl font-semibold text-foreground mb-1">{cat.name}</h3>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide">{cat.subtitle}</p>
+              </div>
+              
+              {/* Action buttons */}
+              <div className="flex flex-col gap-2 px-2 sm:px-4">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
+                  onClick={() => onCatClick(cat)}
+                >
+                  {t('featuredModels.selectModel')}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full border-muted text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-xs sm:text-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPedigreeClick(cat);
+                  }}
+                >
+                  {t('featuredModels.viewPedigree')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const FeaturedModelsSection = () => {
   const { t } = useLanguage();
+  const { generateCatURL, copyToClipboard } = useCatURL();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   
-  const categoryLabels = {
-    all: t('featuredModels.categories.all'),
-    kitten: t('featuredModels.categories.kitten')
+  const sectionTitles = {
+    male: t('featuredModels.sectionTitles.male'),
+    female: t('featuredModels.sectionTitles.female'),
+    kitten: t('featuredModels.sectionTitles.kitten')
   };
   const [selectedCat, setSelectedCat] = useState<CatData | null>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -30,44 +137,104 @@ const FeaturedModelsSection = () => {
   const [isEnhancedGalleryOpen, setIsEnhancedGalleryOpen] = useState(false);
   const [enhancedGalleryImages, setEnhancedGalleryImages] = useState<string[]>([]);
   const [enhancedGalleryTitle, setEnhancedGalleryTitle] = useState("");
-  const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
-  const databaseCats = useDisplayedCatsByCategory(activeFilter);
-  const fallbackCats = getFallbackRagdollCatsWithIds(activeFilter === 'all' ? 'all' : activeFilter);
   
-  // Use database cats if available, otherwise show fallback Ragdoll cats
-  const featuredCats = (databaseCats && databaseCats.length > 0) ? databaseCats : fallbackCats;
+  // Get URL parameters for deep linking
+  const catId = searchParams.get('cat');
+  const modal = searchParams.get('modal');
+  
+  // Query for the cat from URL parameter
+  const urlCat = useCatById(catId as Id<"cats"> | undefined);
+  // Get cats for each section
+  const maleCats = useDisplayedCatsByGenderAndAge('male');
+  const femaleCats = useDisplayedCatsByGenderAndAge('female');
+  const kittenCats = useDisplayedCatsByGenderAndAge('kitten');
+  
+  // Use fallback cats if database is empty
+  const fallbackCats = getFallbackRagdollCatsWithIds('all');
+  const maleCatsToShow = (maleCats && maleCats.length > 0) ? maleCats : fallbackCats.filter(cat => cat.gender === 'male');
+  const femaleCatsToShow = (femaleCats && femaleCats.length > 0) ? femaleCats : fallbackCats.filter(cat => cat.gender === 'female');
+  const kittenCatsToShow = (kittenCats && kittenCats.length > 0) ? kittenCats : fallbackCats.filter(cat => cat.category === 'kitten');
   const { elementRef: sectionRef, isVisible: sectionVisible } = useScrollAnimation(0.1);
   const { elementRef: headerRef, isVisible: headerVisible } = useScrollAnimation(0.1);
   const { elementRef: gridRef, isVisible: gridVisible } = useScrollAnimation(0.1);
+  
+  // DEBUG: Force gridVisible to true to test if scroll animation is the issue
+  const gridVisibleForced = true;
+
+  // Handle URL-based modal opening
+  useEffect(() => {
+    if (catId && modal) {
+      if (urlCat) {
+        // Cat exists, open the appropriate modal
+        if (modal === 'pedigree') {
+          setPedigreeCat(urlCat);
+          setIsPedigreeOpen(true);
+        } else if (modal === 'gallery') {
+          setSelectedCat(urlCat);
+          setIsGalleryOpen(true);
+        } else if (modal === 'contact') {
+          setSocialCat(urlCat);
+          setIsSocialModalOpen(true);
+        }
+      } else if (urlCat === null) {
+        // Cat doesn't exist, clear the URL parameters and show error
+        console.warn(`Cat with ID ${catId} not found`);
+        clearURLParams();
+        // Optionally show a toast notification
+        // toast.error('Котето не е намерено');
+      }
+    }
+  }, [urlCat, catId, modal]);
+
+  // Helper function to update URL parameters
+  const updateURLParams = (catId: string, modalType?: 'pedigree' | 'gallery' | 'contact') => {
+    const params = new URLSearchParams();
+    params.set('cat', catId);
+    if (modalType) {
+      params.set('modal', modalType);
+    }
+    setSearchParams(params);
+  };
+
+  // Helper function to clear URL parameters
+  const clearURLParams = () => {
+    setSearchParams({});
+  };
 
   const openGallery = (cat: CatData) => {
     setSelectedCat(cat);
     setIsGalleryOpen(true);
+    updateURLParams(cat._id, 'gallery');
   };
 
   const closeGallery = () => {
     setIsGalleryOpen(false);
     setSelectedCat(null);
+    clearURLParams();
   };
 
   const openPedigree = (cat: CatData) => {
     setPedigreeCat(cat);
     setIsPedigreeOpen(true);
+    updateURLParams(cat._id, 'pedigree');
   };
 
   const closePedigree = () => {
     setIsPedigreeOpen(false);
     setPedigreeCat(null);
+    clearURLParams();
   };
 
   const openSocialModal = (cat: CatData) => {
     setSocialCat(cat);
     setIsSocialModalOpen(true);
+    updateURLParams(cat._id, 'contact');
   };
 
   const closeSocialModal = () => {
     setIsSocialModalOpen(false);
     setSocialCat(null);
+    clearURLParams();
   };
 
   const openEnhancedGallery = (images: string[], title: string) => {
@@ -82,15 +249,16 @@ const FeaturedModelsSection = () => {
     setEnhancedGalleryTitle("");
   };
 
-  // Always show the section structure, even when loading
-  // This prevents the disappearing issue
-  const isLoading = featuredCats === undefined;
-  const isEmpty = featuredCats !== undefined && featuredCats !== null && featuredCats.length === 0;
+  // Check loading states
+  const isLoading = maleCats === undefined || femaleCats === undefined || kittenCats === undefined;
+  const allSectionsEmpty = (!maleCatsToShow || maleCatsToShow.length === 0) && 
+                           (!femaleCatsToShow || femaleCatsToShow.length === 0) && 
+                           (!kittenCatsToShow || kittenCatsToShow.length === 0);
 
 
   return (
     <>
-      <section ref={sectionRef} className="py-20 bg-background mb-24">
+      <section ref={sectionRef} className="py-20 bg-gradient-subtle mb-24">
         <div className="container mx-auto px-6 lg:px-8">
 
           {/* Section Header */}
@@ -105,121 +273,64 @@ const FeaturedModelsSection = () => {
             </h2>
           </div>
 
-          {/* Category Filter Tabs */}
-          <div className="flex justify-center mb-12">
-            <div className="flex space-x-0 bg-muted/50 p-1 rounded-lg">
-              {(Object.entries(categoryLabels) as [CategoryFilter, string][]).map(([category, label]) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveFilter(category)}
-                  className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    activeFilter === category
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="text-center mb-8">
+              <p className="text-muted-foreground">{t('featuredModels.loading')}</p>
             </div>
-          </div>
-
-          {/* Content Area */}
-          <div 
-            ref={gridRef}
-            className={`max-w-6xl mx-auto transition-all duration-1000 ${
-              gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            {isLoading && (
-              <div className="text-center">
-                <p className="text-muted-foreground">{t('featuredModels.loading')}</p>
-              </div>
-            )}
-            
-            {isEmpty && (
-              <div className="text-center">
-                <p className="text-muted-foreground">Зареждане на нашите прекрасни рагдол котки...</p>
-              </div>
-            )}
-            
-            {!isLoading && !isEmpty && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
-                {featuredCats.map((cat, index) => (
-                  <div 
-                    key={cat._id} 
-                    className={`group relative transition-all duration-300 max-w-xs w-full ${
-                      gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                    }`}
-                    style={{
-                      transitionDelay: gridVisible ? `${index * 0.1}s` : '0s'
-                    }}
-                  >
-                    {/* Main circular card */}
-                    <div 
-                      className="relative cursor-pointer"
-                      onClick={() => openGallery(cat)}
-                    >
-                      {/* Circular image container */}
-                      <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 mx-auto">
-                        {/* Status Tag - positioned at top center */}
-                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
-                          <CatStatusTag status={cat.status} />
-                        </div>
-
-                        <div className="w-full h-full rounded-full overflow-hidden shadow-xl group-hover:shadow-2xl transition-shadow duration-300 border-4 border-white">
-                          <img 
-                            src={cat.image} 
-                            alt={cat.name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                        
-                        {/* Gradient overlay for text */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8">
-                          <div className="text-white text-center">
-                            <h3 className="font-bold text-lg mb-1">{cat.name}</h3>
-                            <p className="text-xs uppercase tracking-wide">{cat.subtitle}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card content below the circle */}
-                    <div className="mt-6 text-center space-y-3">
-                      <div>
-                        <h3 className="font-playfair text-xl font-semibold text-foreground mb-1">{cat.name}</h3>
-                        <p className="text-sm text-muted-foreground uppercase tracking-wide">{cat.subtitle}</p>
-                      </div>
-                      
-                      {/* Action buttons */}
-                      <div className="flex flex-col gap-2 px-2 sm:px-4">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
-                          onClick={() => openGallery(cat)}
-                        >
-                          {t('featuredModels.selectModel')}
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="w-full border-muted text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-xs sm:text-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openPedigree(cat);
-                          }}
-                        >
-                          {t('featuredModels.viewPedigree')}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
+          
+          {/* Empty State */}
+          {!isLoading && allSectionsEmpty && (
+            <div className="text-center mb-8">
+              <p className="text-muted-foreground">{t('featuredModels.noAvailable')}</p>
+            </div>
+          )}
+          
+          {/* Three Separate Sections */}
+          {!isLoading && !allSectionsEmpty && (
+            <div className="space-y-16">
+              {/* Males Section */}
+              {maleCatsToShow && maleCatsToShow.length > 0 && (
+                <CatSection
+                  title={sectionTitles.male}
+                  cats={maleCatsToShow}
+                  onCatClick={openGallery}
+                  onPedigreeClick={openPedigree}
+                  t={t}
+                  gridVisible={gridVisibleForced}
+                  sectionId="males"
+                />
+              )}
+              
+              {/* Females Section */}
+              {femaleCatsToShow && femaleCatsToShow.length > 0 && (
+                <CatSection
+                  title={sectionTitles.female}
+                  cats={femaleCatsToShow}
+                  onCatClick={openGallery}
+                  onPedigreeClick={openPedigree}
+                  t={t}
+                  gridVisible={gridVisibleForced}
+                  sectionId="females"
+                />
+              )}
+              
+              {/* Kittens Section */}
+              {kittenCatsToShow && kittenCatsToShow.length > 0 && (
+                <CatSection
+                  title={sectionTitles.kitten}
+                  cats={kittenCatsToShow}
+                  onCatClick={openGallery}
+                  onPedigreeClick={openPedigree}
+                  t={t}
+                  gridVisible={gridVisibleForced}
+                  sectionId="kittens"
+                />
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -230,7 +341,7 @@ const FeaturedModelsSection = () => {
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-border">
               <div>
-                <h3 className="font-playfair text-2xl font-semibold text-modern-dark">
+                <h3 className="font-playfair text-2xl font-semibold text-foreground">
                   {selectedCat.name}
                 </h3>
                 <p className="text-muted-foreground uppercase tracking-wide text-sm">
@@ -347,6 +458,21 @@ const FeaturedModelsSection = () => {
                         Заявете сега
                       </Button>
                     )}
+                    <Button 
+                      variant="outline" 
+                      className="w-full flex items-center gap-2"
+                      onClick={async () => {
+                        const success = await copyToClipboard(selectedCat._id, 'gallery');
+                        if (success) {
+                          toast.success('Връзката е копирана!');
+                        } else {
+                          toast.error('Неуспешно копиране на връзката');
+                        }
+                      }}
+                    >
+                      <Share2 className="h-4 w-4" />
+                      Споделете
+                    </Button>
                     <Button 
                       variant="outline" 
                       className="w-full bg-amber-500 border-amber-500 text-white hover:bg-amber-600 hover:border-amber-600"

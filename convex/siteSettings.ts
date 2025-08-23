@@ -10,7 +10,7 @@ export const getAllSettings = query({
 
 // Get settings by type
 export const getSettingsByType = query({
-  args: { type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo")) },
+  args: { type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo"), v.literal("location")) },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("siteSettings")
@@ -57,7 +57,7 @@ export const upsertSetting = mutation({
   args: {
     key: v.string(),
     value: v.string(),
-    type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo")),
+    type: v.union(v.literal("social_media"), v.literal("contact_info"), v.literal("site_content"), v.literal("feature_toggle"), v.literal("analytics"), v.literal("seo"), v.literal("location")),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -77,6 +77,139 @@ export const upsertSetting = mutation({
       const settingId = await ctx.db.insert("siteSettings", args);
       return await ctx.db.get(settingId);
     }
+  },
+});
+
+// Get location settings (helper function)
+export const getLocationSettings = query({
+  handler: async (ctx) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_type", (q) => q.eq("type", "location"))
+      .collect();
+    
+    // Convert to key-value object
+    const location: Record<string, unknown> = {};
+    settings.forEach(setting => {
+      try {
+        location[setting.key] = JSON.parse(setting.value);
+      } catch {
+        location[setting.key] = setting.value;
+      }
+    });
+
+    return location;
+  },
+});
+
+// Update location settings (batch update)
+export const updateLocationSettings = mutation({
+  args: {
+    address: v.optional(v.string()),
+    coordinates: v.optional(v.string()), // JSON string: {lat: number, lng: number}
+    googleMapsUrl: v.optional(v.string()),
+    appleMapsUrl: v.optional(v.string()),
+    displayName: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const updates = [];
+
+    if (args.address !== undefined) {
+      const result = await ctx.db
+        .query("siteSettings")
+        .withIndex("by_key", (q) => q.eq("key", "establishment_address"))
+        .first();
+
+      if (result) {
+        await ctx.db.patch(result._id, { value: args.address });
+      } else {
+        await ctx.db.insert("siteSettings", {
+          key: "establishment_address",
+          value: args.address,
+          type: "location",
+          description: "Physical address of the establishment"
+        });
+      }
+      updates.push("establishment_address");
+    }
+
+    if (args.coordinates !== undefined) {
+      const result = await ctx.db
+        .query("siteSettings")
+        .withIndex("by_key", (q) => q.eq("key", "establishment_coordinates"))
+        .first();
+
+      if (result) {
+        await ctx.db.patch(result._id, { value: args.coordinates });
+      } else {
+        await ctx.db.insert("siteSettings", {
+          key: "establishment_coordinates",
+          value: args.coordinates,
+          type: "location",
+          description: "GPS coordinates (lat, lng) as JSON"
+        });
+      }
+      updates.push("establishment_coordinates");
+    }
+
+    if (args.googleMapsUrl !== undefined) {
+      const result = await ctx.db
+        .query("siteSettings")
+        .withIndex("by_key", (q) => q.eq("key", "google_maps_url"))
+        .first();
+
+      if (result) {
+        await ctx.db.patch(result._id, { value: args.googleMapsUrl });
+      } else {
+        await ctx.db.insert("siteSettings", {
+          key: "google_maps_url",
+          value: args.googleMapsUrl,
+          type: "location",
+          description: "Custom Google Maps URL"
+        });
+      }
+      updates.push("google_maps_url");
+    }
+
+    if (args.appleMapsUrl !== undefined) {
+      const result = await ctx.db
+        .query("siteSettings")
+        .withIndex("by_key", (q) => q.eq("key", "apple_maps_url"))
+        .first();
+
+      if (result) {
+        await ctx.db.patch(result._id, { value: args.appleMapsUrl });
+      } else {
+        await ctx.db.insert("siteSettings", {
+          key: "apple_maps_url",
+          value: args.appleMapsUrl,
+          type: "location",
+          description: "Custom Apple Maps URL"
+        });
+      }
+      updates.push("apple_maps_url");
+    }
+
+    if (args.displayName !== undefined) {
+      const result = await ctx.db
+        .query("siteSettings")
+        .withIndex("by_key", (q) => q.eq("key", "location_display_name"))
+        .first();
+
+      if (result) {
+        await ctx.db.patch(result._id, { value: args.displayName });
+      } else {
+        await ctx.db.insert("siteSettings", {
+          key: "location_display_name",
+          value: args.displayName,
+          type: "location",
+          description: "Display name for the location"
+        });
+      }
+      updates.push("location_display_name");
+    }
+
+    return { updated: updates };
   },
 });
 

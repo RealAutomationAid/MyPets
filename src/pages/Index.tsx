@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import ModernNavigation from "@/components/ModernNavigation";
-import ModernHeroSection from "@/components/ModernHeroSection";
+import CinematicVideoHero from "@/components/CinematicVideoHero";
 import FeaturedModelsSection from "@/components/FeaturedModelsSection";
-import AnimatedCarouselGallery from "@/components/AnimatedCarouselGallery";
+
+import GallerySection from "@/components/GallerySection";
 import NewsSection from "@/components/NewsSection";
 import TikTokSection from "@/components/TikTokSection";
 import Footer from "@/components/Footer";
+import LocationMap from "@/components/LocationMap";
 import SocialSidebar from "@/components/SocialSidebar";
-import ContactModal from "@/components/ContactModal";
+
 import CatCarePopup from "@/components/CatCarePopup";
 import BackgroundAnimations from "@/components/BackgroundAnimations";
+import { useOptimizedQueries } from "@/hooks/useOptimizedQueries";
 
 const Index = () => {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [showCatCarePopup, setShowCatCarePopup] = useState(false);
+  const { isInitialLoadComplete, enableSecondaryQueries } = useOptimizedQueries();
 
   useEffect(() => {
     // Show cat care popup after 3 seconds
@@ -24,20 +27,55 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Enable secondary queries when user scrolls or interacts
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        enableSecondaryQueries();
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+    const handleUserInteraction = () => {
+      enableSecondaryQueries();
+      ['click', 'touchstart', 'keydown'].forEach(event => {
+        window.removeEventListener(event, handleUserInteraction);
+      });
+    };
+
+    if (isInitialLoadComplete) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      ['click', 'touchstart', 'keydown'].forEach(event => {
+        window.addEventListener(event, handleUserInteraction, { passive: true });
+      });
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      ['click', 'touchstart', 'keydown'].forEach(event => {
+        window.removeEventListener(event, handleUserInteraction);
+      });
+    };
+  }, [isInitialLoadComplete, enableSecondaryQueries]);
+
   return (
     <div className="min-h-screen bg-background relative">
       <BackgroundAnimations />
-      <div className="relative z-10">
-        <ModernNavigation />
-      <div id="home">
-        <ModernHeroSection />
-      </div>
+      
+      {/* Navigation overlaid on video */}
+      <ModernNavigation />
+      
+      <div className="relative">
+        <div id="home">
+          <CinematicVideoHero />
+        </div>
       <div id="models">
         <FeaturedModelsSection />
       </div>
       <div id="gallery">
-        <AnimatedCarouselGallery />
+        <GallerySection />
       </div>
+
       <div id="news">
         <NewsSection />
       </div>
@@ -45,17 +83,13 @@ const Index = () => {
         <TikTokSection />
       </div>
       <div id="contact">
+        <LocationMap />
         <Footer />
       </div>
       
       {/* Sticky Social Sidebar */}
       <SocialSidebar />
       
-      {/* Contact Modal */}
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
       
       {/* Cat Care Responsibility Popup */}
       {showCatCarePopup && (
