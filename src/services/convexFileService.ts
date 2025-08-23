@@ -38,17 +38,29 @@ export const useFileUpload = () => {
       let fileToUpload = file;
       if (file.type.startsWith('image/')) {
         try {
-          // Use enhanced compression with smart defaults based on image type
+          // Use enhanced compression with automatic WebP conversion
           const compressionOptions: ImageCompressionOptions = {
             maxSizeBytes: 800 * 1024, // 800KB for Convex storage
             maxDimension: options.imageType === 'profile' ? 1024 : 1920,
             quality: options.imageType === 'profile' ? 0.85 : 0.8,
-            outputFormat: 'jpeg', // JPEG for best compression
-            preserveMetadata: false
+            outputFormat: 'webp', // Always try WebP first (with automatic fallback)
+            preserveMetadata: false,
+            forceWebP: true // Force WebP conversion for maximum compression
           };
 
           fileToUpload = await compressImage(file, compressionOptions);
-          console.log(`Image compressed from ${formatFileSize(file.size)} to ${formatFileSize(fileToUpload.size)}`);
+          
+          // Enhanced logging for WebP conversion
+          const originalFormat = file.type.split('/')[1];
+          const finalFormat = fileToUpload.type.split('/')[1];
+          const compressionRatio = Math.round((1 - fileToUpload.size / file.size) * 100);
+          
+          console.log(`✅ Image optimized: ${originalFormat.toUpperCase()} → ${finalFormat.toUpperCase()}`);
+          console.log(`📦 Size: ${formatFileSize(file.size)} → ${formatFileSize(fileToUpload.size)} (${compressionRatio}% reduction)`);
+          
+          if (finalFormat === 'webp') {
+            console.log(`🚀 WebP conversion successful! Additional bandwidth savings achieved.`);
+          }
         } catch (compressionError) {
           console.warn('Image compression failed, uploading original:', compressionError);
           // Continue with original file if compression fails
@@ -183,7 +195,27 @@ export interface ImageCompressionOptions {
   quality?: number;
   outputFormat?: 'jpeg' | 'webp' | 'png';
   preserveMetadata?: boolean;
+  forceWebP?: boolean; // Force WebP conversion even if browser doesn't support it
 }
+
+// Check if browser supports WebP format
+export const isWebPSupported = async (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const webP = new Image();
+    webP.onload = webP.onerror = () => {
+      resolve(webP.height === 2);
+    };
+    webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+  });
+};
+
+// Check if canvas supports WebP encoding
+export const canEncodeWebP = (): boolean => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1;
+  canvas.height = 1;
+  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+};
 
 // Utility to compress images with advanced options
 export const compressImage = async (file: File, options: ImageCompressionOptions = {}): Promise<File> => {
@@ -191,13 +223,27 @@ export const compressImage = async (file: File, options: ImageCompressionOptions
     maxSizeBytes = 800 * 1024, // 800KB default for Convex
     maxDimension = 1920,
     quality = 0.8,
-    outputFormat = 'jpeg',
-    preserveMetadata = false
+    outputFormat = 'webp', // Default to WebP for best compression
+    preserveMetadata = false,
+    forceWebP = false
   } = options;
 
+  // Determine optimal output format
+  let finalOutputFormat = outputFormat;
+  if (outputFormat === 'webp') {
+    const webpSupported = canEncodeWebP();
+    if (!webpSupported && !forceWebP) {
+      finalOutputFormat = 'jpeg'; // Fallback to JPEG if WebP not supported
+      console.log('WebP encoding not supported, falling back to JPEG');
+    }
+  }
+
   return new Promise((resolve, reject) => {
-    // If file is already small enough, return as-is (unless we need format conversion)
-    if (file.size <= maxSizeBytes && (file.type.includes(outputFormat) || outputFormat === 'jpeg')) {
+    // Check if we need conversion to WebP or if file is already optimized
+    const needsWebPConversion = finalOutputFormat === 'webp' && !file.type.includes('webp');
+    const needsCompression = file.size > maxSizeBytes;
+    
+    if (!needsWebPConversion && !needsCompression) {
       resolve(file);
       return;
     }
@@ -248,9 +294,9 @@ export const compressImage = async (file: File, options: ImageCompressionOptions
         // Draw image with potential filters for optimization
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        // Determine output MIME type
-        const outputMimeType = outputFormat === 'webp' ? 'image/webp' : 
-                               outputFormat === 'png' ? 'image/png' : 'image/jpeg';
+        // Determine output MIME type based on final format
+        const outputMimeType = finalOutputFormat === 'webp' ? 'image/webp' : 
+                               finalOutputFormat === 'png' ? 'image/png' : 'image/jpeg';
 
         // Progressive quality reduction to meet size constraints
         const tryCompress = (currentQuality: number, attempt: number = 1): void => {
